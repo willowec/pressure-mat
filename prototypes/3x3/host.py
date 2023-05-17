@@ -119,6 +119,7 @@ class Reciever(QThread):
             i = 0
             while True:
                 m = ser.readline().decode('utf-8')
+                print('recieved', m)
                 if m == '':
                     raise serial.SerialTimeoutException("Timed out")
 
