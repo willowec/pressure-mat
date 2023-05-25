@@ -5,7 +5,7 @@ import utime
 # Rows connect to ADC0, ADC1, ADC2 (GP26, GP27, GP28)
 # Resistors are 470k
 
-READ_DELAY_MS = 100
+READ_DELAY_MS = 40
 ADC_MAX = 65535
 
 rows = [ADC(26), ADC(27), ADC(28)]
@@ -41,17 +41,20 @@ while True:
 
     grid = []
 
+    # read the grid
     for i, col in enumerate(columns):
         # pull one of the columns high
         col.on()
-        utime.sleep_ms(READ_DELAY_MS)
 
         # read each row
         for j, row in enumerate(rows):
+            utime.sleep_ms(READ_DELAY_MS)
             val = int(row.read_u16() / ADC_MAX * 255) # convert adc value to number 0-255
             grid.append(val)
 
         col.off()
+        utime.sleep_ms(READ_DELAY_MS)
+
 
     # if a button is pressed, calibrate the board
     if cal_button.value() == 1:

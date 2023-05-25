@@ -139,7 +139,7 @@ class Reciever(QThread):
                 # update the history array and render it
                 self.history = np.roll(self.history, 1, axis=0)
                 self.history[0, :] = imarray.flatten()
-                print(self.history)
+                #print(self.history)
 
                 # plot it
                 self.parent.hist_display.axes.cla()
