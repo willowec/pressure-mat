@@ -10,7 +10,8 @@
 3. Run the host script using ```py .\host.py```
 4. Enter the com port the pico is connected to and hit connect
 
-## Schematic
+## Schematic  
+Further testing is needed to confirm whether the diodes are actually useful or not.
 ![Drag Racing](schematic.png)
 
 ## Constructed Circuit
