@@ -11,8 +11,8 @@
 4. Enter the com port the pico is connected to and hit connect
 
 ## Schematic
-![Drag Racing](schematic.png)
+![Overall Schematic](schematic.png)
 
 ## Constructed Circuit
-![Drag Racing](circuit.jpg)
+![Photo of the circuit on a breadboard](circuit.jpg)
 
