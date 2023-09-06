@@ -3352,6 +3352,17 @@
     (uuid ffe49ee0-f0f6-445f-a635-19ad4ff3d39c)
   )
 
+  (rectangle (start 214.63 74.93) (end 243.84 151.13)
+    (stroke (width 0.3) (type default) (color 0 0 0 1))
+    (fill (type none))
+    (uuid 98239969-a0ef-472d-8a7c-96a5d1b52fff)
+  )
+
+  (text "Voltage Dividers" (at 222.25 73.66 0)
+    (effects (font (size 1.27 1.27)) (justify left bottom))
+    (uuid a6b2adfc-6c41-4a18-a66b-e46e953a62d6)
+  )
+
   (label "ADC_IN14" (at 212.09 55.88 0) (fields_autoplaced)
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid 0040f69a-1208-4974-8272-3fef093cdfab)
@@ -6727,7 +6738,7 @@
     (property "Reference" "J2" (at 186.69 72.39 0)
       (effects (font (size 1.27 1.27)))
     )
-    (property "Value" "02x30_Shift_Register_Connector" (at 186.69 74.93 0)
+    (property "Value" "02x30_ADC_Connector" (at 186.69 74.93 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Footprint" "" (at 185.42 114.3 0)
