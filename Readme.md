@@ -25,7 +25,7 @@ Getting started (on Windows):
 
         cp pythonfile.py /pyboard/main.py
 
-3. disconnect the pico from power and reconnect it. Your code should then run.
+3. disconnect the pico from power and reconnect it. Your code should then run when the pi powers on.
 
 ## Resetting the RPI Pico
 
