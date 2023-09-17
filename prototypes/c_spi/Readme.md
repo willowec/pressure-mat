@@ -9,6 +9,12 @@ requires that the pico_sdk repository is cloned on your computer
 spi tutorial: (page 152)
 [https://datasheets.raspberrypi.com/pico/raspberry-pi-pico-c-sdk.pdf](https://datasheets.raspberrypi.com/pico/raspberry-pi-pico-c-sdk.pdf)
 
+## hardware:
+
+Connect the two spi cahnnels absed on the following image
+
+![image of a pico withthe two spi cahnels connected](hardware.jpg)
+
 ## building:
 
     mkdir build
@@ -18,6 +24,7 @@ spi tutorial: (page 152)
     make
 
 Then just copy the UF2 file onto the pico's flash
+
 
 ## build error: wrong compiler
 
