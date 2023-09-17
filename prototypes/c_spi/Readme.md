@@ -6,6 +6,9 @@ this is an example of running an spi client (slave) on one core and an spi contr
 
 requires that the pico_sdk repository is cloned on your computer
 
+spi tutorial: (page 152)
+[https://datasheets.raspberrypi.com/pico/raspberry-pi-pico-c-sdk.pdf](https://datasheets.raspberrypi.com/pico/raspberry-pi-pico-c-sdk.pdf)
+
 ## building:
 
     mkdir build
