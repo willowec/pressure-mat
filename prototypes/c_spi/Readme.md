@@ -13,7 +13,7 @@ spi tutorial: (page 152)
 
 Connect the two spi cahnnels absed on the following image
 
-![image of a pico withthe two spi cahnels connected](hardware.jpg)
+![image of a pico with the two spi cahnels connected](hardware.jpg)
 
 ## building:
 
