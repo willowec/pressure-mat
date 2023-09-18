@@ -114,6 +114,26 @@ void process_input_byte(uint8_t byte) {
     }
 }
 
+/*
+    Sends an input data byte over SPI to the "adc" requesting a conversion. 
+        chsel - 4 bits corresponding to CHSEL3, CHSEL2, CHSEL1, CHSEL0 from the datasheet
+*/
+void request_conversion(uint8_t chsel) {
+    uint8_t outbuf = 0b10000000 | (chsel << 3);
+    uint8_t inbuf[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+
+    printf("Requesting conversion %x\n", chsel);
+    spi_write_blocking(spi1, &outbuf, 1);
+
+    sleep_ms(10);
+
+    spi_read_blocking(spi1, 0, inbuf, chsel + 1);
+
+    printf("Conversion recieved:\n");
+    print_buffer(inbuf, chsel + 1);
+
+}
+
 
 /*
     Second core: controller spi
@@ -126,70 +146,12 @@ void core1_main() {
     gpio_set_function(SPI1_RX_PIN, GPIO_FUNC_SPI);
     gpio_set_function(SPI1_CSN_PIN, GPIO_FUNC_SPI);
 
-    // Send some messages to the fake ADC
-    uint8_t *outbuf = (uint8_t *)calloc(16, 1);
-    uint8_t *inbuf = (uint8_t *)malloc(16);
+    while(1) {
+        // Main loop. Make conversion requests here!
 
-    printf("sending conversion (16 vals)\n");
-    outbuf[0] = 0b11111000;
-    spi_write_read_blocking(spi1, outbuf, inbuf, 16);
-    print_buffer(inbuf, 16);
-
-    sleep_ms(500);
-
-    printf("sending reset:\n");
-    outbuf[0] = 0b00010000;
-    spi_write_blocking(spi1, outbuf, 1);
-
-    sleep_ms(500);
-
-    printf("sending averaging:\n");
-    outbuf[0] = 0b00100000;
-    spi_write_blocking(spi1, outbuf, 1);
-
-    sleep_ms(500);
-
-    printf("sending setup:\n");
-    outbuf[0] = 0b01000000;
-    spi_write_blocking(spi1, outbuf, 1);
-
-    sleep_ms(500);
-
-    printf("sending conversion (1 value):\n");
-    outbuf[0] = 0b10000000;
-    printf("adc writable? %d\n", spi_is_writable(spi0));
-    spi_write_blocking(spi1, outbuf, 1);
-    sleep_ms(10);
-    spi_read_blocking(spi1, 0, inbuf, 1);
-    print_buffer(inbuf, 1);
-
-    sleep_ms(500);
-
-    printf("sending conversion (8 values):\n");
-    outbuf[0] = 0b11000000;
-    printf("adc writable? %d\n", spi_is_writable(spi0));
-    spi_write_blocking(spi1, outbuf, 1);
-    sleep_ms(100);
-    spi_read_blocking(spi1, 0, inbuf, 8);
-    print_buffer(inbuf, 8);
-
-    sleep_ms(500);
-
-
-    printf("sending conversion (16 vals)\n");
-    outbuf[0] = 0b11111000;
-    spi_write_read_blocking(spi1, outbuf, inbuf, 16);
-    print_buffer(inbuf, 16);
-/*
-    printf("sending conversion (16 values):\n");
-    outbuf[0] = 0b11111000;
-    printf("adc writable? %d\n", spi_is_writable(spi0));
-    spi_write_blocking(spi1, &outbuf, 1);
-    sleep_ms(100);
-    spi_read_blocking(spi1, 0, inbuf, 16);
-    print_buffer(inbuf, 16);
-*/
-    free(inbuf);
+        request_conversion(0b1111); // request 16 values
+        sleep_ms(1000);
+    }
 }
 
 /*
