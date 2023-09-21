@@ -83,6 +83,14 @@ class MainWindow(QMainWindow):
         self.layout.addWidget(self.load_past_img_b, 6, 0)
 
 
+        #navigate past session buttons
+        self.load_past_img_next_b = QPushButton("-->")
+        self.load_past_img_prev_b = QPushButton("<--")
+        self.load_past_img_next_b.clicked.connect(self.load_past_img_next)
+        self.load_past_img_prev_b.clicked.connect(self.load_past_img_prev)
+        self.layout.addWidget(self.load_past_img_next_b, 8, 3)
+        self.layout.addWidget(self.load_past_img_prev_b, 8, 2)
+
         self.data_pixmap = QPixmap()
         self.data_display = QLabel()
         self.data_text = QLabel()
@@ -120,6 +128,12 @@ class MainWindow(QMainWindow):
  
     def load_past_img(self):
         print("I will open a file explorer to select a session from disk memory")
+
+    def load_past_img_next(self):
+        print("I will navigate to next image in folder in chronological order")
+
+    def load_past_img_prev(self):
+        print("I will navigate to previous image in folder in chronological order")
 
     def closeEvent(self, event):
         """
