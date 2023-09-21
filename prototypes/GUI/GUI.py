@@ -1,10 +1,12 @@
 # GUI which displays data from the mat interpreted by the board and transmitted over serial
 import sys, serial
 
+import PyQt6
 from PyQt6.QtGui import QPixmap, QImage
 from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel, QLineEdit, QGridLayout, QWidget
 from PyQt6.QtWidgets import QPushButton
 from PyQt6.QtCore import QThread
+from PyQt6.QtCore import Qt
 
 import numpy as np
 import matplotlib
@@ -91,15 +93,18 @@ class MainWindow(QMainWindow):
         self.layout.addWidget(self.load_past_img_next_b, 8, 3)
         self.layout.addWidget(self.load_past_img_prev_b, 8, 2)
 
-        self.data_pixmap = QPixmap()
+        self.data_pixmap = QPixmap("sessions/09_21_2023_11_26_00/0000.png")
         self.data_display = QLabel()
         self.data_text = QLabel()
+        self.data_pixmap.scaled(200, 200)
+        self.data_text.resize(200,200)
         self.data_display.setPixmap(self.data_pixmap)
-        self.layout.addWidget(self.data_display, 7, 0)
-        self.layout.addWidget(self.data_text, 7, 1)
+        self.layout.addWidget(self.data_display, 0, 2)
+        self.layout.addWidget(self.data_text, 0, 3)
 
-        self.hist_display = MplCanvas(self, width=5, height=4, dpi=100)
-        self.layout.addWidget(self.hist_display, 0, 2, 7, 3)
+        
+        #self.hist_display = MplCanvas(self, width=5, height=4, dpi=100)
+        #self.layout.addWidget(self.hist_display, 0, 2, 7, 3)
 
         widget = QWidget()
         widget.setLayout(self.layout)
