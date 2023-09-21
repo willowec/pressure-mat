@@ -77,15 +77,21 @@ class MainWindow(QMainWindow):
         self.layout.addWidget(self.stop_session_b, 5, 0)
         self.layout.addWidget(self.session_status, 4, 1)
         
+        #load past session
+        self.load_past_img_b = QPushButton("Load Past Session")
+        self.load_past_img_b.clicked.connect(self.load_past_img)
+        self.layout.addWidget(self.load_past_img_b, 6, 0)
+
+
         self.data_pixmap = QPixmap()
         self.data_display = QLabel()
         self.data_text = QLabel()
         self.data_display.setPixmap(self.data_pixmap)
-        self.layout.addWidget(self.data_display, 6, 0)
-        self.layout.addWidget(self.data_text, 6, 1)
+        self.layout.addWidget(self.data_display, 7, 0)
+        self.layout.addWidget(self.data_text, 7, 1)
 
         self.hist_display = MplCanvas(self, width=5, height=4, dpi=100)
-        self.layout.addWidget(self.hist_display, 6, 2)
+        self.layout.addWidget(self.hist_display, 0, 2, 7, 3)
 
         widget = QWidget()
         widget.setLayout(self.layout)
@@ -112,6 +118,9 @@ class MainWindow(QMainWindow):
     def stop_session(self):
         print("I will stop the mat recording session")
  
+    def load_past_img(self):
+        print("I will open a file explorer to select a session from disk memory")
+
     def closeEvent(self, event):
         """
         Called when the window is closed. Exit the application
