@@ -2,11 +2,19 @@
 import sys, serial
 
 import PyQt6
-from PyQt6.QtGui import QPixmap, QImage
-from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel, QLineEdit, QGridLayout, QWidget
-from PyQt6.QtWidgets import QPushButton
-from PyQt6.QtCore import QThread
-from PyQt6.QtCore import Qt
+
+#from PyQt6.QtGui import QPixmap, QImage
+#from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel, QLineEdit, QGridLayout, QWidget
+#from PyQt6.QtWidgets import QPushButton
+#from PyQt6.QtCore import QThread
+#from PyQt6.QtCore import Qt
+
+from PyQt6.QtGui import  *
+from PyQt6.QtWidgets import *
+from PyQt6.QtCore import *
+#import PySide6
+#from PyQt6.QtX11Extras import *
+
 
 import numpy as np
 import matplotlib
@@ -47,27 +55,27 @@ class MainWindow(QMainWindow):
         
         #com port input box
         self.port_input = QLineEdit("COM8", self)
-        self.layout.addWidget(QLabel("Port:", self), 0, 0)
-        self.layout.addWidget(self.port_input, 1, 0)
+        self.layout.addWidget(QLabel("Port:", self), 1, 0)
+        self.layout.addWidget(self.port_input, 2, 0)
 
         #baud rate input box
         self.baud_input = QLineEdit("115200", self)
-        self.layout.addWidget(QLabel("Baud rate:", self), 0, 1)
-        self.layout.addWidget(self.baud_input, 1, 1)
+        self.layout.addWidget(QLabel("Baud rate:", self), 1, 1)
+        self.layout.addWidget(self.baud_input, 2, 1)
 
         #button to initialize serial connection to pi
         self.connect_b = QPushButton("Connect")
         self.connect_b.clicked.connect(self.connect_board)
         self.status_l = QLabel("Status: N/A")
-        self.layout.addWidget(self.connect_b, 2, 0)
-        self.layout.addWidget(self.status_l, 2, 1)
+        self.layout.addWidget(self.connect_b, 3, 0)
+        self.layout.addWidget(self.status_l, 3, 1)
 
         #calibrate mat
         self.calibrate_b = QPushButton("Calibrate Mat")
         self.calibrate_b.clicked.connect(self.calibrate_mat)
         self.calibrate_status = QLabel("Status: Not Calibrated")
-        self.layout.addWidget(self.calibrate_b, 3, 0)
-        self.layout.addWidget(self.calibrate_status, 3, 1)
+        self.layout.addWidget(self.calibrate_b, 4, 0)
+        self.layout.addWidget(self.calibrate_status, 4, 1)
 
         #start/stop mat recording session
         self.start_session_b = QPushButton("Start Session")
@@ -75,14 +83,14 @@ class MainWindow(QMainWindow):
         self.stop_session_b = QPushButton("Stop Session")
         self.stop_session_b.clicked.connect(self.stop_session)
         self.session_status = QLabel("Status: Session Stopped")
-        self.layout.addWidget(self.start_session_b, 4, 0)
-        self.layout.addWidget(self.stop_session_b, 5, 0)
-        self.layout.addWidget(self.session_status, 4, 1)
+        self.layout.addWidget(self.start_session_b, 5, 0)
+        self.layout.addWidget(self.stop_session_b, 6, 0)
+        self.layout.addWidget(self.session_status, 5, 1)
         
         #load past session
         self.load_past_img_b = QPushButton("Load Past Session")
         self.load_past_img_b.clicked.connect(self.load_past_img)
-        self.layout.addWidget(self.load_past_img_b, 6, 0)
+        self.layout.addWidget(self.load_past_img_b, 7, 0)
 
 
         #navigate past session buttons
@@ -90,21 +98,24 @@ class MainWindow(QMainWindow):
         self.load_past_img_prev_b = QPushButton("<--")
         self.load_past_img_next_b.clicked.connect(self.load_past_img_next)
         self.load_past_img_prev_b.clicked.connect(self.load_past_img_prev)
-        self.layout.addWidget(self.load_past_img_next_b, 8, 3)
-        self.layout.addWidget(self.load_past_img_prev_b, 8, 2)
+        self.layout.addWidget(self.load_past_img_next_b, 8, 1)
+        self.layout.addWidget(self.load_past_img_prev_b, 8, 0)
 
-        self.data_pixmap = QPixmap("sessions/09_21_2023_11_26_00/0000.png")
-        self.data_display = QLabel()
-        self.data_text = QLabel()
-        self.data_pixmap.scaled(200, 200)
-        self.data_text.resize(200,200)
-        self.data_display.setPixmap(self.data_pixmap)
-        self.layout.addWidget(self.data_display, 0, 2)
-        self.layout.addWidget(self.data_text, 0, 3)
-
-        
+   
         #self.hist_display = MplCanvas(self, width=5, height=4, dpi=100)
         #self.layout.addWidget(self.hist_display, 0, 2, 7, 3)
+        
+
+        #display image from file
+        self.size = QSize(56*10, 28*10)
+        self.im = QPixmap("sessions/09_21_2023_11_26_00/0000.png")
+        self.label = QLabel()
+        self.qimage = QImage()
+        self.im_scaled = self.im.scaled(self.size)
+        self.qimage=self.im_scaled.toImage()
+        self.label.setPixmap(self.im_scaled)
+        self.layout.addWidget(self.label,0,2)
+
 
         widget = QWidget()
         widget.setLayout(self.layout)
