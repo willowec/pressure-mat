@@ -5,6 +5,10 @@ An approximation of the MAX1164BEEG ADC that runs on the rpi pico. This is used 
 
 ## Usage
 
+This program can run in two modes:
+1. client/client mode, where both SPI0 and SPI1 host an instance of the fake ADC
+2. controller/client mode, where the SPI0 channel simulates the ADC and the SPI1 channel communicates with it. Used primarily for ensuring that the ADC is being approximated correctly.
+
 ### Build the code:
 1. 
         mkdir build
@@ -14,6 +18,29 @@ An approximation of the MAX1164BEEG ADC that runs on the rpi pico. This is used 
         make
 
 2. Copy the uf2 file to the pico's flash to program it
+
+### Connect the pins
+
+#### client/client mode (2 ADCs)
+1. tie GP28 high to select client/client mode
+2. ADC0 is available on SPI0:
+    - GP2 is SCK
+    - GP3 is TX
+    - GP4 is RX
+    - GP5 is CS
+3. ADC1 is available on SPI1:
+    - GP10 is SCK
+    - GP11 is TX
+    - GP12 is RX
+    - GP13 is CS
+
+#### controller/client mode (1 ADC)
+1. tie GP28 low to select controller/client mode
+2. to connect the controller to the client:
+    1. connect GP2 to GP10
+    2. connect GP3 to GP12
+    3. connect GP4 to GP11
+    4. connect GP5 to GP13
 
 
 ## Design

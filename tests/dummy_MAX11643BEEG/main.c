@@ -22,6 +22,8 @@ main.c file for the dummy MAX11643BEEG ADC
 #define SPI1_RX_PIN     12
 #define SPI1_CSN_PIN    13
 
+#define MODE_SELECT_PIN 28
+
 #define CLOCK_SPEED 1000000 // 1MHz
 
 #define N_ADC_VALUES 256
@@ -67,7 +69,7 @@ void print_buffer(uint8_t *buf, size_t len) {
     Function which processes the input data byte which has been sent over SPI
     See page 13 of the datasheet linked in the Readme for details
 */
-void process_input_byte(uint8_t byte) {
+void process_input_byte(uint8_t byte, spi_inst_t *spi) {
     printf("ADC recieved: %d\n", byte);
 
     if ((byte >> 7) == 1) {
@@ -88,7 +90,7 @@ void process_input_byte(uint8_t byte) {
             print_buffer(buf, n);
 
             // write the adc values back over SPI
-            spi_write_blocking(spi0, buf, n);
+            spi_write_blocking(spi, buf, n);
 
             free(buf);
         }
@@ -139,18 +141,46 @@ void request_conversion(uint8_t chsel) {
     Second core: controller spi
 */
 void core1_main() {
-    // initialize SPI1 as a controller
+    // initialize SPI1
     spi_init(spi1, CLOCK_SPEED);
     gpio_set_function(SPI1_SCK_PIN, GPIO_FUNC_SPI);
     gpio_set_function(SPI1_TX_PIN, GPIO_FUNC_SPI);
     gpio_set_function(SPI1_RX_PIN, GPIO_FUNC_SPI);
     gpio_set_function(SPI1_CSN_PIN, GPIO_FUNC_SPI);
 
-    while(1) {
-        // Main loop. Make conversion requests here!
+    // check GP28
+    gpio_init(MODE_SELECT_PIN);
+    gpio_set_dir(MODE_SELECT_PIN, GPIO_IN);
 
-        request_conversion(0b1111); // request 16 values
-        sleep_ms(1000);
+    bool is_controller = gpio_get(MODE_SELECT_PIN);
+
+    // If GP28 is high, run a controller on this core
+    if (is_controller) {
+        printf("Launching core 1 as a controller\n");
+
+        while(1) {
+            // Main loop. Make conversion requests here!
+
+            request_conversion(0b1111); // request 16 values
+            sleep_ms(1000);
+        }
+    }
+
+    // If GP28 is low, run a second "adc" on this core connected to spi1
+    printf("Launching core 1 as a second ADC\n");
+    spi_set_slave(spi1, true);
+
+    // disable the on board led to indicate that both cores are running the ADC
+    gpio_put(LED_PIN, 0);
+
+    uint8_t input_byte;
+
+    while (1) {
+        // read one byte from SPI
+        spi_read_blocking(spi1, 0, &input_byte, 1);
+
+        // handle the input
+        process_input_byte(input_byte, spi1);
     }
 }
 
@@ -191,6 +221,6 @@ int main () {
         spi_read_blocking(spi0, 0, &input_byte, 1);
 
         // handle the input
-        process_input_byte(input_byte);
+        process_input_byte(input_byte, spi0);
     }
 }
