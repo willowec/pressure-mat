@@ -29,16 +29,16 @@ from matplotlib.figure import Figure
 MAT_DIM = (28, 56)
 HIST_LEN = 25
 
-
+"""
 class MplCanvas(FigureCanvasQTAgg):
-    """
+    
     https://www.pythonguis.com/tutorials/pyqt6-plotting-matplotlib/
-    """
+    
     def __init__(self, parent=None, width=5, height=4, dpi=100):
         fig = Figure(figsize=(width, height), dpi=dpi)
         self.axes = fig.add_subplot(111)
         super(MplCanvas, self).__init__(fig)
-
+"""
 
 
 class MainWindow(QMainWindow):
@@ -89,7 +89,7 @@ class MainWindow(QMainWindow):
         
         #load past session
         self.load_past_img_b = QPushButton("Load Past Session")
-        self.load_past_img_b.clicked.connect(self.load_past_img)
+        self.load_past_img_b.clicked.connect(self.getfile)
         self.layout.addWidget(self.load_past_img_b, 7, 0)
 
 
@@ -108,7 +108,7 @@ class MainWindow(QMainWindow):
 
         #display image from file
         self.size = QSize(56*10, 28*10)
-        self.im = QPixmap("sessions/09_21_2023_11_26_00/0000.png")
+        self.im = QPixmap("default.png")
         self.label = QLabel()
         self.qimage = QImage()
         self.im_scaled = self.im.scaled(self.size)
@@ -157,6 +157,12 @@ class MainWindow(QMainWindow):
         """
         self.reciever.terminate()
 
+    def getfile(self):
+      fname = QFileDialog.getOpenFileName(self, 'Open file', 
+         #'c:\\',"Image files (*.png)")
+         #Evan's file path
+        'D:\ecdes\Classes\Capstone\ECE406\pressure-mat\prototypes\GUI\sessions',"Image files (*.png)")
+      self.label.setPixmap(QPixmap(fname))
 
 class Reciever(QThread):
     """
@@ -216,7 +222,61 @@ class Reciever(QThread):
                 self.parent.hist_display.draw()
 
 
+"""
+from https://www.tutorialspoint.com/pyqt/pyqt_qfiledialog_widget.htm
+"""
+class filedialogdemo(QWidget):
+   def __init__(self, parent = None):
+      super(filedialogdemo, self).__init__(parent)
+		
+      layout = QVBoxLayout()
+      self.btn = QPushButton("QFileDialog static method demo")
+      self.btn.clicked.connect(self.getfile)
+		
+      layout.addWidget(self.btn)
+      self.le = QLabel("Hello")
+		
+      layout.addWidget(self.le)
+      self.btn1 = QPushButton("QFileDialog object")
+      self.btn1.clicked.connect(self.getfiles)
+      layout.addWidget(self.btn1)
+		
+      self.contents = QTextEdit()
+      layout.addWidget(self.contents)
+      self.setLayout(layout)
+      self.setWindowTitle("File Dialog demo")
+		
+   def getfile(self):
+      fname = QFileDialog.getOpenFileName(self, 'Open file', 
+         'c:\\',"Image files (*.png)")
+      self.le.setPixmap(QPixmap(fname))
 
+   def getfiles(self):
+      dlg = QFileDialog()
+      dlg.setFileMode(QFileDialog.AnyFile)
+      dlg.setFilter("Text files (*.txt)")
+      filenames = QStringList()
+		
+      if dlg.exec_():
+         filenames = dlg.selectedFiles()
+         f = open(filenames[0], 'r')
+			
+         with f:
+            data = f.read()
+            self.contents.setText(data)
+
+
+"""
+
+def main():
+   app = QApplication(sys.argv)
+   ex = filedialogdemo()
+   ex.show()
+   sys.exit(app.exec())
+	
+if __name__ == '__main__':
+   main()
+"""
 
 
 if __name__ == "__main__":
@@ -229,3 +289,4 @@ if __name__ == "__main__":
 
     # 5. Run your application's event loop
     sys.exit(app.exec())
+
