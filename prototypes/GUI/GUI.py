@@ -89,7 +89,7 @@ class MainWindow(QMainWindow):
         
         #load past session
         self.load_past_img_b = QPushButton("Load Past Session")
-        self.load_past_img_b.clicked.connect(self.getfile)
+        self.load_past_img_b.clicked.connect(self.load_past_img)
         self.layout.addWidget(self.load_past_img_b, 7, 0)
 
 
@@ -102,10 +102,6 @@ class MainWindow(QMainWindow):
         self.layout.addWidget(self.load_past_img_prev_b, 8, 0)
 
    
-        #self.hist_display = MplCanvas(self, width=5, height=4, dpi=100)
-        #self.layout.addWidget(self.hist_display, 0, 2, 7, 3)
-        
-
         #display image from file
         self.size = QSize(56*10, 28*10)
         self.im = QPixmap("default.png")
@@ -143,7 +139,12 @@ class MainWindow(QMainWindow):
         print("I will stop the mat recording session")
  
     def load_past_img(self):
-        print("I will open a file explorer to select a session from disk memory")
+        
+        fname = self.getfile()
+
+        print("fname = ", fname)
+
+        self.label.setPixmap(QPixmap(fname))
 
     def load_past_img_next(self):
         print("I will navigate to next image in folder in chronological order")
@@ -157,13 +158,18 @@ class MainWindow(QMainWindow):
         """
         self.reciever.terminate()
 
+    #opens file selector, allows user to navigate their directories, and returns a string of the full file name
     def getfile(self):
-      fname = QFileDialog.getOpenFileName(self, 'Open file', 
-         #'c:\\',"Image files (*.png)")
-         #Evan's file path
-        'D:\ecdes\Classes\Capstone\ECE406\pressure-mat\prototypes\GUI\sessions',"Image files (*.png)")
-      self.label.setPixmap(QPixmap(fname))
+        #Evan's file path
+        file_path = 'D:\ecdes\Classes\Capstone\ECE406\pressure-mat\prototypes\GUI\sessions'
 
+        #default file path below
+        #file_path = 'c:\\',"Image files (*.png)")
+
+        fname_full = QFileDialog.getOpenFileName(self, 'Open file', file_path,"Image files (*.png)")
+        return fname_full[0]
+      
+    
 class Reciever(QThread):
     """
     Thread which handles communcations to and from the board
@@ -222,61 +228,7 @@ class Reciever(QThread):
                 self.parent.hist_display.draw()
 
 
-"""
-from https://www.tutorialspoint.com/pyqt/pyqt_qfiledialog_widget.htm
-"""
-class filedialogdemo(QWidget):
-   def __init__(self, parent = None):
-      super(filedialogdemo, self).__init__(parent)
-		
-      layout = QVBoxLayout()
-      self.btn = QPushButton("QFileDialog static method demo")
-      self.btn.clicked.connect(self.getfile)
-		
-      layout.addWidget(self.btn)
-      self.le = QLabel("Hello")
-		
-      layout.addWidget(self.le)
-      self.btn1 = QPushButton("QFileDialog object")
-      self.btn1.clicked.connect(self.getfiles)
-      layout.addWidget(self.btn1)
-		
-      self.contents = QTextEdit()
-      layout.addWidget(self.contents)
-      self.setLayout(layout)
-      self.setWindowTitle("File Dialog demo")
-		
-   def getfile(self):
-      fname = QFileDialog.getOpenFileName(self, 'Open file', 
-         'c:\\',"Image files (*.png)")
-      self.le.setPixmap(QPixmap(fname))
 
-   def getfiles(self):
-      dlg = QFileDialog()
-      dlg.setFileMode(QFileDialog.AnyFile)
-      dlg.setFilter("Text files (*.txt)")
-      filenames = QStringList()
-		
-      if dlg.exec_():
-         filenames = dlg.selectedFiles()
-         f = open(filenames[0], 'r')
-			
-         with f:
-            data = f.read()
-            self.contents.setText(data)
-
-
-"""
-
-def main():
-   app = QApplication(sys.argv)
-   ex = filedialogdemo()
-   ex.show()
-   sys.exit(app.exec())
-	
-if __name__ == '__main__':
-   main()
-"""
 
 
 if __name__ == "__main__":
