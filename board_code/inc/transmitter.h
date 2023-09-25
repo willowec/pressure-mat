@@ -1,10 +1,13 @@
-#ifndef TRANSMITTER
-#define TRANSMITTER
+/*
+Header file responsible for communicating via USB serial connection to the connected computer
+*/
+
+#ifndef TRANSMITTER_HEADER
+#define TRANSMITTER_HEADER
 
 #include <stdio.h>
 #include <stdint.h>
 #include "pico/stdlib.h"
-
 
 #define ROW_WIDTH   28
 #define COL_HEIGHT  56
