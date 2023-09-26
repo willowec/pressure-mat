@@ -17,7 +17,10 @@ include_directories("src" "inc")
 add_executable(board_code_main
     src/main.c
     src/transmitter.c
+    src/adc.c
     inc/transmitter.h
+    inc/adc.h
+    
 )
 
 
