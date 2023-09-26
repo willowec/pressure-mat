@@ -28,10 +28,25 @@ void initialize_adc(struct adc_inst *adc)
 
     // setup to configure: clock mode 10 (spi) and ref mode 00 (internal, no wakeup)
     // 01   10  00  dd
-    uint8_t setup_message = 0x60;
+    uint8_t setup_message = 0b01100000;
 
     spi_write_blocking(spi0, &setup_message, 1);
     spi_write_blocking(spi0, &setup_message, 1);
+}
+
+
+void get_adc_values(struct adc_inst* adc, uint8_t *out_vals)
+{
+    // write a conversion request for cahnnels 0 - CHANNELS_PER_ADC
+    uint8_t conv_req = 0b10000000 | (CHANNELS_PER_ADC << 1);
+    adc_write_blocking(adc, &conv_req, 1);
+
+    // wait for EOCbar (end of conversion) to go low, indicating that the operation has finished and data will now be written back
+    // TODO: Change to use interrupts so that both ADC's can do conversions at the same time?
+    while (gpio_get(adc->eoc_pin));
+
+    // read the conversion results
+    adc_read_blocking(adc, 0, out_vals, CHANNELS_PER_ADC);
 }
 
 

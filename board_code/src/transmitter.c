@@ -15,6 +15,7 @@ void initialize_transmitter()
 // definition of send_row
 void transmit_row(uint8_t *row)
 {
+    printf("Writing row. first char: %d\n\r", row[0]);
     fwrite(row, 1, ROW_WIDTH, stdout);
     fflush(stdout);
 }

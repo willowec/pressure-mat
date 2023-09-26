@@ -52,5 +52,4 @@ void adc_write_blocking(struct adc_inst* adc, uint8_t *src, size_t len);
 */
 void adc_read_blocking(struct adc_inst* adc, uint8_t repeated_tx_data, uint8_t *dst, size_t len);
 
-
 #endif
