@@ -158,32 +158,32 @@ class MainWindow(QMainWindow):
         self.label.setPixmap(QPixmap(fname).scaled(self.size))
 
 
-    #input 1 for next file, -1 for previous file. Performs string manipulations 
+    #input 1 for next file, -1 for previous file. Performs string manipulations to update the current image index and file path
     def get_next_img(self, prev_or_next):
 
+        #incerement or decrement the current index by 1
         self.current_img_index = self.current_img_index + prev_or_next
 
         next_index = str(self.current_img_index)
-        print("next_index = ", next_index)
+        #print("next_index = ", next_index)
 
-        #add zeros to index to make it the propper file name
+        #add zeros to next_index to make it the propper file name
         while(len(next_index) < 4):
             next_index = "0" + next_index
-        print("next_index = ", next_index)
+        #print("next_index = ", next_index)
 
+        #remove the previous image's file name, but keep its path, add the next/previous file name
         self.current_img_path = self.current_img_path[:(len(self.current_img_path)-8)] + next_index + ".png"
-        print("current_img_path = ", self.current_img_path)
+        #print("current_img_path = ", self.current_img_path)
 
-
+    #when image navigator is clicked, this updates the image to the file with the next index
     def load_past_img_next(self):
-        
         self.get_next_img(1)
-
         self.label.setPixmap(QPixmap(self.current_img_path).scaled(self.size))
 
+    #when image navigator is clicked, this updates the image to the file with the previous index
     def load_past_img_prev(self):
         self.get_next_img(-1)
-
         self.label.setPixmap(QPixmap(self.current_img_path).scaled(self.size))
 
     def closeEvent(self, event):
