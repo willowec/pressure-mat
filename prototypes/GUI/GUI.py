@@ -138,13 +138,14 @@ class MainWindow(QMainWindow):
     def stop_session(self):
         print("I will stop the mat recording session")
  
+    #opens file selector, saves a selected image, scales it, then displays it
     def load_past_img(self):
         
         fname = self.getfile()
 
         print("fname = ", fname)
 
-        self.label.setPixmap(QPixmap(fname))
+        self.label.setPixmap(QPixmap(fname).scaled(self.size))
 
     def load_past_img_next(self):
         print("I will navigate to next image in folder in chronological order")
@@ -170,6 +171,7 @@ class MainWindow(QMainWindow):
         return fname_full[0]
       
     
+
 class Reciever(QThread):
     """
     Thread which handles communcations to and from the board
