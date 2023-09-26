@@ -1,6 +1,8 @@
 # GUI which displays data from the mat interpreted by the board and transmitted over serial
 import sys, serial
 
+import os.path
+
 import PyQt6
 
 #from PyQt6.QtGui import QPixmap, QImage
@@ -161,20 +163,36 @@ class MainWindow(QMainWindow):
     #input 1 for next file, -1 for previous file. Performs string manipulations to update the current image index and file path
     def get_next_img(self, prev_or_next):
 
-        #incerement or decrement the current index by 1
-        self.current_img_index = self.current_img_index + prev_or_next
+        #check if valid arguement was passed to function
+        if(prev_or_next == 1 or prev_or_next == -1):
 
-        next_index = str(self.current_img_index)
-        #print("next_index = ", next_index)
+            #check if trying to access a negative index file
+            if(self.current_img_index == 0 and prev_or_next == -1):
+                print("there is no image before image 0")
+                return            
 
-        #add zeros to next_index to make it the propper file name
-        while(len(next_index) < 4):
-            next_index = "0" + next_index
-        #print("next_index = ", next_index)
+            next_file_index = self.current_img_index + prev_or_next
+            next_file_name = str(next_file_index)
 
-        #remove the previous image's file name, but keep its path, add the next/previous file name
-        self.current_img_path = self.current_img_path[:(len(self.current_img_path)-8)] + next_index + ".png"
-        #print("current_img_path = ", self.current_img_path)
+            #add zeros to next_index to make it the propper file name
+            while(len(next_file_name) < 4):
+                next_file_name = "0" + next_file_name
+
+            #remove the previous image's file name, but keep its path, add the next/previous file name
+            next_file_path = self.current_img_path[:(len(self.current_img_path)-8)] + next_file_name + ".png"
+
+            #if the next file exists then open it
+            if(os.path.isfile(next_file_path)):
+                self.current_img_index = next_file_index
+                self.current_img_path = next_file_path
+                
+            else:
+                print("next file does not exist")
+                return
+        else:
+            print("invalid arguement passed to get_next_img()")
+            return
+        
 
     #when image navigator is clicked, this updates the image to the file with the next index
     def load_past_img_next(self):
@@ -194,11 +212,8 @@ class MainWindow(QMainWindow):
 
     #opens file selector, allows user to navigate their directories, and returns a string of the full file name
     def getfile(self):
-        #Evan's file path
-        file_path = 'D:\ecdes\Classes\Capstone\ECE406\pressure-mat\prototypes\GUI\sessions'
-
         #default file path below
-        #file_path = 'c:\\',"Image files (*.png)")
+        file_path = ('./')
 
         fname_full = QFileDialog.getOpenFileName(self, 'Open file', file_path,"Image files (*.png)")
         return fname_full[0]
