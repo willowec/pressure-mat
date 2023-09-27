@@ -1,15 +1,12 @@
 # GUI which displays data from the mat interpreted by the board and transmitted over serial
 import sys, serial
 
+import os
 import os.path
 
-import PyQt6
+from datetime import datetime
 
-#from PyQt6.QtGui import QPixmap, QImage
-#from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel, QLineEdit, QGridLayout, QWidget
-#from PyQt6.QtWidgets import QPushButton
-#from PyQt6.QtCore import QThread
-#from PyQt6.QtCore import Qt
+import PyQt6
 
 from PyQt6.QtGui import  *
 from PyQt6.QtWidgets import *
@@ -161,7 +158,7 @@ class MainWindow(QMainWindow):
 
 
     #input 1 for next file, -1 for previous file. Performs string manipulations to update the current image index and file path
-    def get_next_img(self, prev_or_next):
+    def get_next_file(self, prev_or_next):
 
         #check if valid arguement was passed to function
         if(prev_or_next == 1 or prev_or_next == -1):
@@ -196,12 +193,12 @@ class MainWindow(QMainWindow):
 
     #when image navigator is clicked, this updates the image to the file with the next index
     def load_past_img_next(self):
-        self.get_next_img(1)
+        self.get_next_file(1)
         self.label.setPixmap(QPixmap(self.current_img_path).scaled(self.size))
 
     #when image navigator is clicked, this updates the image to the file with the previous index
     def load_past_img_prev(self):
-        self.get_next_img(-1)
+        self.get_next_file(-1)
         self.label.setPixmap(QPixmap(self.current_img_path).scaled(self.size))
 
     def closeEvent(self, event):
@@ -219,6 +216,28 @@ class MainWindow(QMainWindow):
         return fname_full[0]
       
     
+class session():
+
+    def __init__(self):
+
+        now = datetime.now()
+
+        current_time = now.strftime("%m_%d_%y_%H_%M_%S")
+
+        folderName = ("./session/" + current_time)
+        print("folderName =", folderName)
+        
+        os.mkdir(folderName)
+
+        return
+
+    def stop(self):
+        
+        
+
+        return
+
+
 
 class Reciever(QThread):
     """
