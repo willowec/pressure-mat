@@ -21,6 +21,8 @@ main.c file for the dummy MAX11643BEEG ADC
 #define SPI1_TX_PIN     11
 #define SPI1_RX_PIN     12
 #define SPI1_CSN_PIN    13
+#define EOC0_PIN        0
+#define EOC1_PIN        1
 
 #define MODE_SELECT_PIN 28
 
@@ -69,12 +71,12 @@ void print_buffer(uint8_t *buf, size_t len) {
     Function which processes the input data byte which has been sent over SPI
     See page 13 of the datasheet linked in the Readme for details
 */
-void process_input_byte(uint8_t byte, spi_inst_t *spi) {
+void process_input_byte(uint8_t byte, spi_inst_t *spi, uint eoc_pin) {
     printf("ADC recieved: %d\n", byte);
 
     if ((byte >> 7) == 1) {
         // 1XXXXXXX means Conversion register
-        printf("ADC says: conversion register | %d\n", (byte >> 7));
+        printf("ADC says: conversion register | %02x\n", byte);
 
         uint8_t *buf;
 
@@ -88,6 +90,11 @@ void process_input_byte(uint8_t byte, spi_inst_t *spi) {
 
             printf("ADC generated: "); 
             print_buffer(buf, n);
+
+            // Set EOC low for a sec to indicate conversion has finished
+            gpio_put(eoc_pin, 0);
+            sleep_us(10);
+            gpio_put(eoc_pin, 1);
 
             // write the adc values back over SPI
             spi_write_blocking(spi, buf, n);
@@ -180,7 +187,7 @@ void core1_main() {
         spi_read_blocking(spi1, 0, &input_byte, 1);
 
         // handle the input
-        process_input_byte(input_byte, spi1);
+        process_input_byte(input_byte, spi1, EOC1_PIN);
     }
 }
 
@@ -201,6 +208,16 @@ int main () {
         gpio_put(LED_PIN, 1);
     }
 
+    // setup the 'EOC' pins
+    gpio_init(EOC0_PIN);
+    gpio_init(EOC1_PIN);
+    gpio_set_dir(EOC0_PIN, GPIO_OUT);
+    gpio_set_dir(EOC1_PIN, GPIO_OUT);
+
+    // Init them high
+    gpio_put(EOC0_PIN, 1);
+    gpio_put(EOC1_PIN, 1);
+
     // initialize SPI0 as a client
     spi_init(spi0, CLOCK_SPEED);
     spi_set_slave(spi0, true);
@@ -212,7 +229,6 @@ int main () {
     // launch the second core
     multicore_launch_core1(core1_main);
 
-
     uint8_t input_byte;
 
     // main loop
@@ -221,6 +237,6 @@ int main () {
         spi_read_blocking(spi0, 0, &input_byte, 1);
 
         // handle the input
-        process_input_byte(input_byte, spi0);
+        process_input_byte(input_byte, spi0, EOC0_PIN);
     }
 }

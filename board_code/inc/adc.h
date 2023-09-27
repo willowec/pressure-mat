@@ -14,12 +14,15 @@ This code is written assuming that the ADC's are max11643 chips
 #define SPI0_TX_PIN         3
 #define SPI0_RX_PIN         4
 
-#define SPI_CLOCKSPEED      10000000    // 10MHz
+#define SPI_CLOCKSPEED      1000000    // 1MHz
+#define CS_SELECT           0
+#define CS_DESELECT         1
 
 #define ADC1_EOC_PIN        0
 #define ADC2_EOC_PIN        1
 #define ADC1_CS_PIN         6
 #define ADC2_CS_PIN         7
+
 
 
 struct adc_inst {

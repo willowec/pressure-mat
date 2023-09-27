@@ -20,6 +20,16 @@ main.c file for the RP2040 code for the pressure matrix project
 int main() {
     initialize_transmitter();
 
+    // Delay with some LED blinking on startup
+    gpio_init(LED_PIN);
+    gpio_set_dir(LED_PIN, GPIO_OUT);
+    for (int i = 0; i < 5; i++) {
+        sleep_ms(1000);
+        gpio_put(LED_PIN, 0);
+        sleep_ms(1000);
+        gpio_put(LED_PIN, 1);
+    }
+
     uint8_t *mat = (uint8_t *)malloc(MAT_SIZE);
     for (int i=0; i < MAT_SIZE; i++) {
         mat[i] = (i + '0') % (255);
@@ -39,6 +49,10 @@ int main() {
         printf("Reading adc values\n");
         get_adc_values(adc1, row);
         get_adc_values(adc2, row + CHANNELS_PER_ADC);
+        for(int i=0; i < ROW_WIDTH; i++) {
+            printf("%c ", row[i] + '0');
+        }
+        putchar('\n');
 
         transmit_row(row);
     }
