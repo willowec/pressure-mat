@@ -48,8 +48,8 @@ void initialize_adc(struct adc_inst *adc)
 
 void get_adc_values(struct adc_inst* adc, uint8_t *out_vals)
 {
-    // write a conversion request in scan mode 00 for channels 0 - CHANNELS_PER_ADC 
-    uint8_t conv_req = 0b10000000 | (CHANNELS_PER_ADC << 3);
+    // write a conversion request in scan mode 00 for channels 0 -> (CHANNELS_PER_ADC - 1), for CHANNELS_PER_ADC total channels
+    uint8_t conv_req = 0b10000000 | ((CHANNELS_PER_ADC - 1) << 3);
     adc_write_blocking(adc, &conv_req, 1);
 
     // wait for EOCbar (end of conversion) to go low, indicating that the operation has finished and data will now be written back

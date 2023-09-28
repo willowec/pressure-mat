@@ -85,6 +85,7 @@ void process_input_byte(uint8_t byte, spi_inst_t *spi, uint eoc_pin) {
             // scan channels 0 - N (return N generated values)
             size_t n = (((byte) & 0b01111000) >> 3) + 1; // read N from CHSEL3-CHSEL0 in the input data byte
 
+            printf("ADC is generating %d values\n", n);
             buf = (uint8_t *)malloc(n);
             generate_ADC_values(buf, n);
 
