@@ -138,6 +138,9 @@ class MainWindow(QMainWindow):
 
     def start_session(self):
         print("I will start a mat recording session capped at 1 hour")
+        session()
+
+        return
 
     def stop_session(self):
         print("I will stop the mat recording session")
@@ -220,14 +223,16 @@ class session():
 
     def __init__(self):
 
+        #gets current date and time in the format of yy_mm_dd_THH_MM_SS
+        #finds the current working directory then adds a folder named after the current time to /sessions
         now = datetime.now()
+        folderName = now.strftime("%y_%m_%d_T%H_%M_%S")
+        path = os.getcwd() + "\sessions\\" + folderName
+        os.mkdir(path)
+        #print("folderName =", folderName)
+        #print("path =", path)
 
-        current_time = now.strftime("%m_%d_%y_%H_%M_%S")
-
-        folderName = ("./session/" + current_time)
-        print("folderName =", folderName)
         
-        os.mkdir(folderName)
 
         return
 
