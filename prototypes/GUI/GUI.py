@@ -138,12 +138,14 @@ class MainWindow(QMainWindow):
 
     def start_session(self):
         print("I will start a mat recording session capped at 1 hour")
-        session()
+        new_session = session()
+        new_session.run()
 
         return
 
     def stop_session(self):
         print("I will stop the mat recording session")
+        new_session.stop()
  
     #opens file selector, saves a selected image, scales it, then displays it
     def load_past_img(self):
@@ -221,25 +223,39 @@ class MainWindow(QMainWindow):
     
 class session():
 
+    
+
     def __init__(self):
+
+        self.isRunning = True
 
         #gets current date and time in the format of yy_mm_dd_THH_MM_SS
         #finds the current working directory then adds a folder named after the current time to /sessions
         now = datetime.now()
         folderName = now.strftime("%y_%m_%d_T%H_%M_%S")
-        path = os.getcwd() + "\sessions\\" + folderName
+        self.path = os.getcwd() + "\sessions\\" + folderName
         os.mkdir(path)
         #print("folderName =", folderName)
         #print("path =", path)
 
-        
+        return
+
+    def run(self):
+
+        #while(self.isRunning):
+        self.read_mat()
+            #break
 
         return
 
+
     def stop(self):
         
-        
+        self.isRunning = False
 
+        return
+
+    def read_mat(self):
         return
 
 
