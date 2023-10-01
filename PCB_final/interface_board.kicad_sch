@@ -8298,7 +8298,7 @@
     (property "Value" "PicoPinSocketB" (at 264.16 86.36 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Footprint" "" (at 255.27 113.03 0)
+    (property "Footprint" "Connector_PinSocket_2.54mm:PinSocket_1x20_P2.54mm_Vertical" (at 255.27 113.03 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (at 255.27 113.03 0)
