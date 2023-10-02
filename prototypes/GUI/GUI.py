@@ -122,16 +122,26 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(widget)
         self.show()
 
-        # set up the reciever thread
+        # set up the default reciever thread
         self.reciever = Reciever("COM8", 115200, self)
+
 
 
     def connect_board(self):
         """
         Called by the connect button
         """
-        # attempt to start the reciever thread
-        self.reciever.start()
+        
+        # update the reciever thread with the input text box values
+        self.reciever.baud = self.baud_input.text()
+        self.reciever.port = self.port_input.text()
+
+        # attempt to connect to the board
+        self.reciever.connect_to_board()
+
+
+
+        
 
     def calibrate_mat(self):
         print("I will calibrate the board")
@@ -140,6 +150,8 @@ class MainWindow(QMainWindow):
         print("I will start a mat recording session capped at 1 hour")
         new_session = session()
         new_session.run()
+
+        self.reciever.start()
 
         return
 
@@ -274,48 +286,51 @@ class Reciever(QThread):
         self.parent = parent
 
 
+    def connect_to_board(self):
+         # attempt to connect to the board
+        with serial.Serial(self.port, baudrate=self.baud, timeout=10) as self.ser:
+            print(f"Connected to {self.ser.name}")
+
+
     def run(self):
         """
         Overrides the run() function. Called by reciever.start()
         """
-        # attempt to connect to the board
-        with serial.Serial(self.port, baudrate=self.baud, timeout=10) as ser:
-            print(f"Connected to {ser.name}")
+        
+        # history stores the last HIST_LEN grid values
+        self.history = np.zeros((HIST_LEN, 9))
 
-            # history stores the last HIST_LEN grid values
-            self.history = np.zeros((HIST_LEN, 9))
+        # poll incoming messages
+        i = 0
+        while True:
+            m = self.ser.readline().decode('utf-8')
+            print('recieved', m)
+            if m == '':
+                raise serial.SerialTimeoutException("Timed out")
 
-            # poll incoming messages
-            i = 0
-            while True:
-                m = ser.readline().decode('utf-8')
-                print('recieved', m)
-                if m == '':
-                    raise serial.SerialTimeoutException("Timed out")
+            # process the message
+            vals = m.split('|')[:-1]
+            imarray = np.asarray(vals, dtype=np.uint8).reshape(MAT_DIM)
+            print('data\n', imarray)
 
-                # process the message
-                vals = m.split('|')[:-1]
-                imarray = np.asarray(vals, dtype=np.uint8).reshape(MAT_DIM)
-                print('data\n', imarray)
+            im = Image.fromarray(imarray, mode='L')
+            im.save("sensor_data.png")  # Hack. ideally we should not have to save to file
 
-                im = Image.fromarray(imarray, mode='L')
-                im.save("sensor_data.png")  # Hack. ideally we should not have to save to file
+            # update the pixmap
+            self.parent.data_pixmap = QPixmap("sensor_data.png").scaled(100, 100)
+            self.parent.data_display.setPixmap(self.parent.data_pixmap)
+            self.parent.data_text.setText(str(imarray))
 
-                # update the pixmap
-                self.parent.data_pixmap = QPixmap("sensor_data.png").scaled(100, 100)
-                self.parent.data_display.setPixmap(self.parent.data_pixmap)
-                self.parent.data_text.setText(str(imarray))
+            # update the history array and render it
+            self.history = np.roll(self.history, 1, axis=0)
+            self.history[0, :] = imarray.flatten()
+            #print(self.history)
 
-                # update the history array and render it
-                self.history = np.roll(self.history, 1, axis=0)
-                self.history[0, :] = imarray.flatten()
-                #print(self.history)
-
-                # plot it
-                self.parent.hist_display.axes.cla()
-                self.parent.hist_display.axes.set_ylim(bottom=0, top=256, auto=False)
-                self.parent.hist_display.axes.plot(self.history)
-                self.parent.hist_display.draw()
+            # plot it
+            self.parent.hist_display.axes.cla()
+            self.parent.hist_display.axes.set_ylim(bottom=0, top=256, auto=False)
+            self.parent.hist_display.axes.plot(self.history)
+            self.parent.hist_display.draw()
 
 
 
