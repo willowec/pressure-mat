@@ -8398,8 +8398,28 @@
     )
   )
 
-  (gr_rect (start 121.92 68.58) (end 207.081611 161.372196)
+  (gr_rect (start 120.655534 68.58) (end 205.817145 161.372196)
     (stroke (width 0.1) (type default)) (fill none) (layer "Edge.Cuts") (tstamp 7c18d446-8f05-46e2-9512-66311bc6c0b9))
+  (gr_text_box "RPI Pico\ngoes here\n\n:)))"
+    (start 177.8 76.2) (end 190.5 101.6) (layer "F.SilkS") (tstamp 0831a7f3-cae4-4154-b2ed-79a410cde13c)
+      (effects (font (size 1 1) (thickness 0.15)) (justify left top))
+    (stroke (width 0.15) (type solid))  )
+  (gr_text_box "Willow C\nEvan D\nPrototype 1"
+    (start 195.39002 69.547231) (end 206.340001 75.87851) (layer "F.SilkS") (tstamp 547e97f8-a4ad-43dc-9278-03eded519f1c)
+      (effects (font (size 1 1) (thickness 0.15)) (justify left top))
+    (stroke (width 0.15) (type solid))  )
+  (gr_text_box "Row connector\n(56 lines)"
+    (start 124.46 154.94) (end 139.7 160.02) (layer "F.SilkS") (tstamp 610cd573-5398-44c6-b917-1fc3790b7a25)
+      (effects (font (size 1 1) (thickness 0.15)) (justify left top))
+    (stroke (width 0.15) (type solid))  )
+  (gr_text_box "Pressure Matrix Interface Board"
+    (start 122.876473 69.616952) (end 138.116473 74.696952) (layer "F.SilkS") (tstamp c74f165d-eb2c-499d-bad5-9b99e9d93c97)
+      (effects (font (size 1 1) (thickness 0.15)) (justify left top))
+    (stroke (width 0.15) (type solid))  )
+  (gr_text_box "Col connector (28 lines)"
+    (start 182.88 157.48) (end 205.74 160.02) (layer "F.SilkS") (tstamp da1c4dfd-e981-47b8-bab0-2723e242b6bb)
+      (effects (font (size 1 1) (thickness 0.15)) (justify left top))
+    (stroke (width 0.15) (type solid))  )
 
   (segment (start 185.347393 152.557199) (end 185.347393 151.889893) (width 0.25) (layer "F.Cu") (net 1) (tstamp 0d0eafb5-7c30-4f5b-8650-4d28dc4dfed9))
   (segment (start 150.746478 99.569734) (end 150.746478 97.786076) (width 0.25) (layer "F.Cu") (net 1) (tstamp 14ca1cb1-b3b5-4038-8766-d411b8c00fd2))
