@@ -237,8 +237,7 @@ class session():
 
     
 
-    def __init__(self):
-
+    def __init__(reciver: Reciever, self):
         self.isRunning = True
 
         #gets current date and time in the format of yy_mm_dd_THH_MM_SS
@@ -246,6 +245,7 @@ class session():
         now = datetime.now()
         folderName = now.strftime("%y_%m_%d_T%H_%M_%S")
         self.path = os.getcwd() + "\sessions\\" + folderName
+        reciver.path = self.path
         os.mkdir(path)
         #print("folderName =", folderName)
         #print("path =", path)
@@ -255,6 +255,7 @@ class session():
     def run(self):
 
         #while(self.isRunning):
+        
         self.read_mat()
             #break
 
@@ -285,6 +286,7 @@ class Reciever(QThread):
         self.baud = baud
         self.parent = parent
         self.run_sts = False
+        self.path = os.getcwd()
 
 
     def connect_to_board(self):
@@ -309,7 +311,8 @@ class Reciever(QThread):
             self.history = np.zeros((HIST_LEN, 9))
 
             # poll incoming messages
-            i = 0
+            img_index = 0
+            img_name = "0000"
             while True:
                 m = self.ser.readline().decode('utf-8')
                 print('recieved', m)
@@ -323,11 +326,25 @@ class Reciever(QThread):
                 imarray = np.asarray(vals, dtype=np.uint8).reshape(MAT_DIM)
                 print('data\n', imarray)
 
+                #add zeros to next_index and .png to make it the propper file name
+                while(len(next_file_name) < 4):
+                    img_name = "0" + img_name
+                img_name += ".png"
+                
                 im = Image.fromarray(imarray, mode='L')
-                im.save("sensor_data.png")  # Hack. ideally we should not have to save to file
+                im.save(img_name)  # Hack. ideally we should not have to save to file
+
+                #increase image index
+                img_index +=1
+                img_name = str(img_index)
+
+                
+                """
+                #Don't think this is necesessary right now 
+
 
                 # update the pixmap
-                self.parent.data_pixmap = QPixmap("sensor_data.png").scaled(100, 100)
+                self.parent.data_pixmap = QPixmap("sensor_data.png").scaled(10, 10)
                 self.parent.data_display.setPixmap(self.parent.data_pixmap)
                 self.parent.data_text.setText(str(imarray))
 
@@ -341,6 +358,8 @@ class Reciever(QThread):
                 self.parent.hist_display.axes.set_ylim(bottom=0, top=256, auto=False)
                 self.parent.hist_display.axes.plot(self.history)
                 self.parent.hist_display.draw()
+
+                """
 
         else:
             print("Currently running, cannot start a new session. Please stop current session to start a new one.")
