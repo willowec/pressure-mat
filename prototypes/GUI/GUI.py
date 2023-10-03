@@ -122,16 +122,26 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(widget)
         self.show()
 
-        # set up the reciever thread
+        # set up the default reciever thread
         self.reciever = Reciever("COM8", 115200, self)
+
 
 
     def connect_board(self):
         """
         Called by the connect button
         """
-        # attempt to start the reciever thread
-        self.reciever.start()
+        
+        # update the reciever thread with the input text box values
+        self.reciever.baud = self.baud_input.text()
+        self.reciever.port = self.port_input.text()
+
+        # attempt to connect to the board
+        self.reciever.connect_to_board()
+
+
+
+        
 
     def calibrate_mat(self):
         print("I will calibrate the board")
@@ -140,6 +150,8 @@ class MainWindow(QMainWindow):
         print("I will start a mat recording session capped at 1 hour")
         new_session = session()
         new_session.run()
+
+        self.reciever.start()
 
         return
 
@@ -225,8 +237,7 @@ class session():
 
     
 
-    def __init__(self):
-
+    def __init__(reciver: Reciever, self):
         self.isRunning = True
 
         #gets current date and time in the format of yy_mm_dd_THH_MM_SS
@@ -234,6 +245,7 @@ class session():
         now = datetime.now()
         folderName = now.strftime("%y_%m_%d_T%H_%M_%S")
         self.path = os.getcwd() + "\sessions\\" + folderName
+        reciver.path = self.path
         os.mkdir(path)
         #print("folderName =", folderName)
         #print("path =", path)
@@ -243,6 +255,7 @@ class session():
     def run(self):
 
         #while(self.isRunning):
+        
         self.read_mat()
             #break
 
@@ -272,37 +285,66 @@ class Reciever(QThread):
         self.port = port
         self.baud = baud
         self.parent = parent
+        self.run_sts = False
+        self.path = os.getcwd()
+
+
+    def connect_to_board(self):
+        try:
+            if(self.run_sts == False):
+                # attempt to connect to the board
+                with serial.Serial(self.port, baudrate=self.baud, timeout=10) as self.ser:
+                    print(f"Connected to {self.ser.name}")
+            else:
+                print("Currently running, cannot connect to a new board. Please stop current session to connect to a new board.")
+        except:
+            print("Cannot connect to board. Please check entered port and baud rate.")
 
 
     def run(self):
         """
         Overrides the run() function. Called by reciever.start()
         """
-        # attempt to connect to the board
-        with serial.Serial(self.port, baudrate=self.baud, timeout=10) as ser:
-            print(f"Connected to {ser.name}")
-
+        if(self.run_sts == False):
+            self.run_sts = True
             # history stores the last HIST_LEN grid values
             self.history = np.zeros((HIST_LEN, 9))
 
             # poll incoming messages
-            i = 0
+            img_index = 0
+            img_name = "0000"
             while True:
-                m = ser.readline().decode('utf-8')
+                m = self.ser.readline().decode('utf-8')
                 print('recieved', m)
                 if m == '':
+                    self.run_sts = False
                     raise serial.SerialTimeoutException("Timed out")
+                    
 
                 # process the message
                 vals = m.split('|')[:-1]
                 imarray = np.asarray(vals, dtype=np.uint8).reshape(MAT_DIM)
                 print('data\n', imarray)
 
+                #add zeros to next_index and .png to make it the propper file name
+                while(len(next_file_name) < 4):
+                    img_name = "0" + img_name
+                img_name += ".png"
+                
                 im = Image.fromarray(imarray, mode='L')
-                im.save("sensor_data.png")  # Hack. ideally we should not have to save to file
+                im.save(img_name)  # Hack. ideally we should not have to save to file
+
+                #increase image index
+                img_index +=1
+                img_name = str(img_index)
+
+                
+                """
+                #Don't think this is necesessary right now 
+
 
                 # update the pixmap
-                self.parent.data_pixmap = QPixmap("sensor_data.png").scaled(100, 100)
+                self.parent.data_pixmap = QPixmap("sensor_data.png").scaled(10, 10)
                 self.parent.data_display.setPixmap(self.parent.data_pixmap)
                 self.parent.data_text.setText(str(imarray))
 
@@ -317,6 +359,10 @@ class Reciever(QThread):
                 self.parent.hist_display.axes.plot(self.history)
                 self.parent.hist_display.draw()
 
+                """
+
+        else:
+            print("Currently running, cannot start a new session. Please stop current session to start a new one.")
 
 
 
