@@ -18,9 +18,10 @@ add_executable(board_code_main
     src/main.c
     src/transmitter.c
     src/adc.c
+    src/matterface.c
     inc/transmitter.h
     inc/adc.h
-    
+    inc/matterface.h 
 )
 
 

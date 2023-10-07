@@ -39,9 +39,9 @@ void initialize_adc(struct adc_inst *adc)
     gpio_init(adc->eoc_pin);
     gpio_set_dir(adc->eoc_pin, GPIO_IN);
 
-    // setup to configure: clock mode 10 (spi) and ref mode 00 (internal, no wakeup)
-    // 01   10  00  dd
-    uint8_t setup_message = 0b01100000;
+    // setup to configure: clock mode 10 (spi) and ref mode 10 (external)
+    // 01   10  10  dd
+    uint8_t setup_message = 0b01101000;
     adc_write_blocking(adc, &setup_message, 1);
 }
 
@@ -54,9 +54,11 @@ void get_adc_values(struct adc_inst* adc, uint8_t *out_vals)
 
     // wait for EOCbar (end of conversion) to go low, indicating that the operation has finished and data will now be written back
     // TODO: Change to use interrupts so that both ADC's can do conversions at the same time?
-    printf("Value of eoc pin before: %d\n", gpio_get(adc->eoc_pin));
-    while (gpio_get(adc->eoc_pin));
-    printf("Value of eoc pin after: %d\n", gpio_get(adc->eoc_pin));
+    uint32_t i = 0;
+    while (gpio_get(adc->eoc_pin))
+        i ++;
+    
+    printf("Waited for EOC for %d cycles\n", i);
 
     // read the conversion results
     adc_read_blocking(adc, 0, out_vals, CHANNELS_PER_ADC);

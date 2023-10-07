@@ -7,11 +7,10 @@ Header file responsible for communicating via USB serial connection to the conne
 
 #include <stdio.h>
 #include <stdint.h>
+#include "matterface.h"
 #include "pico/stdlib.h"
 
-#define ROW_WIDTH   28
-#define COL_HEIGHT  56
-#define MAT_SIZE    1568
+
 
 
 /*

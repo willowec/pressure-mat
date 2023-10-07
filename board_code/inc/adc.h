@@ -6,6 +6,7 @@ This code is written assuming that the ADC's are max11643 chips
 #define ADC_HEADER
 
 #include <stdint.h>
+#include "matterface.h"
 #include "hardware/spi.h"
 
 #define CHANNELS_PER_ADC    14  // 14 pins of the adc's each are connected to the mat
@@ -14,7 +15,7 @@ This code is written assuming that the ADC's are max11643 chips
 #define SPI0_TX_PIN         3
 #define SPI0_RX_PIN         4
 
-#define SPI_CLOCKSPEED      1000000    // 1MHz
+#define SPI_CLOCKSPEED      1000000 // 1MHz        //10000    // 10kHz
 #define CS_SELECT           0
 #define CS_DESELECT         1
 
