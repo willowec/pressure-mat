@@ -7,6 +7,8 @@ registers and ADC's to read the mat in partial or in full
 #define MATTERAFCE
 
 #include <stdint.h>
+#include "adc.h"
+
 
 #define ROW_WIDTH       28
 #define COL_HEIGHT      56
@@ -40,6 +42,11 @@ void clear_shreg();
 reads the entire mat and writes it to the char array 'mat'
 'mat' should be of length MAT_SIZE
 */
-void read_mat(uint8_t *mat);
+void read_mat(uint8_t *mat, struct adc_inst *adc1, struct adc_inst *adc2);
+
+/*
+for debugging purposes: prints the mat in a human readable format
+*/
+void prettyprint_mat(uint8_t *mat);
 
 #endif

@@ -6,7 +6,6 @@ This code is written assuming that the ADC's are max11643 chips
 #define ADC_HEADER
 
 #include <stdint.h>
-#include "matterface.h"
 #include "hardware/spi.h"
 
 #define CHANNELS_PER_ADC    14  // 14 pins of the adc's each are connected to the mat
@@ -23,7 +22,6 @@ This code is written assuming that the ADC's are max11643 chips
 #define ADC2_EOC_PIN        1
 #define ADC1_CS_PIN         6
 #define ADC2_CS_PIN         7
-
 
 
 struct adc_inst {

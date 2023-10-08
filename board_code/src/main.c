@@ -50,6 +50,10 @@ int main() {
         printf("Send a character to continue...");
         getchar();  // wait for user input
 
+        printf("Reading mat...\n");
+        read_mat(mat, adc1, adc2);
+        prettyprint_mat(mat);
+        /*
         // read from both adc's
         printf("Reading adc values\n");
         get_adc_values(adc1, row);
@@ -62,6 +66,7 @@ int main() {
             printf("%02x, ", row[i]);
         }
         printf("\b\b \n"); // delete trailing comma and add nwline
+        */
     }
 
     free(mat);
