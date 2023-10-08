@@ -58,6 +58,8 @@ void read_mat(uint8_t *mat, struct adc_inst *adc1, struct adc_inst *adc2)
     shift_shreg(1);
 
     for (i = 0; i < COL_HEIGHT; i++) {
+        sleep_ms(4);    // to meet spec, needs to take under (250ms / 56rows = 4.464ms per row)
+
         // read from both adcs
         get_adc_values(adc1, mat + (i * ROW_WIDTH));
         get_adc_values(adc2, mat + (i * ROW_WIDTH) + CHANNELS_PER_ADC);

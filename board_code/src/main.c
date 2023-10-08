@@ -46,6 +46,22 @@ int main() {
     // initialize the shift registers
     initialize_shreg_pins();
 
+    // discard the enteire first read of the mat simply because I do not trust it
+    read_mat(mat, adc1, adc2);
+
+    sleep_ms(1000);
+    
+    printf("Reading mat...\n");
+    read_mat(mat, adc1, adc2);
+    prettyprint_mat(mat);
+
+    sleep_ms(5000);
+
+    printf("Reading mat...\n");
+    read_mat(mat, adc1, adc2);
+    prettyprint_mat(mat);
+
+    return 0;
     while (1) {
         printf("Send a character to continue...");
         getchar();  // wait for user input
@@ -53,22 +69,11 @@ int main() {
         printf("Reading mat...\n");
         read_mat(mat, adc1, adc2);
         prettyprint_mat(mat);
-        /*
-        // read from both adc's
-        printf("Reading adc values\n");
-        get_adc_values(adc1, row);
-        printf("Have read ADC1\n");
-        sleep_ms(100);
-        get_adc_values(adc2, row + CHANNELS_PER_ADC);
-        printf("Have read ADC2\n");
-        sleep_ms(100);
-        for(int i=0; i < ROW_WIDTH; i++) {
-            printf("%02x, ", row[i]);
-        }
-        printf("\b\b \n"); // delete trailing comma and add nwline
-        */
+
     }
 
     free(mat);
     free(row);
+
+    return 1;   // should never exit
 }
