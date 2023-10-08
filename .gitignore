@@ -2,5 +2,6 @@
 *auto_saved_files*
 *-backups
 *.lck
+.vscode
 fp-info-cache
 build
