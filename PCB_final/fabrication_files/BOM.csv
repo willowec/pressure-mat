@@ -1,0 +1,13 @@
+"Id";"Designator";"Footprint";"Quantity";"Designation";"Supplier and ref";
+1;"C8,C14,C10,C2,C17,C4,C12,C6";"C_0603_1608Metric";8;"0.1uF";;;
+2;"D35,D36,D2,D54,D18,D45,D25,D15,D11,D31,D55,D10,D30,D43,D56,D19,D9,D8,D44,D42,D32,D5,D28,D47,D6,D14,D21,D34,D52,D53,D3,D22,D17,D4,D40,D46,D29,D26,D48,D41,D49,D12,D37,D38,D23,D20,D7,D39,D51,D13,D27,D16,D33,D50,D24,D1";"D_SOD-123";56;"MMSD4148";;;
+3;"R3,R13,R18,R27,R20,R25,R9,R26,R24,R11,R4,R14,R28,R2,R21,R10,R12,R5,R7,R17,R16,R23,R1,R8,R19,R15,R29,R22,R6";"R_0603_1608Metric";29;"100k";;;
+4;"C9,C7,C5,C3,C11,C13,C1";"C_0603_1608Metric";7;"1uF";;;
+5;"U2,U6,U3,U7,U4,U1,U5";"DIP-16_W7.62mm";7;"74HC595";;;
+6;"J5";"PinSocket_1x20_P2.54mm_Vertical";1;"PicoPinSocketB";;;
+7;"C16,C15";"C_0603_1608Metric";2;".1uF";;;
+8;"J1";"PinHeader_2x30_P2.54mm_Vertical";1;"02x30_Shift_Register_Connector";;;
+9;"U9,U8";"SSOP-24_3.9x8.7mm_P0.635mm";2;"MAX11643EEG";;;
+10;"J2";"PinHeader_2x30_P2.54mm_Vertical";1;"02x30_ADC_Connector";;;
+11;"U10";"SOT-23-5";1;"LM321";;;
+12;"J6";"PinSocket_1x20_P2.54mm_Vertical";1;"PicoPinSocketA";;;
