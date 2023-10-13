@@ -231,11 +231,10 @@ class MainWindow(QMainWindow):
 
         fname_full = QFileDialog.getOpenFileName(self, 'Open file', file_path,"Image files (*.png)")
         return fname_full[0]
+    
       
     
 class session():
-
-    
 
     def __init__(reciver: Reciever, self):
         self.isRunning = True
@@ -251,6 +250,7 @@ class session():
         #print("path =", path)
 
         return
+
 
     def run(self):
 
