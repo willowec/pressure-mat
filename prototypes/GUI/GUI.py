@@ -236,7 +236,7 @@ class MainWindow(QMainWindow):
     
 class session():
 
-    def __init__(reciver: Reciever, self):
+    def __init__(reciver, self):
         self.isRunning = True
 
         #gets current date and time in the format of yy_mm_dd_THH_MM_SS
