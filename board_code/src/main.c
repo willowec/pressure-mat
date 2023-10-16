@@ -46,10 +46,29 @@ int main() {
     // initialize the shift registers
     initialize_shreg_pins();
 
+    // wait until the start reading command is issued
+	char input_string[256];
+	uint32_t input_pointer,ch;
+    while(1) {
+        input_pointer = 0;
+        while(1) {
+            ch=getchar();
+            if ((ch=='\n') || (ch=='\r')) {
+                input_string[input_pointer]=0;
+                break;
+            }
+			input_string[input_pointer]=ch;
+			input_pointer++;
+        }
+        if (parse_input(input_string)) {
+            gpio_put(LED_PIN, 0);
+            break;    
+        }
+    }
+
     while (1) {
         sleep_ms(1000);
 
-        printf("Reading mat...\n");
         read_mat(mat, adc1, adc2);
         transmit_mat(mat);
         //prettyprint_mat(mat);
