@@ -10,6 +10,8 @@ import os, time
 import serial
 import serial.tools.list_ports
 
+import numpy as np
+
 ROW_WIDTH = 28
 COL_HEIGHT = 56
 MAT_SIZE = 1568
@@ -77,8 +79,11 @@ class SessionWorker(QObject):
             ser.write((START_READING_COMMAND + '\n').encode('utf-8'))
             self.polling = True
             while self.polling:
+                # The board sends exactly MAT_SIZE bytes of data in chunks to represent one read of the mat
                 m = ser.read(MAT_SIZE)
-                print(m)
+                mat_array = np.frombuffer(m, dtype=np.uint8).reshape((COL_HEIGHT, ROW_WIDTH))
+                print(mat_array)
+                # TODO: Convert to image
 
 
     def stop(self):
@@ -86,10 +91,6 @@ class SessionWorker(QObject):
 
         self.polling = False
         self.finished.emit()
-
-
-    def read_mat(self):
-        pass
 
 
     def __str__(self):
