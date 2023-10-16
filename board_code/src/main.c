@@ -46,29 +46,13 @@ int main() {
     // initialize the shift registers
     initialize_shreg_pins();
 
-    // discard the enteire first read of the mat simply because I do not trust it
-    read_mat(mat, adc1, adc2);
-
-    sleep_ms(1000);
-    
-    printf("Reading mat...\n");
-    read_mat(mat, adc1, adc2);
-    prettyprint_mat(mat);
-
-    sleep_ms(5000);
-
-    printf("Reading mat...\n");
-    read_mat(mat, adc1, adc2);
-    prettyprint_mat(mat);
-
-    return 0;
     while (1) {
-        printf("Send a character to continue...");
-        getchar();  // wait for user input
+        sleep_ms(1000);
 
         printf("Reading mat...\n");
         read_mat(mat, adc1, adc2);
-        prettyprint_mat(mat);
+        transmit_mat(mat);
+        //prettyprint_mat(mat);
 
     }
 

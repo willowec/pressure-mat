@@ -5,8 +5,14 @@ Module responsible for communicating directly with the mat interface board
 from PyQt6.QtCore import QObject, pyqtSignal
 
 from datetime import datetime
-import os, serial, time
+import os, time
 
+import serial
+import serial.tools.list_ports
+
+ROW_WIDTH = 28
+COL_HEIGHT = 56
+MAT_SIZE = 1568
 
     
 class SessionWorker(QObject):
@@ -24,6 +30,7 @@ class SessionWorker(QObject):
         self.path = self.setup()
         self.port = port
         self.baud = int(baud)
+        self.polling = False
 
 
     def setup(self):
@@ -55,35 +62,25 @@ class SessionWorker(QObject):
         # attempt to connect to the board over serial, exit if unable
         print('run.')
 
-        try:
-            with serial.Serial(self.port, baudrate=self.baud, timeout=10) as ser:
-                print(ser)
-        except serial.SerialException as e:
-            print(f"Failed to connect board to session: {e}")
-
-        self.stop()
-
-
-        """
-        # open a serial port connection
-        ser = QSerialPort(self.port)
-        ser.setBaudRate(int(self.baud))
-        opened = ser.open(QIODeviceBase.OpenModeFlag.ReadWrite)
-        print(opened)
-
-        print(ser)
-
-
-        # close the serial port connection
-        ser.close()
+        # exit if the port does not exist
+        ports = [tuple(p)[0] for p in list(serial.tools.list_ports.comports())]
+        if self.port not in ports:
+            print("Port does not exist")
+            self.stop()
+            return
         
+        print("opening serial")
+        with serial.Serial(self.port, baudrate=self.baud, timeout=10) as ser:
+            self.polling = True
+            while self.polling:
+                m = ser.read(MAT_SIZE)
+                print(m)
 
-        self.stop()
-        """
 
     def stop(self):
         print('stopping')
 
+        self.polling = False
         self.finished.emit()
 
 
