@@ -58,6 +58,8 @@ void get_adc_values(struct adc_inst* adc, uint8_t *out_vals)
     while (gpio_get(adc->eoc_pin))
         i ++;
     
+    //printf("Waited %d cycles for EOC\n", i);
+
     // read the conversion results
     adc_read_blocking(adc, 0, out_vals, CHANNELS_PER_ADC);
 }

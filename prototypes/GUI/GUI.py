@@ -6,6 +6,8 @@ from PyQt6.QtGui import  *
 from PyQt6.QtWidgets import *
 from PyQt6.QtCore import *
 
+from pathlib import Path
+
 import matplotlib
 from matplotlib import pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
@@ -29,7 +31,7 @@ class MainWindow(QMainWindow):
         self.layout = QGridLayout()
         
         #com port input box
-        self.port_input = QLineEdit("COM8", self)
+        self.port_input = QLineEdit("COM4", self)
         self.layout.addWidget(QLabel("Port:", self), 1, 0)
         self.layout.addWidget(self.port_input, 2, 0)
 
@@ -114,11 +116,16 @@ class MainWindow(QMainWindow):
         self.session_status.setText("Session running")
 
         self.stop_session_b.setEnabled(True)
+
+        # connect useful signals
         self.session_thread.finished.connect(
             lambda: self.stop_session_b.setEnabled(False)
         )
         self.session_thread.finished.connect(
             lambda: self.session_status.setText("Session stopped")
+        )
+        self.session.imageSaved.connect(
+            self.load_img
         )
 
 
@@ -128,21 +135,28 @@ class MainWindow(QMainWindow):
             self.session.stop()
  
 
+    def load_img(self, im_path):
+        """
+        Loads the image at im_path and puts it on the image label for viewing
+        """
+        # find the relative path of the image (sessions/sessionname/xxxx.png), i.e. the last three elements of the path
+        self.current_img_path = Path('').joinpath(*Path(im_path).parts[-3:])
+
+        # get just the number from the filename
+        self.current_img_index = int(self.current_img_path.stem)
+
+        # update the pixmap with the new image
+        self.label.setPixmap(QPixmap(im_path).scaled(self.size))
+
+
     def load_past_img(self):
         """
         opens file selector, saves a selected image, scales it, then displays it
         """
-        
         fname = self.getfile()
         print("fname = ", fname)
 
-        self.current_img_path = fname[(len(fname)-37):]
-        #print("current_img_path = ", current_img_path)
-
-        self.current_img_index = int(fname[(len(fname)-8):(len(fname)-4)])
-        #print("current_img_index = ", current_img_index)
-
-        self.label.setPixmap(QPixmap(fname).scaled(self.size))
+        self.load_img(im_path=fname)
 
 
     def get_next_file(self, prev_or_next):

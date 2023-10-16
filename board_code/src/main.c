@@ -69,7 +69,13 @@ int main() {
     while (1) {
         sleep_ms(1000);
 
+        // indicate read is occuring by flashing led
+        gpio_put(LED_PIN, 1);
         read_mat(mat, adc1, adc2);
+        sleep_ms(100);
+        gpio_put(LED_PIN, 0);
+        //prettyprint_mat(mat);
+        sleep_ms(100);
         transmit_mat(mat);
     }
 

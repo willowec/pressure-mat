@@ -7,10 +7,14 @@ from PyQt6.QtCore import QObject, pyqtSignal
 from datetime import datetime
 import os, time
 
+from pathlib import Path
+
 import serial
 import serial.tools.list_ports
 
 import numpy as np
+from PIL import Image
+
 
 ROW_WIDTH = 28
 COL_HEIGHT = 56
@@ -27,6 +31,9 @@ class SessionWorker(QObject):
 
     # a signal which is emitted to indicate that the session is complete and the thread should be cleaned up
     finished = pyqtSignal()
+
+    # a signal which indicates an image has been saved at the path in the signal
+    imageSaved = pyqtSignal(str)
 
     def __init__(self, port: int, baud: int):
         super(SessionWorker, self).__init__()
@@ -81,9 +88,13 @@ class SessionWorker(QObject):
             while self.polling:
                 # The board sends exactly MAT_SIZE bytes of data in chunks to represent one read of the mat
                 m = ser.read(MAT_SIZE)
-                mat_array = np.frombuffer(m, dtype=np.uint8).reshape((COL_HEIGHT, ROW_WIDTH))
-                print(mat_array)
-                # TODO: Convert to image
+
+                # skip if the result of a timeout
+                if m == b'':
+                    continue
+
+                mat_array = np.frombuffer(m, dtype=np.uint8).reshape((ROW_WIDTH, COL_HEIGHT))
+                self.save_image(mat_array)
 
 
     def stop(self):
@@ -91,6 +102,26 @@ class SessionWorker(QObject):
 
         self.polling = False
         self.finished.emit()
+
+
+    def save_image(self, im_array: np.ndarray):
+        """
+        Saves a numpy array to an image in the session folder
+        returns: filepath of the saved image
+        """
+        # create the image's filename
+        im_num = len(list(Path(self.path).glob('*')))
+        im_path = Path(self.path).joinpath(f"{im_num:05d}.png")
+
+        # convert the np array to a greyscale image and save it
+        im = Image.fromarray(im_array, mode='L')
+        print(f"saving image to {im_path}")
+        im.save(im_path)
+
+        # indicate that an image has been saved
+        self.imageSaved.emit(str(im_path))
+
+        return im_path
 
 
     def __str__(self):

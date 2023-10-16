@@ -39,9 +39,9 @@ void shift_shreg(int inval)
 void clear_shreg()
 {
     // flicker the clear pin
-    gpio_put(SH_CLR_PIN, 1);
-    sleep_us(SHREG_GPIO_SLEEP_US);
     gpio_put(SH_CLR_PIN, 0);
+    sleep_us(SHREG_GPIO_SLEEP_US);
+    gpio_put(SH_CLR_PIN, 1);
 }
 
 void read_mat(uint8_t *mat, struct adc_inst *adc1, struct adc_inst *adc2)
