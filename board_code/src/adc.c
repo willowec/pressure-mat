@@ -39,9 +39,9 @@ void initialize_adc(struct adc_inst *adc)
     gpio_init(adc->eoc_pin);
     gpio_set_dir(adc->eoc_pin, GPIO_IN);
 
-    // setup to configure: clock mode 10 (spi) and ref mode 10 (external)
-    // 01   10  10  dd
-    uint8_t setup_message = 0b01101000;
+    // setup to configure: clock mode 10 (spi) and ref mode 01 (external)
+    // 01   10  01  dd
+    uint8_t setup_message = 0b01100100;
     adc_write_blocking(adc, &setup_message, 1);
 }
 

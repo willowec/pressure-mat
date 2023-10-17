@@ -32,11 +32,6 @@ int main() {
     }
 
     uint8_t *mat = (uint8_t *)malloc(MAT_SIZE);
-    for (int i=0; i < MAT_SIZE; i++) {
-        mat[i] = (i + '0') % (255);
-    }
-
-    uint8_t *row = (uint8_t *)calloc(ROW_WIDTH, 1);
 
     // initialize the adcs
     struct adc_inst *adc1 = malloc(sizeof(struct adc_inst));
@@ -47,8 +42,9 @@ int main() {
     initialize_shreg_pins();
 
     // wait until the start reading command is issued
+    /*
 	char input_string[256];
-	uint32_t input_pointer,ch;
+	uint32_t input_pointer, ch;
     while(1) {
         input_pointer = 0;
         while(1) {
@@ -65,7 +61,7 @@ int main() {
             break;    
         }
     }
-
+    */
     while (1) {
         sleep_ms(1000);
 
@@ -74,13 +70,12 @@ int main() {
         read_mat(mat, adc1, adc2);
         sleep_ms(100);
         gpio_put(LED_PIN, 0);
-        //prettyprint_mat(mat);
+        prettyprint_mat(mat);
         sleep_ms(100);
-        transmit_mat(mat);
+        //transmit_mat(mat);
     }
 
     free(mat);
-    free(row);
 
     return 1;   // should never exit
 }
