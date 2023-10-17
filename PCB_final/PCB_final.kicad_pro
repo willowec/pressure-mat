@@ -496,6 +496,10 @@
     [
       "e0559890-1aa0-4336-9a3e-110d23fe279d",
       "Interface Board"
+    ],
+    [
+      "4a059b75-7de0-4eb9-8588-5d4fb226c6d3",
+      "Power Supply Filter"
     ]
   ],
   "text_variables": {}

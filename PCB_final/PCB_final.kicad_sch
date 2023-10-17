@@ -13,6 +13,23 @@
   )
 
 
+  (sheet (at 110.49 60.96) (size 39.37 33.02) (fields_autoplaced)
+    (stroke (width 0.1524) (type solid))
+    (fill (color 0 0 0 0.0000))
+    (uuid 4a059b75-7de0-4eb9-8588-5d4fb226c6d3)
+    (property "Sheetname" "Power Supply Filter" (at 110.49 60.2484 0)
+      (effects (font (size 1.27 1.27)) (justify left bottom))
+    )
+    (property "Sheetfile" "powerSupplyFilter.kicad_sch" (at 110.49 94.5646 0)
+      (effects (font (size 1.27 1.27)) (justify left top))
+    )
+    (instances
+      (project "PCB_final"
+        (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7" (page "3"))
+      )
+    )
+  )
+
   (sheet (at 30.48 57.15) (size 52.07 38.1) (fields_autoplaced)
     (stroke (width 0.1524) (type solid))
     (fill (color 0 0 0 0.0000))
