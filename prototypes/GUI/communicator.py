@@ -93,8 +93,18 @@ class SessionWorker(QObject):
                 if m == b'':
                     continue
 
-                mat_array = np.frombuffer(m, dtype=np.uint8).reshape((ROW_WIDTH, COL_HEIGHT))
-                self.save_image(mat_array)
+                line = ""
+                
+                print('mat')
+                for i, b in enumerate(m):
+                    if i % ROW_WIDTH == 0 and i > 0:
+                        print(line)
+                        line = ""
+                    line += f"{b:03} "
+                print(line)
+
+                # convert the buffer to an image and save it
+                self.save_image(m)
 
 
     def stop(self):
@@ -104,11 +114,16 @@ class SessionWorker(QObject):
         self.finished.emit()
 
 
-    def save_image(self, im_array: np.ndarray):
+    def save_image(self, buffer):
         """
-        Saves a numpy array to an image in the session folder
+        Converts a buffer to an image and saves it in the session folder
         returns: filepath of the saved image
         """
+        im_array = np.frombuffer(buffer, dtype=np.uint8).reshape((COL_HEIGHT, ROW_WIDTH))
+
+
+        print(im_array)
+
         # create the image's filename
         im_num = len(list(Path(self.path).glob('*')))
         im_path = Path(self.path).joinpath(f"{im_num:05d}.png")
