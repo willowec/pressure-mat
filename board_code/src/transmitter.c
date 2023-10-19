@@ -39,7 +39,11 @@ void transmit_row(uint8_t *row)
 // definition of send_mat
 void transmit_mat(uint8_t *mat)
 {
-    fwrite(mat, 1, MAT_SIZE, stdout);
-    fflush(stdout);
+    // transmit the data over serial in hexadecimal format
+    int i;
+    for (i = 0; i < MAT_SIZE; i++) {
+        printf("%02x", mat[i]);
+    }
+    putchar('\n');
 }
 

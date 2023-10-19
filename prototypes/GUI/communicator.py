@@ -86,25 +86,22 @@ class SessionWorker(QObject):
             ser.write((START_READING_COMMAND + '\n').encode('utf-8'))
             self.polling = True
             while self.polling:
-                # The board sends exactly MAT_SIZE bytes of data in chunks to represent one read of the mat
-                m = ser.read(MAT_SIZE)
+                # mat data is transmitted as a string in hexadecimal format
+                m = ser.readline()
 
                 # skip if the result of a timeout
                 if m == b'':
                     continue
 
-                line = ""
-                
-                print('mat')
-                for i, b in enumerate(m):
-                    if i % ROW_WIDTH == 0 and i > 0:
-                        print(line)
-                        line = ""
-                    line += f"{b:03} "
-                print(line)
+                # trim off the \n\r
+                m = str(m.decode('utf-8')[:-2])
 
-                # convert the buffer to an image and save it
-                self.save_image(m)
+                # get the mat as a flat list
+                flat_mat = self.hex_string_to_array(m)
+                print(flat_mat)
+
+                # convert the list to an image and save it
+                self.save_image(flat_mat)
 
 
     def stop(self):
@@ -114,14 +111,12 @@ class SessionWorker(QObject):
         self.finished.emit()
 
 
-    def save_image(self, buffer):
+    def save_image(self, flat_mat):
         """
         Converts a buffer to an image and saves it in the session folder
         returns: filepath of the saved image
         """
-        im_array = np.frombuffer(buffer, dtype=np.uint8).reshape((COL_HEIGHT, ROW_WIDTH))
-
-
+        im_array = np.asarray(flat_mat, dtype=int).reshape((COL_HEIGHT, ROW_WIDTH))
         print(im_array)
 
         # create the image's filename
@@ -137,6 +132,19 @@ class SessionWorker(QObject):
         self.imageSaved.emit(str(im_path))
 
         return im_path
+
+
+    def hex_string_to_array(self, hex_string):
+        """
+        Converts a string of 02x hexadecimal numbers to an array
+        """
+        numbers = []
+        for i in range(0, len(hex_string), 2):
+            x = hex_string[i: i+1]
+            numbers.append(int(x, 16))
+        
+        return numbers
+
 
 
     def __str__(self):
