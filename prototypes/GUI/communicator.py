@@ -116,7 +116,7 @@ class SessionWorker(QObject):
         Converts a buffer to an image and saves it in the session folder
         returns: filepath of the saved image
         """
-        im_array = np.asarray(flat_mat, dtype=int).reshape((COL_HEIGHT, ROW_WIDTH))
+        im_array = np.asarray(flat_mat, dtype=int).reshape((ROW_WIDTH, COL_HEIGHT))
         print(im_array)
 
         # create the image's filename
@@ -140,7 +140,7 @@ class SessionWorker(QObject):
         """
         numbers = []
         for i in range(0, len(hex_string), 2):
-            x = hex_string[i: i+1]
+            x = hex_string[i: i+2]
             numbers.append(int(x, 16))
         
         return numbers
