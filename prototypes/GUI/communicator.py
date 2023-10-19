@@ -116,8 +116,8 @@ class SessionWorker(QObject):
         Converts a buffer to an image and saves it in the session folder
         returns: filepath of the saved image
         """
-        im_array = np.asarray(flat_mat, dtype=int).reshape((ROW_WIDTH, COL_HEIGHT))
-        print(im_array)
+        im_array = np.asarray(flat_mat, dtype=int).reshape((-1, COL_HEIGHT))
+        self.print_2darray(im_array)
 
         # create the image's filename
         im_num = len(list(Path(self.path).glob('*')))
@@ -145,6 +145,13 @@ class SessionWorker(QObject):
         
         return numbers
 
+
+    def print_2darray(self, array: np.ndarray):
+        for row in range(array.shape[1]):
+            line = ""
+            for i in range(array.shape[0]):
+                line += f"{array[i, row]:03d} "
+            print(line)
 
 
     def __str__(self):
