@@ -27,7 +27,7 @@ int main() {
     for (int i = 0; i < 5; i++) {
         sleep_ms(100);
         gpio_put(LED_PIN, 0);
-        sleep_ms(400);
+        sleep_ms(100);
         gpio_put(LED_PIN, 1);
     }
 

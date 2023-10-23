@@ -98,7 +98,7 @@ class SessionWorker(QObject):
 
                 # get the mat as a flat list
                 flat_mat = self.hex_string_to_array(m)
-                print(flat_mat)
+                self.prettyprint_mat(flat_mat)
 
                 # convert the list to an image and save it
                 self.save_image(flat_mat)
@@ -111,13 +111,13 @@ class SessionWorker(QObject):
         self.finished.emit()
 
 
-    def save_image(self, flat_mat):
+    def save_image(self, flat_mat: list):
         """
         Converts a buffer to an image and saves it in the session folder
         returns: filepath of the saved image
         """
-        im_array = np.asarray(flat_mat, dtype=int).reshape((-1, COL_HEIGHT))
-        self.print_2darray(im_array)
+        im_array = self.mat_list_to_array(flat_mat)
+        # self.print_2darray(im_array)
 
         # create the image's filename
         im_num = len(list(Path(self.path).glob('*')))
@@ -147,11 +147,47 @@ class SessionWorker(QObject):
 
 
     def print_2darray(self, array: np.ndarray):
+        """
+        Function which prints a 2d uint8 numpy array in a readable format
+        """
         for row in range(array.shape[1]):
             line = ""
             for i in range(array.shape[0]):
                 line += f"{array[i, row]:03d} "
             print(line)
+
+    
+    def prettyprint_mat(self, mat_as_list: list):
+        """
+        Python version of the board_code prettyprint_mat function
+        """
+        line = ""
+        for i in range(MAT_SIZE):
+            if (i % ROW_WIDTH) == 0:
+                print(line[:-1])
+                line = ""
+
+            line += f"{mat_as_list[i]:02x}, "
+
+
+    def mat_list_to_array(self, mat_as_list: list):
+        """
+        Converts a 1d python list (presumably the mat) to a 2D numpy array
+        """
+        array = np.empty((ROW_WIDTH, COL_HEIGHT), dtype=np.uint8)
+        x = 0
+        y = 0
+        for i in range(MAT_SIZE):
+            if (i % ROW_WIDTH) == 0 and i > 0:
+                y += 1
+                x = 0
+
+
+            array[x, y] = mat_as_list[i]
+            x += 1
+
+        return array
+
 
 
     def __str__(self):
