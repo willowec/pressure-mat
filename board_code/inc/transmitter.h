@@ -11,6 +11,12 @@ Header file responsible for communicating via USB serial connection to the conne
 #include "pico/stdlib.h"
 
 
+#define START_READING_COMMAND   "start_reading"
+
+/*
+    Function which takes a string that has passed over serial and decides what to do based on it
+*/
+bool parse_input(char *string);
 
 
 /*

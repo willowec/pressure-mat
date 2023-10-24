@@ -5,4 +5,5 @@
 .vscode
 fp-info-cache
 build
+sessions
 __pycache__
