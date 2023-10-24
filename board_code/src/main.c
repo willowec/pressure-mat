@@ -41,7 +41,7 @@ int main() {
     // initialize the shift registers
     initialize_shreg_pins();
 
-    /*
+    
     // wait until the start reading command is issued
 	char input_string[256];
 	uint32_t input_pointer, ch;
@@ -61,20 +61,13 @@ int main() {
             break;    
         }
     }
-    */
+    
 
     uint8_t test_vals[CHANNELS_PER_ADC] = {};
     while (1) {
         sleep_ms(2000);
 
-        // request one read of a singular ADC to get an idea of what it is doing
-        get_adc_values(adc1, test_vals);
-
-        for(int i=0; i < CHANNELS_PER_ADC; i++) {
-            printf("%02x ", test_vals[i]);
-        }
-        printf("\n");
-        /*
+        
         // indicate read is occuring by flashing led
         gpio_put(LED_PIN, 1);
         read_mat(mat, adc1, adc2);
@@ -83,7 +76,7 @@ int main() {
         //prettyprint_mat(mat);
         sleep_ms(100);
         transmit_mat(mat);
-        */
+        
     }
 
     free(mat);
