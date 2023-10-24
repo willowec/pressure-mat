@@ -8,6 +8,7 @@ This code is written assuming that the ADC's are max11643 chips
 #include <stdint.h>
 #include "hardware/spi.h"
 
+#define ADC_RESPONSE_LENGTH 28
 #define CHANNELS_PER_ADC    14  // 14 pins of the adc's each are connected to the mat
 
 #define SPI0_SCK_PIN        2

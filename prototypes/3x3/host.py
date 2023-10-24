@@ -72,7 +72,7 @@ class MainWindow(QMainWindow):
         self.show()
 
         # set up the reciever thread
-        self.reciever = Reciever("COM8", 115200, self)
+        self.reciever = Reciever("COM4", 115200, self)
 
 
     def connect_board(self):
