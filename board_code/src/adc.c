@@ -4,6 +4,7 @@
 #include "hardware/gpio.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 
 void initialize_adcs(struct adc_inst *adc1, struct adc_inst *adc2)
 {
@@ -58,10 +59,25 @@ void get_adc_values(struct adc_inst* adc, uint8_t *out_vals)
     while (gpio_get(adc->eoc_pin))
         i ++;
     
-    //printf("Waited %d cycles for EOC\n", i);
+    // define a temp array for storing and processing the values returned from the ADC
+    uint8_t *resp = (uint8_t *)malloc(ADC_RESPONSE_LENGTH);
 
     // read the conversion results
-    adc_read_blocking(adc, 0, out_vals, CHANNELS_PER_ADC);
+    adc_read_blocking(adc, 0, resp, ADC_RESPONSE_LENGTH);
+
+    /*
+        Results from the ADC come in a pretty messed up format. For 14 conversion requests, we have to request 
+        28 bytes of data back from the ADC. It comes in the following hexadecimal arrangement (where x is 4 bits of sample value):
+            0x x0 0x x0 0x x0 0x x0 0x x0 0x x0 0x x0 0x x0 0x x0 0x x0 0x x0 0x x0 0x x0 0x x0 
+        We want the response to be in the following format instead:
+            xx xx xx xx xx xx xx xx xx xx xx xx xx xx
+    */
+    for (i = 0; i < ADC_RESPONSE_LENGTH; i+=2) {
+        // resp[i] is 0x, resp[i+1] is x0. we want out_vals[] to be xx
+        out_vals[i/2] = (resp[i] << 4) | (resp[i+1] >> 4);
+    }
+
+    free(resp);
 }
 
 

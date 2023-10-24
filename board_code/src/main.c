@@ -62,7 +62,7 @@ int main() {
         }
     }
     */
-   
+
     uint8_t test_vals[CHANNELS_PER_ADC] = {};
     while (1) {
         sleep_ms(2000);
