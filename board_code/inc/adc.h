@@ -15,7 +15,7 @@ This code is written assuming that the ADC's are max11643 chips
 #define SPI0_TX_PIN         3
 #define SPI0_RX_PIN         4
 
-#define SPI_CLOCKSPEED      1000000 // 1MHz        //10000    // 10kHz
+#define SPI_CLOCKSPEED      1000000 // 1MHz
 #define CS_SELECT           0
 #define CS_DESELECT         1
 

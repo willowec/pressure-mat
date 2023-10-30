@@ -62,21 +62,22 @@ int main() {
         }
     }
     
-
-    uint8_t test_vals[CHANNELS_PER_ADC] = {};
     while (1) {
         sleep_ms(2000);
 
         
         // indicate read is occuring by flashing led
         gpio_put(LED_PIN, 1);
+        printf("Beginning read\n");
         read_mat(mat, adc1, adc2);
+        printf("Exited read\n");
         sleep_ms(100);
         gpio_put(LED_PIN, 0);
         //prettyprint_mat(mat);
         sleep_ms(100);
+        printf("Transmitting mat\n");
         transmit_mat(mat);
-        
+        printf("Finished transmitting mat\n");
     }
 
     free(mat);
