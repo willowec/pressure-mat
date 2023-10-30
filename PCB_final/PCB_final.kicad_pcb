@@ -9461,7 +9461,7 @@
 
   (gr_rect (start 93 60) (end 183 155)
     (stroke (width 0.1) (type default)) (fill none) (layer "Edge.Cuts") (tstamp 7c18d446-8f05-46e2-9512-66311bc6c0b9))
-  (gr_text_box "RPI Pico\ngoes here\n\n:)))"
+  (gr_text_box "RPI Pico\ngoes here.\nusb side down :)\n  |\n  v"
     (start 148.65 72) (end 161.35 84.4) (layer "F.SilkS") (tstamp 0831a7f3-cae4-4154-b2ed-79a410cde13c)
       (effects (font (size 1 1) (thickness 0.15)) (justify left top))
     (stroke (width 0.15) (type solid))  )
