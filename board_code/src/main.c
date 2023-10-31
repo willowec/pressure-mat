@@ -31,7 +31,7 @@ int main() {
         gpio_put(LED_PIN, 1);
     }
 
-    uint8_t *mat = (uint8_t *)malloc(MAT_SIZE);
+    uint8_t *mat = (uint8_t *)calloc(MAT_SIZE, sizeof(uint8_t));
 
     // initialize the adcs
     struct adc_inst *adc1 = malloc(sizeof(struct adc_inst));
