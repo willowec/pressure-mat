@@ -393,7 +393,7 @@
   (symbol (lib_id "Device:C_Polarized_US") (at 110.49 85.09 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 64840def-d636-435d-b0ff-b9546fe94840)
-    (property "Reference" "C18" (at 114.3 83.185 0)
+    (property "Reference" "C20" (at 114.3 83.185 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "4.7mF" (at 114.3 85.725 0)
@@ -413,7 +413,7 @@
     (instances
       (project "PCB_final"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/4a059b75-7de0-4eb9-8588-5d4fb226c6d3"
-          (reference "C18") (unit 1)
+          (reference "C20") (unit 1)
         )
       )
     )
@@ -497,7 +497,7 @@
   (symbol (lib_id "Device:C_Polarized_US") (at 69.85 85.09 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid a75ac2db-97b2-4cac-a144-e4cc2e2ed971)
-    (property "Reference" "C17" (at 73.66 83.185 0)
+    (property "Reference" "C19" (at 73.66 83.185 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "4.7mF" (at 73.66 85.725 0)
@@ -517,7 +517,7 @@
     (instances
       (project "PCB_final"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/4a059b75-7de0-4eb9-8588-5d4fb226c6d3"
-          (reference "C17") (unit 1)
+          (reference "C19") (unit 1)
         )
       )
     )
