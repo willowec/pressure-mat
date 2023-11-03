@@ -9,8 +9,12 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 pico_sdk_init()
 
+include_directories("src" "inc")
+
 add_executable(custom_multicore_main
     test.c
+    src/custom_multicore.c
+    inc/custom_multicore.h
 )
 pico_enable_stdio_usb(custom_multicore_main 1)
 

@@ -34,4 +34,10 @@ void multicore_fifo_push(uint32_t data);
 /*
     Pops a 32 bit value off of the multicore read fifo. Blocks until there is data to pop
 */
-void multicore_fifo_pop(uint32_t data);
+uint32_t multicore_fifo_pop(void);
+
+
+/*
+    Empties the read fifo
+*/
+void multicore_fifo_drain(void);
