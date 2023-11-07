@@ -373,7 +373,7 @@
     (property "Value" "BLM21BD272SN1L" (at 90.17 77.47 0)
       (effects (font (size 1.27 1.27)))
     )
-    (property "Footprint" "BEADC2012X145N" (at 91.44 81.28 0)
+    (property "Footprint" "capstone_custom:BEADC2012X145N" (at 91.44 81.28 0)
       (effects (font (size 1.27 1.27)) (justify left bottom) hide)
     )
     (property "Datasheet" "" (at 91.44 81.28 0)
