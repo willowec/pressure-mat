@@ -44,8 +44,12 @@ class MainWindow(QMainWindow):
         self.calibrate_b = QPushButton("Calibrate Mat")
         self.calibrate_b.clicked.connect(self.calibrate_mat)
         self.calibrate_status = QLabel("Status: Not Calibrated")
+        self.calibrate_input = QLineEdit("", self)
+        self.calibrate_input.setValidator(QDoubleValidator(self))
+        self.layout.addWidget(QLabel("Calibration Weight (lbs)", self), 3, 1)
         self.layout.addWidget(self.calibrate_b, 4, 0)
-        self.layout.addWidget(self.calibrate_status, 4, 1)
+        self.layout.addWidget(self.calibrate_input, 4, 1)
+        self.layout.addWidget(self.calibrate_status, 4, 2)
 
         #start/stop mat recording session
         self.start_session_b = QPushButton("Start Session")
@@ -56,7 +60,7 @@ class MainWindow(QMainWindow):
         self.session_status = QLabel("Status: Session Stopped")
         self.layout.addWidget(self.start_session_b, 5, 0)
         self.layout.addWidget(self.stop_session_b, 6, 0)
-        self.layout.addWidget(self.session_status, 5, 1)
+        self.layout.addWidget(self.session_status, 5, 2)
         
         #load past session
         self.load_past_img_b = QPushButton("Load Past Session")
@@ -91,7 +95,9 @@ class MainWindow(QMainWindow):
 
 
     def calibrate_mat(self):
-        print("I will calibrate the board")
+        calibration_weight = float(self.calibrate_input.text())
+        print("Calibrating with weight", calibration_weight)
+        
 
 
     def start_session(self):

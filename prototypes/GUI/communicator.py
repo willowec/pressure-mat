@@ -15,6 +15,9 @@ import serial.tools.list_ports
 import numpy as np
 from PIL import Image
 
+from calibration import Calibration
+from calibration import MatReading
+
 
 ROW_WIDTH = 28
 COL_HEIGHT = 56
@@ -101,8 +104,13 @@ class SessionWorker(QObject):
                 # print(len(flat_mat))
                 # self.prettyprint_mat(flat_mat)
 
+                im_array = self.mat_list_to_array(flat_mat)
+                # self.print_2darray(im_array)
+
+                #add calibration curves
+
                 # convert the list to an image and save it
-                self.save_image(flat_mat)
+                self.save_image(im_array)
 
 
     def stop(self):
@@ -112,13 +120,11 @@ class SessionWorker(QObject):
         self.finished.emit()
 
 
-    def save_image(self, flat_mat: list):
+    def save_image(self, flat_mat: np.ndarray):
         """
         Converts a buffer to an image and saves it in the session folder
         returns: filepath of the saved image
         """
-        im_array = self.mat_list_to_array(flat_mat)
-        self.print_2darray(im_array)
 
         # create the image's filename
         im_num = len(list(Path(self.path).glob('*')))
