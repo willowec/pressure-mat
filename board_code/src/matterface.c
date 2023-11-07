@@ -55,8 +55,10 @@ void read_mat(uint8_t *mat, struct adc_inst *adc1, struct adc_inst *adc2)
     int i;
 
     // start with a one in the shregs
-    shift_shreg(1);
+    shift_shreg(1); // shift in a one
+    shift_shreg(0); // move the one to the output line
 
+    // trash the first read of the ADC's per cycle on a hunch
     for (i = 0; i < COL_HEIGHT; i++) {
         sleep_ms(4);    // to meet spec, needs to take under (250ms / 56rows = 4.464ms per row)
 

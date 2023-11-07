@@ -79,7 +79,6 @@ int main() {
         sleep_ms(100);
         gpio_put(LED_PIN, 0);
         //prettyprint_mat(mat);
-        sleep_ms(100);
         transmit_mat(mat);
     }
 

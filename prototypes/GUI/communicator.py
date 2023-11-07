@@ -98,7 +98,8 @@ class SessionWorker(QObject):
 
                 # get the mat as a flat list
                 flat_mat = self.hex_string_to_array(m)
-                self.prettyprint_mat(flat_mat)
+                # print(len(flat_mat))
+                # self.prettyprint_mat(flat_mat)
 
                 # convert the list to an image and save it
                 self.save_image(flat_mat)
@@ -117,7 +118,7 @@ class SessionWorker(QObject):
         returns: filepath of the saved image
         """
         im_array = self.mat_list_to_array(flat_mat)
-        # self.print_2darray(im_array)
+        self.print_2darray(im_array)
 
         # create the image's filename
         im_num = len(list(Path(self.path).glob('*')))
