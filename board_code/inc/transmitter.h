@@ -12,6 +12,10 @@ Header file responsible for communicating via USB serial connection to the conne
 
 
 #define START_READING_COMMAND   "start_reading"
+#define GET_CAL_VALS_COMMAND    "get_cal_vals"
+
+#define START_READING_COMMAND_ID    1
+#define GET_CAL_VALS_COMMAND_ID     2
 
 /*
     Function which takes a string that has passed over serial and decides what to do based on it

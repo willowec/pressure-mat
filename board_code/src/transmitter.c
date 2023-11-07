@@ -15,10 +15,14 @@ bool parse_input(char *string)
     // check if the command to start reading the mat has been issued
     if (!strncmp(string, START_READING_COMMAND, sizeof(string))) {
 		// start reading the mat
-        // TODO: Change how this function is used so that it uses a non-blocking
-        // read and is called every loop
-        return true;
+        return START_READING_COMMAND_ID;
 	}
+    else if (!strncmp(string, GET_CAL_VALS_COMMAND, sizeof(string))) {
+        return GET_CAL_VALS_COMMAND_ID;
+    }
+    else {
+        return -1;  // no valid command read
+    }
 }
 
 // definition of initialize

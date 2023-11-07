@@ -42,9 +42,9 @@ int main() {
     initialize_shreg_pins();
 
     
-    // wait until the start reading command is issued
+    // Parse commands from the GUI before entering a session
 	char input_string[256];
-	uint32_t input_pointer, ch;
+	uint32_t input_pointer, ch, parsed_command;
     while(1) {
         input_pointer = 0;
         while(1) {
@@ -56,9 +56,17 @@ int main() {
 			input_string[input_pointer]=ch;
 			input_pointer++;
         }
-        if (parse_input(input_string)) {
+
+        parsed_command = parse_input(input_string);
+        if (parsed_command == START_READING_COMMAND_ID) {
+            // break the input loop to move to the main loop and start reading the mat
             gpio_put(LED_PIN, 0);
             break;    
+        }
+        else if (parsed_command == GET_CAL_VALS_COMMAND_ID) {
+            // perform one read of the mat and transmit it to the GUI
+            read_mat(mat, adc1, adc2);
+            transmit_mat(mat);
         }
     }
     
@@ -68,16 +76,12 @@ int main() {
         
         // indicate read is occuring by flashing led
         gpio_put(LED_PIN, 1);
-        printf("Beginning read\n");
         read_mat(mat, adc1, adc2);
-        printf("Exited read\n");
         sleep_ms(100);
         gpio_put(LED_PIN, 0);
         //prettyprint_mat(mat);
         sleep_ms(100);
-        printf("Transmitting mat\n");
         transmit_mat(mat);
-        printf("Finished transmitting mat\n");
     }
 
     free(mat);
