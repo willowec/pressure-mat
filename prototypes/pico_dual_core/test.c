@@ -22,9 +22,22 @@ const int QUEUE_LENGTH = 128;
 int core1_main() {
     puts("hello from core 1\n");
     struct queueItem temp;
+    while(1) {
+        sleep_ms(500);
+
+        // poll to see if anything is on the queue
+        printf("Is there smth on the queue? %d\n", queue_is_empty(&queue));
+
+        // try to pop
+        queue_remove_blocking(&queue, &temp);
+
+        printf("Popped %d\n", temp.value);
+    }
+    /*
     while (queue_try_remove(&queue, &temp)) {
         printf("Item popped from queue: %d\n", temp.value);
     }
+    */
 }
 
 int main() {
