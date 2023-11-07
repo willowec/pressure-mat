@@ -1,5 +1,5 @@
 # GUI which displays data from the mat interpreted by the board and transmitted over serial
-import sys, os
+import sys, os, serial
 from datetime import datetime
 
 from PyQt6.QtGui import  *
@@ -14,7 +14,8 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 matplotlib.use('QtAgg')
 
-from communicator import SessionWorker
+from communicator import SessionWorker, hex_string_to_array, mat_list_to_array, GET_CAL_VALS_COMMAND, ROW_WIDTH, COL_HEIGHT
+from calibration import Calibration, MatReading
 
 
 class MainWindow(QMainWindow):
@@ -30,19 +31,22 @@ class MainWindow(QMainWindow):
 
         self.layout = QGridLayout()
         
-        #com port input box
-        self.port_input = QLineEdit("COM4", self)
+        # com port input box
+        self.port_input = QLineEdit("COM3", self)
         self.layout.addWidget(QLabel("Port:", self), 1, 0)
         self.layout.addWidget(self.port_input, 2, 0)
 
-        #baud rate input box
+        # baud rate input box
         self.baud_input = QLineEdit("115200", self)
+        self.baud_input.setValidator(QIntValidator(self))
         self.layout.addWidget(QLabel("Baud rate:", self), 1, 1)
         self.layout.addWidget(self.baud_input, 2, 1)
 
-        #calibrate mat
-        self.calibrate_b = QPushButton("Calibrate Mat")
-        self.calibrate_b.clicked.connect(self.calibrate_mat)
+        # calibrate mat
+        self.calibrate_b = QPushButton("Add Calibration Data")
+        self.calibrate_b.clicked.connect(self.add_calibration_data)
+        self.calibrate_complete_b = QPushButton("Complete Calibration")
+        self.calibrate_complete_b.clicked.connect(self.complete_calibration)
         self.calibrate_status = QLabel("Status: Not Calibrated")
         self.calibrate_input = QLineEdit("", self)
         self.calibrate_input.setValidator(QDoubleValidator(self))
@@ -51,7 +55,7 @@ class MainWindow(QMainWindow):
         self.layout.addWidget(self.calibrate_input, 4, 1)
         self.layout.addWidget(self.calibrate_status, 4, 2)
 
-        #start/stop mat recording session
+        # start/stop mat recording session
         self.start_session_b = QPushButton("Start Session")
         self.start_session_b.clicked.connect(self.start_session)
         self.stop_session_b = QPushButton("Stop Session")
@@ -61,13 +65,14 @@ class MainWindow(QMainWindow):
         self.layout.addWidget(self.start_session_b, 5, 0)
         self.layout.addWidget(self.stop_session_b, 6, 0)
         self.layout.addWidget(self.session_status, 5, 2)
+        self.calibration_readings = []  # list of readings measured during calibration
         
-        #load past session
+        # load past session
         self.load_past_img_b = QPushButton("Load Past Session")
         self.load_past_img_b.clicked.connect(self.load_past_img)
         self.layout.addWidget(self.load_past_img_b, 7, 0)
 
-        #navigate past session buttons
+        # navigate past session buttons
         self.load_past_img_next_b = QPushButton("-->")
         self.load_past_img_prev_b = QPushButton("<--")
         self.load_past_img_next_b.clicked.connect(self.load_past_img_next)
@@ -75,7 +80,7 @@ class MainWindow(QMainWindow):
         self.layout.addWidget(self.load_past_img_next_b, 8, 1)
         self.layout.addWidget(self.load_past_img_prev_b, 8, 0)
    
-        #display image from file
+        # display image from file
         self.size = QSize(56*10, 28*10)
         self.im = QPixmap("default.png")
         self.label = QLabel()
@@ -94,10 +99,36 @@ class MainWindow(QMainWindow):
         self.session_thread = None
 
 
-    def calibrate_mat(self):
+    def add_calibration_data(self):
+        """
+        Should be called after the user has entered a value into the calibrate_input corresponding to a weight they have placed on the mat\
+        Adds the mat readings to a list of mat readings that are used to calculate mat calibration curves by self.add_calibration_data()
+        """
         calibration_weight = float(self.calibrate_input.text())
         print("Calibrating with weight", calibration_weight)
-        
+
+        # request calibration readings from the mat
+        with serial.Serial(self.port_input.text(), baudrate=int(self.baud_input.text()), timeout=10) as ser:
+            # send the message to start reading the mat
+            ser.write((GET_CAL_VALS_COMMAND + '\n').encode('utf-8'))
+            
+            m = ser.readline()
+            m = str(m.decode('utf-8')[:-2])
+
+            mat_vals = mat_list_to_array(hex_string_to_array(m))
+            reading = MatReading(ROW_WIDTH, COL_HEIGHT, calibration_weight, mat_vals)
+
+
+        # add them to the calibration readings list
+        self.calibration_readings.append(reading)
+        print("Calibrated with weight", calibration_weight)
+
+
+    def complete_calibration(self):
+        """
+        Calculate the calibration curves for the mat based on the list of measured values in self.calibration_readings
+        """
+        pass
 
 
     def start_session(self):
