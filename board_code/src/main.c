@@ -41,7 +41,6 @@ int main() {
     // initialize the shift registers
     initialize_shreg_pins();
 
-    
     // Parse commands from the GUI before entering a session
 	char input_string[256];
 	uint32_t input_pointer, ch, parsed_command;
