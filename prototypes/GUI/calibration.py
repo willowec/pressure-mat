@@ -42,7 +42,7 @@ class Calibration:
             self.height = matHeight
             self.polyFitDegree = 4
             self.listOfMatReadings = []
-            self.arrayOfCoefficients = np.zeros((self.width,self.height, self.polyFitDegree + 1))   # +1 because of constant
+            self.cal_curves_array = np.empty((self.width,self.height, self.polyFitDegree + 1), dtype=Polynomial)   # +1 because of constant
 
 
     def add_reading(self, actualMatReading: MatReading):
@@ -65,13 +65,10 @@ class Calibration:
         for rows in range(self.width):
             for cols in range(self.height):
                 for i in range(num_weights):
-                    print(num_weights, i)
-                    print(self.listOfMatReadings[i])
-                    print(self.listOfMatReadings[i].matMatrix)
                     matXVals[i] = self.listOfMatReadings[i].matMatrix[rows,cols]
                     matYVals[i] = self.listOfMatReadings[i].actualWeight
 
-                self.arrayOfCoefficients[rows,cols] = Polynomial.fit(matXVals, matYVals, self.polyFitDegree)
+                self.cal_curves_array[rows,cols] = Polynomial.fit(matXVals, matYVals, self.polyFitDegree)
 
 
     def apply_calibration_curve(self, matReadings: np.ndarray):
@@ -86,7 +83,7 @@ class Calibration:
         for rows in self.width:
             for cols in self.height:
                 for i in self.polyFitDegree:
-                    calibratedValues[rows, cols] += self.arrayOfCoefficients[rows,cols,i]*(matReadings[rows,cols]**(i+1))
+                    calibratedValues[rows, cols] += self.cal_curves_array[rows,cols,i]*(matReadings[rows,cols]**(i+1))
 
         return calibratedValues
 
@@ -123,6 +120,7 @@ class CalSampleWorker(QObject):
             ser.write((GET_CAL_VALS_COMMAND + '\n').encode('utf-8'))
             
             m = ser.readline()
+            print(m)
             m = str(m.decode('utf-8')[:-2])
 
             mat_vals = mat_list_to_array(hex_string_to_array(m))
