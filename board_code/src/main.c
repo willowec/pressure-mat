@@ -78,8 +78,8 @@ int main() {
         read_mat(mat, adc1, adc2);
         sleep_ms(100);
         gpio_put(LED_PIN, 0);
-        prettyprint_mat(mat);
-        //transmit_mat(mat);
+        //prettyprint_mat(mat);
+        transmit_mat(mat);
     }
 
     free(mat);
