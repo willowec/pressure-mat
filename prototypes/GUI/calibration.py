@@ -3,6 +3,13 @@ Module responsible for handling the calibration of the mat
 """
 
 import numpy as np
+from numpy.polynomial.polynomial import Polynomial
+
+from PyQt6.QtCore import QObject, pyqtSignal
+
+import serial
+
+from mat_handler import *
 
 
 class MatReading:
@@ -15,6 +22,7 @@ class MatReading:
         self.height = matHeight
         self.actualWeight = actualWeight
         self.matMatrix = rawMatValues
+
 
     def update_values(self, actualWeight, rawMatValues: np.ndarray):
         """
@@ -34,14 +42,14 @@ class Calibration:
             self.height = matHeight
             self.polyFitDegree = 4
             self.listOfMatReadings = []
-            self.arrayOfCoefficients = np.zeros((self.matWidth,self.matHeight, self.polyFitDegree))
+            self.arrayOfCoefficients = np.zeros((self.width,self.height, self.polyFitDegree + 1))   # +1 because of constant
 
 
-    def add_readings(self, actualWeight, actualMatReading: np.ndarray):
+    def add_reading(self, actualMatReading: MatReading):
         """
-        add actual calibration weight value and matrix of mat readings to listOfMatReadings
+        add a MatReading instance to listOfMatReadings
         """
-        self.listOfMatReadings.append(MatReading(self.width, self.height, actualWeight, actualMatReading))
+        self.listOfMatReadings.append(actualMatReading)
 
 
     def calculate_calibration_curves(self):
@@ -50,16 +58,20 @@ class Calibration:
         """
 
         # array of X and Y values to be put into polyfit X = mat reading, Y = actual weight on mat
-        matXVals = np.empty(self.numWeights)
-        matYVals = np.empty(self.numWeights)
+        num_weights = len(self.listOfMatReadings)
+        matXVals = np.empty(num_weights)
+        matYVals = np.empty(num_weights)
 
-        for rows in self.width:
-            for cols in self.height:
-                for i in self.numWeights:
+        for rows in range(self.width):
+            for cols in range(self.height):
+                for i in range(num_weights):
+                    print(num_weights, i)
+                    print(self.listOfMatReadings[i])
+                    print(self.listOfMatReadings[i].matMatrix)
                     matXVals[i] = self.listOfMatReadings[i].matMatrix[rows,cols]
                     matYVals[i] = self.listOfMatReadings[i].actualWeight
 
-                self.arrayOfCoefficients[rows,cols] = np.polyfit(matXVals, matYVals, self.polyFitDegree)
+                self.arrayOfCoefficients[rows,cols] = Polynomial.fit(matXVals, matYVals, self.polyFitDegree)
 
 
     def apply_calibration_curve(self, matReadings: np.ndarray):
@@ -77,3 +89,45 @@ class Calibration:
                     calibratedValues[rows, cols] += self.arrayOfCoefficients[rows,cols,i]*(matReadings[rows,cols]**(i+1))
 
         return calibratedValues
+
+
+
+class CalSampleWorker(QObject):
+    """
+    QObject which handles asynchronously acquiring samples of data from the mat for calibration calculations
+    """
+    # a signal which is emitted to indicate that the session is complete and the thread should be cleaned up
+    finished = pyqtSignal()
+
+    # a signal to return the sampled MatReading
+    reading_result = pyqtSignal(MatReading)
+
+    def __init__(self, port: int, baud: int, calibration_weight):
+        """
+        Init and run to collect one sample of readings for the weight calibration_weight
+        """
+        super(CalSampleWorker, self).__init__()
+
+        self.port = port
+        self.baud = baud
+        self.calibration_weight = calibration_weight
+
+
+    def run(self):
+        """
+        Work thread of the CalSampleWorker
+        """
+        # request calibration readings from the mat
+        with serial.Serial(port=self.port, baudrate=self.baud, timeout=10) as ser:
+            # send the message to start reading the mat
+            ser.write((GET_CAL_VALS_COMMAND + '\n').encode('utf-8'))
+            
+            m = ser.readline()
+            m = str(m.decode('utf-8')[:-2])
+
+            mat_vals = mat_list_to_array(hex_string_to_array(m))
+            reading = MatReading(ROW_WIDTH, COL_HEIGHT, self.calibration_weight, mat_vals)
+
+            self.reading_result.emit(reading)
+
+        self.finished.emit()

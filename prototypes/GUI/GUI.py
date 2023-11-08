@@ -14,8 +14,8 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 matplotlib.use('QtAgg')
 
-from communicator import SessionWorker, hex_string_to_array, mat_list_to_array, GET_CAL_VALS_COMMAND, ROW_WIDTH, COL_HEIGHT
-from calibration import Calibration, MatReading
+from calibration import Calibration, MatReading, CalSampleWorker
+from communicator import SessionWorker, ROW_WIDTH, COL_HEIGHT
 
 
 class MainWindow(QMainWindow):
@@ -44,13 +44,14 @@ class MainWindow(QMainWindow):
 
         # calibrate mat
         self.calibrate_b = QPushButton("Add Calibration Data")
-        self.calibrate_b.clicked.connect(self.add_calibration_data)
+        self.calibrate_b.clicked.connect(self.get_calibration_data)
         self.calibrate_complete_b = QPushButton("Complete Calibration")
         self.calibrate_complete_b.clicked.connect(self.complete_calibration)
         self.calibrate_status = QLabel("Status: Not Calibrated")
         self.calibrate_input = QLineEdit("", self)
         self.calibrate_input.setValidator(QDoubleValidator(self))
         self.layout.addWidget(QLabel("Calibration Weight (lbs)", self), 3, 1)
+        self.layout.addWidget(self.calibrate_complete_b, 3, 0)
         self.layout.addWidget(self.calibrate_b, 4, 0)
         self.layout.addWidget(self.calibrate_input, 4, 1)
         self.layout.addWidget(self.calibrate_status, 4, 2)
@@ -65,7 +66,7 @@ class MainWindow(QMainWindow):
         self.layout.addWidget(self.start_session_b, 5, 0)
         self.layout.addWidget(self.stop_session_b, 6, 0)
         self.layout.addWidget(self.session_status, 5, 2)
-        self.calibration_readings = []  # list of readings measured during calibration
+        self.calibration = Calibration(ROW_WIDTH, COL_HEIGHT)    # the calibration class instance to apply to the session when it is started
         
         # load past session
         self.load_past_img_b = QPushButton("Load Past Session")
@@ -99,36 +100,56 @@ class MainWindow(QMainWindow):
         self.session_thread = None
 
 
-    def add_calibration_data(self):
+    def get_calibration_data(self):
         """
         Should be called after the user has entered a value into the calibrate_input corresponding to a weight they have placed on the mat\
-        Adds the mat readings to a list of mat readings that are used to calculate mat calibration curves by self.add_calibration_data()
+        Adds the mat readings to a list of mat readings that are used to calculate mat calibration curves by self.get_calibration_data()
         """
         calibration_weight = float(self.calibrate_input.text())
         print("Calibrating with weight", calibration_weight)
 
-        # request calibration readings from the mat
-        with serial.Serial(self.port_input.text(), baudrate=int(self.baud_input.text()), timeout=10) as ser:
-            # send the message to start reading the mat
-            ser.write((GET_CAL_VALS_COMMAND + '\n').encode('utf-8'))
-            
-            m = ser.readline()
-            m = str(m.decode('utf-8')[:-2])
+        # start up the thread to collect a reading from the mat
+        cal_thread = QThread(self)
+        cal_worker = CalSampleWorker(self.port_input.text(), int(self.baud_input.text()), calibration_weight=calibration_weight)
+        cal_worker.moveToThread(cal_thread)
 
-            mat_vals = mat_list_to_array(hex_string_to_array(m))
-            reading = MatReading(ROW_WIDTH, COL_HEIGHT, calibration_weight, mat_vals)
+        # connect important signals to the new thread
+        cal_thread.started.connect(cal_worker.run)
+        cal_worker.finished.connect(cal_thread.quit)
+        cal_worker.finished.connect(cal_worker.deleteLater)
+        cal_thread.finished.connect(cal_thread.deleteLater)
+
+        # start the thread to collect a reading from the mat
+        cal_thread.start()
+        self.calibrate_status.setText("Getting data...")
+        self.calibrate_b.setEnabled(False)
+        self.calibrate_complete_b.setEnabled(False)
+
+        # connect cleanup signals
+        cal_worker.reading_result.connect(
+            self.add_calibration_data
+        )
+        cal_thread.finished.connect(
+            lambda: self.calibrate_status.setText(f"{len(self.calibration.listOfMatReadings)} Cal Samples")
+        )
+        cal_thread.finished.connect(lambda: self.calibrate_b.setEnabled(True))
+        cal_thread.finished.connect(lambda: self.calibrate_complete_b.setEnabled(True))
 
 
-        # add them to the calibration readings list
-        self.calibration_readings.append(reading)
-        print("Calibrated with weight", calibration_weight)
+    def add_calibration_data(self, reading: MatReading):
+        """
+        Adds a MatReading to the calibration instance
+        """
+        self.calibration.add_reading(reading)
 
 
     def complete_calibration(self):
         """
-        Calculate the calibration curves for the mat based on the list of measured values in self.calibration_readings
+        Calculate the calibration curves and prevent further readings from being added
         """
-        pass
+        print(f"Calculating calibration curves")
+        self.calibration.calculate_calibration_curves()
+        self.calibrate_status.setText("Calibrated!")
 
 
     def start_session(self):
@@ -137,7 +158,7 @@ class MainWindow(QMainWindow):
         # set up the thread which the session worker will run on
         self.session_thread = QThread()
 
-        self.session = SessionWorker(self.port_input.text(), self.baud_input.text())
+        self.session = SessionWorker(self.port_input.text(), self.baud_input.text(), calibrator=self.calibration)
 
         # move the session worker onto the thread
         self.session.moveToThread(self.session_thread)
