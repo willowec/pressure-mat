@@ -83,14 +83,16 @@ class Calibration:
         """
 
         # initialize return array to be correct width and height and all values equal to zero
-        calibratedValues = np.zeros((self.width, self.height), dtype=np.uint8)
+        # datatype is double because the calibrated value will correspond to a real weight value, and for +- 15% error, needs to be 
+        #   at least one decimal of precision at 1lbs
+        calibratedValues = np.zeros((self.width, self.height), dtype=np.double)
 
         # itterate through every sensor of the mat calculate the calibrated value at that sensor
         for rows in range(self.width):
             for cols in range(self.height):
                 calibratedValues[rows, cols] = self.cal_curves_array[rows,cols](matReadings[rows,cols])
 
-        return np.rint(calibratedValues)
+        return np.round(calibratedValues, 2)
 
 
 
