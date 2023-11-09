@@ -14,8 +14,8 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 matplotlib.use('QtAgg')
 
-from calibration import Calibration, MatReading, CalSampleWorker
-from communicator import SessionWorker, ROW_WIDTH, COL_HEIGHT
+from modules.calibration import Calibration, MatReading, CalSampleWorker
+from modules.communicator import SessionWorker, ROW_WIDTH, COL_HEIGHT
 
 
 class MainWindow(QMainWindow):

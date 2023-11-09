@@ -15,8 +15,8 @@ import serial.tools.list_ports
 import numpy as np
 from PIL import Image
 
-from calibration import Calibration, MatReading
-from mat_handler import *
+from modules.calibration import Calibration
+from modules.mat_handler import *
 
 
 
@@ -96,7 +96,6 @@ class SessionWorker(QObject):
 
                 # get the mat as a flat list
                 flat_mat = hex_string_to_array(m)
-                # print(len(flat_mat))
                 # prettyprint_mat(flat_mat)
 
                 im_array = mat_list_to_array(flat_mat)

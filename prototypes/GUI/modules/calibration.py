@@ -9,7 +9,7 @@ from PyQt6.QtCore import QObject, pyqtSignal
 
 import serial
 
-from mat_handler import *
+from modules.mat_handler import *
 
 
 class MatReading:
@@ -32,17 +32,18 @@ class MatReading:
         self.matMatrix = rawMatValues
 
 
+
 class Calibration:
     """
     Class which handles calibrating the mat by taking raw mat readings and converting them into a calibrated mat output of the same size.
     Also responsible for calculating calibration curves
     """
-    def __init__(self, matWidth: int, matHeight: int):
-            self.width = matWidth
-            self.height = matHeight
-            self.polyFitDegree = 4
+    def __init__(self, mat_width: int, mat_height: int, polyfit_degree: int=4):
+            self.width = mat_width
+            self.height = mat_height
+            self.polyfit_degree = polyfit_degree
             self.listOfMatReadings = []
-            self.cal_curves_array = np.empty((self.width,self.height, self.polyFitDegree + 1), dtype=Polynomial)   # +1 because of constant
+            self.cal_curves_array = np.empty((self.width, self.height), dtype=Polynomial)
             self.calibrated = False
 
 
@@ -53,15 +54,16 @@ class Calibration:
         self.listOfMatReadings.append(actualMatReading)
 
 
-    def calculate_calibration_curves(self):
+    def calculate_calibration_curves(self) -> bool:
         """
-        updates the listOfCoefficients at every sensor with the polyfit results 
+        updates the cal_curves_array at every sensor with the polyfit results 
+        returns True on success
         """
 
         # array of X and Y values to be put into polyfit X = mat reading, Y = actual weight on mat
         num_weights = len(self.listOfMatReadings)
-        matXVals = np.empty(num_weights)
-        matYVals = np.empty(num_weights)
+        matXVals = np.empty(num_weights, dtype=np.uint8)
+        matYVals = np.empty(num_weights, dtype=np.uint8)
 
         for rows in range(self.width):
             for cols in range(self.height):
@@ -69,9 +71,10 @@ class Calibration:
                     matXVals[i] = self.listOfMatReadings[i].matMatrix[rows,cols]
                     matYVals[i] = self.listOfMatReadings[i].actualWeight
 
-                self.cal_curves_array[rows,cols] = Polynomial.fit(matXVals, matYVals, self.polyFitDegree)
+                self.cal_curves_array[rows,cols] = Polynomial.fit(matXVals, matYVals, self.polyfit_degree)
 
         self.calibrated = True
+        return self.calibrated
 
 
     def apply_calibration_curve(self, matReadings: np.ndarray):
@@ -80,15 +83,14 @@ class Calibration:
         """
 
         # initialize return array to be correct width and height and all values equal to zero
-        calibratedValues = np.zeros((self.width, self.height))
+        calibratedValues = np.zeros((self.width, self.height), dtype=np.uint8)
 
         # itterate through every sensor of the mat calculate the calibrated value at that sensor
-        for rows in self.width:
-            for cols in self.height:
-                for i in self.polyFitDegree:
-                    calibratedValues[rows, cols] += self.cal_curves_array[rows,cols,i]*(matReadings[rows,cols]**(i+1))
+        for rows in range(self.width):
+            for cols in range(self.height):
+                calibratedValues[rows, cols] = self.cal_curves_array[rows,cols](matReadings[rows,cols])
 
-        return calibratedValues
+        return np.rint(calibratedValues)
 
 
 
