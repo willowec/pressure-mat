@@ -9582,8 +9582,8 @@
     (start 147.3 92.8) (end 160 105.2) (layer "F.SilkS") (tstamp 0831a7f3-cae4-4154-b2ed-79a410cde13c)
       (effects (font (size 1 1) (thickness 0.15)) (justify top))
     (stroke (width 0.15) (type solid))  )
-  (gr_text_box "Willow Cunningham\nEvan Desmond\nCapstone Prototype 2"
-    (start 147.050019 146.668721) (end 166 153) (layer "F.SilkS") (tstamp 547e97f8-a4ad-43dc-9278-03eded519f1c)
+  (gr_text_box "Willow Cunningham\nEvan Desmond\nUMaine ECE Capstone V2"
+    (start 160 146.668721) (end 182 153) (layer "F.SilkS") (tstamp 547e97f8-a4ad-43dc-9278-03eded519f1c)
       (effects (font (size 1 1) (thickness 0.15)) (justify left top))
     (stroke (width 0.15) (type solid))  )
   (gr_text_box "Row connector\n(56 lines)"
@@ -9591,8 +9591,8 @@
       (effects (font (size 1 1) (thickness 0.15)) (justify left top))
     (stroke (width 0.15) (type solid))  )
   (gr_text_box "Pressure Matrix Interface Board"
-    (start 118.51 55.42) (end 145 58) (layer "F.SilkS") (tstamp c74f165d-eb2c-499d-bad5-9b99e9d93c97)
-      (effects (font (size 1 1) (thickness 0.15)) (justify left top))
+    (start 128.5 150.42) (end 155.5 153) (layer "F.SilkS") (tstamp c74f165d-eb2c-499d-bad5-9b99e9d93c97)
+      (effects (font (size 1 1) (thickness 0.125)) (justify top))
     (stroke (width 0.15) (type solid))  )
   (gr_text_box "Col connector (28 lines)"
     (start 182.73 90.43) (end 185.27 67.57) (angle 90) (layer "F.SilkS") (tstamp da1c4dfd-e981-47b8-bab0-2723e242b6bb)
