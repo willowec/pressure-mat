@@ -102,7 +102,8 @@ class SessionWorker(QObject):
                 im_array = mat_list_to_array(flat_mat)
                 # print_2darray(im_array)
 
-                if self.calibrator:
+                # only apply calibration curves if the calibrator has been calibrated
+                if self.calibrator.calibrated:
                     im_array = self.calibrator.apply_calibration_curve(im_array)
 
                 # convert the list to an image and save it

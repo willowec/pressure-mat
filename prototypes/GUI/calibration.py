@@ -43,6 +43,7 @@ class Calibration:
             self.polyFitDegree = 4
             self.listOfMatReadings = []
             self.cal_curves_array = np.empty((self.width,self.height, self.polyFitDegree + 1), dtype=Polynomial)   # +1 because of constant
+            self.calibrated = False
 
 
     def add_reading(self, actualMatReading: MatReading):
@@ -69,6 +70,8 @@ class Calibration:
                     matYVals[i] = self.listOfMatReadings[i].actualWeight
 
                 self.cal_curves_array[rows,cols] = Polynomial.fit(matXVals, matYVals, self.polyFitDegree)
+
+        self.calibrated = True
 
 
     def apply_calibration_curve(self, matReadings: np.ndarray):
