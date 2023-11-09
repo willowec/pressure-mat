@@ -60,19 +60,31 @@ class Calibration:
         returns True on success
         """
 
-        # array of X and Y values to be put into polyfit X = mat reading, Y = actual weight on mat
+        # clamp the polyfit degree to be one less than the number of calibration samples acquired
         num_weights = len(self.listOfMatReadings)
+        if self.polyfit_degree >= num_weights:
+            self.polyfit_degree = num_weights - 1
+            print("Warning: calibrating using lower polyfit degree than specified due to not being fed enough samples")
+
+        # array of X and Y values to be put into polyfit X = mat reading, Y = actual weight on mat
         matXVals = np.empty(num_weights, dtype=np.uint8)
         matYVals = np.empty(num_weights, dtype=np.uint8)
 
+        num_failures = 0
         for rows in range(self.width):
             for cols in range(self.height):
                 for i in range(num_weights):
                     matXVals[i] = self.listOfMatReadings[i].matMatrix[rows,cols]
                     matYVals[i] = self.listOfMatReadings[i].actualWeight
 
-                self.cal_curves_array[rows,cols] = Polynomial.fit(matXVals, matYVals, self.polyfit_degree)
+                try:
+                    self.cal_curves_array[rows,cols] = Polynomial.fit(matXVals, matYVals, self.polyfit_degree)
+                except np.linalg.LinAlgError as e:
+                    print(f"    Fitting error for x: {matXVals} y: {matYVals}. {e}")
+                    num_failures += 1
+                    self.cal_curves_array[rows, cols] = Polynomial([0] * self.polyfit_degree)
 
+        print(f"Calibrated with {num_failures} failures")
         self.calibrated = True
         return self.calibrated
 
