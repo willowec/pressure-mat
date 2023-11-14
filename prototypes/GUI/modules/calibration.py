@@ -11,24 +11,31 @@ import serial
 
 from modules.mat_handler import *
 
+SENSOR_AREA_SQM = 0.0001        # Area of each individual sensor in square meters (1cm^2)
+MAX_RATED_PRESSURE_PA = 5673.7  # Maximum pressure we expect any individual sensor to see
+
+DEFAULT_CAL_CURVES_PATH = "./default_calibration_curves.npy"
+
 
 class MatReading:
     """
-    A class that holds a 2D matrix representing the mat and a value for the actual weight on the mat
+    A class that holds a 2D matrix representing the mat and a value for the actual pressure for each sensor on the mat
+        actualWeight should be passed in unit lbs
     """
 
     def __init__(self, matWidth:int, matHeight: int, actualWeight: float, rawMatValues: np.ndarray):
         self.width = matWidth
         self.height = matHeight
-        self.actualWeight = actualWeight
+        self.actual_pressure = lbs_to_neutons(actualWeight) / (MAT_SIZE * SENSOR_AREA_SQM)  # actual_pressure is in pascals
         self.matMatrix = rawMatValues
 
 
     def update_values(self, actualWeight, rawMatValues: np.ndarray):
         """
-        Change the actual weight and the raw mat values of the MatReading
+        Change the actual pressure each sensor experienced and the raw mat values of the MatReading
+            actualWeight should be passed in unit lbs
         """
-        self.actualWeight = actualWeight
+        self.actual_pressure = lbs_to_neutons(actualWeight) / (MAT_SIZE * SENSOR_AREA_SQM)
         self.matMatrix = rawMatValues
 
 
@@ -59,7 +66,6 @@ class Calibration:
         updates the cal_curves_array at every sensor with the polyfit results 
         returns True on success
         """
-
         # clamp the polyfit degree to be one less than the number of calibration samples acquired
         num_weights = len(self.listOfMatReadings)
         if self.polyfit_degree >= num_weights:
@@ -75,7 +81,7 @@ class Calibration:
             for cols in range(self.height):
                 for i in range(num_weights):
                     matXVals[i] = self.listOfMatReadings[i].matMatrix[rows,cols]
-                    matYVals[i] = self.listOfMatReadings[i].actualWeight
+                    matYVals[i] = self.listOfMatReadings[i].actual_pressure
 
                 try:
                     self.cal_curves_array[rows,cols] = Polynomial.fit(matXVals, matYVals, self.polyfit_degree)
@@ -85,6 +91,10 @@ class Calibration:
                     self.cal_curves_array[rows, cols] = Polynomial([0] * self.polyfit_degree)
 
         print(f"Calibrated with {num_failures} failures")
+
+        # for getting a default calibration
+        np.save("./default_calibration_curves.npy", self.cal_curves_array, allow_pickle=True)
+
         self.calibrated = True
         return self.calibrated
 
@@ -105,6 +115,14 @@ class Calibration:
                 calibratedValues[rows, cols] = self.cal_curves_array[rows,cols](matReadings[rows,cols])
 
         return np.round(calibratedValues, 2)
+
+
+    def load_cal_curves(self, curves_path: str):
+        """
+        Loads calibration curves from a numpy file
+        """
+        self.cal_curves_array = np.load(curves_path, allow_pickle=True)
+        self.calibrated = True
 
 
 

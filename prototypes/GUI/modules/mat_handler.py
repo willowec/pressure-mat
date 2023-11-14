@@ -31,7 +31,10 @@ def print_2darray(array: np.ndarray):
     for row in range(array.shape[1]):
         line = ""
         for i in range(array.shape[0]):
-            line += f"{array[i, row]:03d} "
+            try:
+                line += f"{array[i, row]:03d} "
+            except ValueError:
+                line += f"{array[i, row]:03f} "
         print(line)
 
 
@@ -64,3 +67,10 @@ def mat_list_to_array(mat_as_list: list):
         x += 1
 
     return array
+
+
+def lbs_to_neutons(force_lbs: float) -> float:
+    """
+    Function which converts pounds force to newtons force
+    """
+    return force_lbs * 4.44822

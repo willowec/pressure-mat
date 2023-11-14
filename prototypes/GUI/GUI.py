@@ -1,6 +1,9 @@
 # GUI which displays data from the mat interpreted by the board and transmitted over serial
-import sys, os, serial
+import sys, os
 from datetime import datetime
+import numpy as np
+
+from PIL import Image
 
 from PyQt6.QtGui import  *
 from PyQt6.QtWidgets import *
@@ -14,8 +17,9 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 matplotlib.use('QtAgg')
 
-from modules.calibration import Calibration, MatReading, CalSampleWorker
+from modules.calibration import Calibration, MatReading, CalSampleWorker, MAX_RATED_PRESSURE_PA, DEFAULT_CAL_CURVES_PATH
 from modules.communicator import SessionWorker, ROW_WIDTH, COL_HEIGHT
+from modules.mat_handler import print_2darray
 
 
 class MainWindow(QMainWindow):
@@ -158,6 +162,11 @@ class MainWindow(QMainWindow):
         # set up the thread which the session worker will run on
         self.session_thread = QThread()
 
+        # load default calibration if the calibrator is uncalibrated
+        if not self.calibration.calibrated:
+            print("Using default calibration curves")
+            self.calibration.load_cal_curves(DEFAULT_CAL_CURVES_PATH)
+
         self.session = SessionWorker(self.port_input.text(), self.baud_input.text(), calibrator=self.calibration)
 
         # move the session worker onto the thread
@@ -182,8 +191,8 @@ class MainWindow(QMainWindow):
         self.session_thread.finished.connect(
             lambda: self.session_status.setText("Session stopped")
         )
-        self.session.imageSaved.connect(
-            self.load_img
+        self.session.calculated_pressures.connect(
+            self.render_pressure_array
         )
 
 
@@ -192,6 +201,36 @@ class MainWindow(QMainWindow):
         if self.session:
             self.session.stop()
  
+
+    def render_pressure_array(self, pressure_array: np.ndarray):
+        """
+        Converts an array of pressure values to an image based on the saved 
+        """
+
+        # 1. Convert the raw pressure values to color values based on a function
+        scaled_array = (pressure_array)
+
+        print_2darray(scaled_array)
+
+        im_array = np.full((ROW_WIDTH, COL_HEIGHT, 3), 255) * scaled_array[..., np.newaxis]
+        im_array = im_array.astype(np.uint8)
+        print(scaled_array.shape, im_array.shape)
+
+        #for i in range(COL_HEIGHT):
+        #    line = ""
+        #    for j in range(ROW_WIDTH):
+        #        line += str((im_array[j, i])) + " "
+        #    print(line)
+
+        # https://stackoverflow.com/questions/34232632/convert-python-opencv-image-numpy-array-to-pyqt-qpixmap-image
+        # https://copyprogramming.com/howto/pyqt5-convert-2d-np-array-to-qimage
+        
+        image = QImage(im_array.data, im_array.shape[1], im_array.shape[0], QImage.Format.Format_RGB888)
+        self.label.setPixmap(QPixmap(image).scaled(self.size))
+
+        # 3. Force the GUI to update its image
+
+
 
     def load_img(self, im_path):
         """

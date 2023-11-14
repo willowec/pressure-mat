@@ -30,7 +30,7 @@ class SessionWorker(QObject):
     finished = pyqtSignal()
 
     # a signal which indicates an image has been saved at the path in the signal
-    imageSaved = pyqtSignal(str)
+    calculated_pressures = pyqtSignal(np.ndarray)
 
     def __init__(self, port: int, baud: int, calibrator: Calibration=None):
         super(SessionWorker, self).__init__()
@@ -98,15 +98,15 @@ class SessionWorker(QObject):
                 flat_mat = hex_string_to_array(m)
                 # prettyprint_mat(flat_mat)
 
-                im_array = mat_list_to_array(flat_mat)
+                data_array = mat_list_to_array(flat_mat)
                 # print_2darray(im_array)
 
-                # only apply calibration curves if the calibrator has been calibrated
-                if self.calibrator.calibrated:
-                    im_array = self.calibrator.apply_calibration_curve(im_array)
+                pressure_array = self.calibrator.apply_calibration_curve(data_array)
 
-                # convert the list to an image and save it
-                self.save_image(im_array)
+                # save the pressure values as an npy
+                self.save_npy(pressure_array)
+
+                self.calculated_pressures.emit(pressure_array)
 
 
     def stop(self):
@@ -116,25 +116,18 @@ class SessionWorker(QObject):
         self.finished.emit()
 
 
-    def save_image(self, im_array: np.ndarray):
+    def save_npy(self, pressure_array: np.ndarray):
         """
-        Converts a buffer to an image and saves it in the session folder
-        returns: filepath of the saved image
+        Saves a numpy array of pressure values to disk
+        returns: filepath of the saved npy file
         """
-
         # create the image's filename
-        im_num = len(list(Path(self.path).glob('*')))
-        im_path = Path(self.path).joinpath(f"{im_num:05d}.png")
+        sample_num = len(list(Path(self.path).glob('*')))
+        sample_path = Path(self.path).joinpath(f"{sample_num:05d}.png")
 
-        # convert the np array to a greyscale image and save it
-        im = Image.fromarray(im_array, mode='L')
-        print(f"saving image to {im_path}")
-        im.save(im_path)
+        np.save(sample_path, pressure_array, allow_pickle=False)
 
-        # indicate that an image has been saved
-        self.imageSaved.emit(str(im_path))
-
-        return im_path
+        return sample_path
 
 
     def __str__(self):
