@@ -208,7 +208,7 @@ class MainWindow(QMainWindow):
         """
 
         # 1. Convert the raw pressure values to color values based on a function
-        scaled_array = (pressure_array)
+        scaled_array = (pressure_array / MAX_RATED_PRESSURE_PA)
 
         print_2darray(scaled_array)
 

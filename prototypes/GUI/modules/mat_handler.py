@@ -34,7 +34,7 @@ def print_2darray(array: np.ndarray):
             try:
                 line += f"{array[i, row]:03d} "
             except ValueError:
-                line += f"{array[i, row]:03f} "
+                line += f"{array[i, row]:3.2f} "
         print(line)
 
 

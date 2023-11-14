@@ -112,7 +112,11 @@ class Calibration:
         # itterate through every sensor of the mat calculate the calibrated value at that sensor
         for rows in range(self.width):
             for cols in range(self.height):
+                # apply the curve
                 calibratedValues[rows, cols] = self.cal_curves_array[rows,cols](matReadings[rows,cols])
+
+        # clamp the results to sane values
+        calibratedValues = np.clip(calibratedValues, 0, MAX_RATED_PRESSURE_PA)
 
         return np.round(calibratedValues, 2)
 
