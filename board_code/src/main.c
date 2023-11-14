@@ -70,7 +70,7 @@ int main() {
     }
     
     while (1) {
-        sleep_ms(2000);
+        sleep_ms(900);
 
         
         // indicate read is occuring by flashing led
