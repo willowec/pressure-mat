@@ -93,7 +93,7 @@ class Calibration:
         print(f"Calibrated with {num_failures} failures")
 
         # for getting a default calibration
-        np.save("./default_calibration_curves.npy", self.cal_curves_array, allow_pickle=True)
+        # np.save("./default_calibration_curves.npy", self.cal_curves_array, allow_pickle=True)
 
         self.calibrated = True
         return self.calibrated
