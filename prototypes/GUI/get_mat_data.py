@@ -42,6 +42,6 @@ if __name__ == "__main__":
 
         data_array = mat_list_to_array(flat_mat)
 
-        path = f"data/matreading_{expected_pressure:4.4f}pa.csv"
+        path = f"resources/raw_data/matreading_{expected_pressure:4.4f}pa.csv"
         print(f"Saving measured mat values for expected weight {args.expected_weight_lbs:4.4f}lbs and expected pressure {expected_pressure:4.4f} to {path}")
         np.savetxt(path, data_array, fmt="%03d", delimiter=',')

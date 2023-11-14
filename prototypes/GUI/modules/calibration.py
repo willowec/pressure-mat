@@ -14,7 +14,7 @@ from modules.mat_handler import *
 SENSOR_AREA_SQM = 0.0001        # Area of each individual sensor in square meters (1cm^2)
 MAX_RATED_PRESSURE_PA = 5673.7  # Maximum pressure we expect any individual sensor to see
 
-DEFAULT_CAL_CURVES_PATH = "./default_calibration_curves.npy"
+DEFAULT_CAL_CURVES_PATH = "./resources/default_calibration_curves.npy"
 
 
 class MatReading:
@@ -93,7 +93,7 @@ class Calibration:
         print(f"Calibrated with {num_failures} failures")
 
         # for getting a default calibration
-        # np.save("./default_calibration_curves.npy", self.cal_curves_array, allow_pickle=True)
+        # np.save(DEFAULT_CAL_CURVES_PATH, self.cal_curves_array, allow_pickle=True)
 
         self.calibrated = True
         return self.calibrated
