@@ -27,6 +27,10 @@ if __name__ == "__main__":
     for pres, read in zip(expected_pressures, flat_readings):
         axes[0].scatter(read, [pres] * len(read))
 
+    axes[0].set_title("Sensor values for different pressures")
+    axes[0].set_xlabel("Sensor ADC value (unitless)")
+    axes[0].set_ylabel("Actual pressure (Pa)")
+
     # plot the average readings
     avgs = [np.average(flat_reading) for flat_reading in flat_readings]
     print(avgs)
@@ -34,6 +38,12 @@ if __name__ == "__main__":
     x = [i[0] for i in z]
     y = [i[1] for i in z]
     axes[1].plot(x, y)
+
+    axes[1].set_title("Average sensor values for different pressures")
+    axes[1].set_xlabel("Average of each sensor's ADC value (unitless)")
+    axes[1].set_ylabel("Actual pressure (Pa)")
+
+    f.tight_layout()
 
     plt.show()
 
