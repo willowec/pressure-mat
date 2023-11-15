@@ -3,6 +3,7 @@ Module responsible for handling the calibration of the mat
 """
 
 import numpy as np
+import scipy
 from numpy.polynomial.polynomial import Polynomial
 
 from PyQt6.QtCore import QObject, pyqtSignal
@@ -97,6 +98,13 @@ class Calibration:
 
         self.calibrated = True
         return self.calibrated
+    
+
+    def polyfit_scipy(self, x: np.array, y: np.array, degree) -> Polynomial:
+        """
+        Function which takes an x and y, and uses scipy to fit them to a numpy polynomial
+        """
+        # TODO: use scipy for polyfit
 
 
     def apply_calibration_curve(self, matReadings: np.ndarray):
@@ -127,6 +135,13 @@ class Calibration:
         """
         self.cal_curves_array = np.load(curves_path, allow_pickle=True)
         self.calibrated = True
+
+    
+    def exponential(self, x: np.array, a: float, b: float, c: float) -> np.array:
+        """
+        A simple exponential function
+        """
+        return a * np.exp(b * x) + c
 
 
 
