@@ -58,6 +58,8 @@ void get_adc_values(struct adc_inst* adc, uint8_t *out_vals)
     uint32_t i = 0;
     while (gpio_get(adc->eoc_pin))
         i ++;
+
+    //printf("        Waited %d cycles for EOC\n", i);
     
     // define a temp array for storing and processing the values returned from the ADC
     uint8_t *resp = (uint8_t *)malloc(ADC_RESPONSE_LENGTH);

@@ -1,0 +1,211 @@
+"""
+Unit tests for the calibration module
+"""
+import numpy as np
+from numpy.polynomial.polynomial import Polynomial
+
+from modules.calibration import MatReading, Calibration
+from modules.mat_handler import ROW_WIDTH, COL_HEIGHT, hex_string_to_array, mat_list_to_array
+
+
+CONTRACT_MAX_ERROR_PERC = 15    # the maximum allowed percentage error as per our contract
+
+# mat readings for an unweighted mat
+MAT_READING_0LBS = "6f67495a4a56492f4041445f56767a6a553d4646482122443f314447504d384a3d493825332f313e3a4b4b493e2e343537181934342635383834282f242e2816252325312b3638372f22292b2c121228261c292b2a292227212925142620212e283334352b1f252326100f23221a26281b1a16181218180c1615151a181c1e1f1d161a1b1c0b0b1b20132123282a21241d2220111c1b1b221f232225221b2020220e0d1f2318282a31332c2e262d2d192d2727312d3234383428312f3414152e2f223a3c0f0d0c0c0a0d0c060d090a0e0d0e110f0e0a0c0b0c05050b0a080c0d121210110f111108130e0e1311121214120e100f110607100f0c16171b1b191914191b0e1717181d1b1d1e212017211b1e0c0d1b1b1529280d0d0d0b090a0b060908080a0a0b0c0b0a0808080904040908080a0b0f10100f0c1010080e0d0e1110111013110e110f110707100e0c1a18131314110d10120a0f0b0d1110100f11100d0e0d0f07070e0a0b1012010000000000000000000000000001000000000000000000000000001e22211f1a1f26171f1d1d2724232227251f2420240f13211f1c2e2f2224231f191e27171e1c1b2524222225231c201e220f121f1c192528151514130f11180e1313121a171616191714161417090d1512111a1d1617161410131a0f141312171715161817131614170a0e1512121c1f04020101020102010101010202020302020202020201020200020305000000000101010000000000000001010000010000000000010000011f23221f191e2b1b1f1f1e26262322262622252329101d252024303d050505050304070505050406060508060505050505020305040405060505050403050704040404050605040505040304050203050404050607080707060509050707060809080809090809090b03080a080c0d122023221f191f392924211f272f23222625242322271018241e1e262a0f0e0d0c0a0c160e0d0d0d0f130e100f0f0e0f0d1005090e0c0c0f110f10100e0c0d180f0f0f0f1213100e1212110f1014080e120e1013150b0c0b0a080a120c0b0b0b0d0e0b0c0d0d0c0c0d0e05090b0b0d0d0f05050504030307040405040507050606070706070802040705060607131218110d101b0c0f211d17141414182018161319100e29191513150f10140d0a0d170a0b1916120f0e0f121712100e120c0a1e130f0e100403040202020502020504030303030405040403040302080503030314141b120e101e0d0f221e18141414182119161219110e25181513150c0a0e0a080a10070813120e0c0b0d0f130f0d0b0f0b091f120e0b0d18191f14101322101226231c1817181c241d1c171e151237221c171a1c1c241813162912142d29211b1a1b2029211f1922181436231f1a1d151418110d0f1b0c0e201d16141314182018171218110f251915121400000000000000000000000000000000000000000000000000000000000101000000000100010100000000000101000001000001010100001212190f0c0e1b0b0d1f1c15121111151a171410150f0d1e151210121c1e29191317301314312d211c1b1b2026211f182016132b1e19191c08080a0404050903040a0a0806050707090707050705050a0706060712121a100c0e180b0d1e1d15121111141816151015110d1d15131012020102010101010001020200010102000201010101010202010100011c1c23171215240f12312d211b19191c23221f171f1613271c19171a151419100d0f1a0b0d2422171211131418171510160e0d1a1411101216151a120d101a0b0e242218141314171a1b191119130f1e161412140e0b0e0907090e060814130d0b0b0b0c0e0f0e0a0e0908100c0b090b0f0e110b080a1108091a19110d0c0d0e11110f0b0f0908120d0c0b0c161519120e111a0c0f2c2d1e161415181c1e1c131c12101f171513151412140f0c0e160a0c22221712111114171a170f160e0d1913100f1119181c1410131e0e113a38231917171b1f211d151d121020181615181a191c1410131e0e113132211918181c21262116201412221a1816181d1c20161215220f133332231c1a1a1f24292318241715261d1b181b1d1b201712162210133739261c1b1b2024292318241715271e1c181b19161a130f111b0c0f2d2c1d171516191d1f1b131a11101e17151315"
+
+# mat readings for a 2.5lbs bottle + 6.3lbs aluminoum sheet
+MAT_READING_BOTTLE = "c5c4b6abc4c4c4c59da3a6c4a7c3b1c4c4c5b2c4c4aa97b1a4a7baad7a7a79777a7a7a7a68696c7a6c7a767a7a7a737a7a726579707879716563615f63636363575759635963606363635f63636057686062635d5e5e5a585d5e5e5e5654565e555e5b5e5e5e5c5e5e62646d63605f5b5353514e535453544e4a4c534c5352545453535453544f5d5a5b59536363615d6363636362595a635b635d636363636363625c69656466645c5c5a565c5b5c5c6254555c575c595c5c5c5d5c5c5a535e5a595d5c4c4d4c474d4d4d4d4e46474d484d4a4d4d4d4f4d4d4c464e4d4b4f4e4646434046464546464040464246434646464a46464542474745494a4342403c42414242443e3e423f423e4343424943423f3a413e3e43453f3f3e3a3f404040463e3c403f403c3f3f3f403f403b373d3a3a3f3f3b3b3c373b3b3b3b3a38373c3b3b383b3b3c3c3c3b37333937383e402e2d2c292e2e2d2d2b2a2a2d2e2d2b2d2d2e2f2e2d2a282c2a2a2f321111110f1111111110101011111111111111111111100f10101113153b3c39353c3c3c3c393b383c443c373c3c3c3c3c3c37333936373c403e3e3b373e3e3e3e393b393e433e3b3e3e3e3e3e3e39353b38393e421617151316161616141514161d1617161616161616131315131415161e1e1d1b1e1e1e1e1b1c1b1e1e1e1d1f1f1e1e1f1f1c1b1d1d1f202b2b2c29272c2c2c2c272c282c302c292c2c2c2a2c2c29252927282b311c1b1a181b1b1b1b1819191b1c1b1b1b1b1b1b1b1b19181a191a1c2132312f2c323232322c302d3232312e3232323032322e2c2f2d2f323c1d1e1b1a1d1d1d1d1a1d1a1d1e1d1c1d1d1d1d1d1d1a191b191a1c1e2624232126262525212422262725232625262526252221232123242721211f1d212120211d1f1e222121202121212021211f1f201e2021283d3d39353d3d3d3d363d373c3f3d393d3d3d3b3d3d383639363a3c412424211f242424241f222026252423232424232424202022202223252f2f2c282e2e2f2f292c292f312f2c2e2f2f2d2e2e2a282c292c2d303533312e353534352d302e35313531353535343535302d312e32323425242220252524241f2120242224232424242324242220232125232528282623282828282225252823282a2828282828282a212a252325243332312d333333332d2f30342d3334323333323333392c3d322d302f28282623282828272324252822282a2828282829282d22302724262426242422262625262123232622262b262626262627271f28232223232a2a27242a282a2a2425242a242a2c292a2a2a2a2a2d232e282527262122201d212221201d2020211d2123222221212121261d28241e20204546433d464646463d4243443d46494645454646454e3d4d463e42411c1c1a181c1c1c1b181a1a1b181c201c1c1c1c1c1c1f161d1a191a1918181716181818181518181816181b1818181919191b151a181617170b0b0a0a0b0b0b0b0a0a0b0b0a0b0c0b0b0b0c0b0b0f0b0c0b0a0a0a2a2b29252a2a2a2b252a2b2a252a2d2a2a2a2b2a2a2f232b2825282729292b25292a2829252b2b2a25292b2a2a2a2a29292b2129262427260b0a0a090b0a0b0a090b0b0a0a0a0b0a0a0a0b0a0a0a080b0909090a1717171517171717151818181517171717171917171a141816141616000000000000000000000000000000000000000000000000000000002223221f2323232420262723202323232323252323251c23201f21200d0d0d0c0d0d0e0d0c0f0f0d0c0d0e0d0d0d0f0d0d0e0b0d0c0b0d0c1717171517181717151a1a151517181717171a181718131715151616050404040504040504050506040405040404050405040405040404040c0d0d0b0d0c0d0d0c0f0f0d0b0c0c0d0d0d0e0c0c0c0b0d0b0b0c0c1819191619191819171f20191618181919181b1919191418161517171c1d1c191d1c1d1c1b21241d1a1c1c1d1c1d201c1d1c171c19191c1a4242403a424242413f556e433c42404242424841423f363f3a3a3e3c2928272328282928252f3629252929292929302829272126242326253435332e34343535353d41352f34343434343f3534332b322f2d31302b2b28252b2b2a2a2a32392b262b2a2a2a2b332b2b2a2329262528281f201f1c1f201f1f1f2629201c1f201f202023201f1f1a1e1c1b1d1d"
+
+# mat readings fort a 6.3lbs aluminum sheet
+MAT_READING_SHEET = "c8a08882837f807f7b7e7d7f7f8181817e7f7f827f7d7b807b7f8f8095857672737070706c6f6e6f6f707271707070726f6e6b726d727b71635b55555452545452535254545556555454545554545256525458545a555254545254545353535454545555545554555556545954555956514d4c4c4b494b4b4a4a4a4b4b4b4b4c4b4c4c4b4c4b4c4e4c4d504d615e5b5a5a595b595b5a595a5a5a5b5c5b5c5b5a5b5b595d5b5b5f5d514e4f4e4e4c4f4d514d4d4e4f4e4e4f4e4f4f4e4e4d4b4e4b4c4e4e545153515150525052505051515151525253535151515052505052524f4d4d4e4d4d4f4f504e4d4e4f4e4e4f4f50504d4f4d4d4e4c4c50503e3d3e3e3d3e4041403e3e3e3f3e3e3f3f40413e3f3d3d3e3c3d3f404b4a4e4a4b4a4d4c4c4b4a4a4c4a4a4a4b4b4b4a4a49484a47474b4a4f4e564d4f4f504e4e4e4d4e504d4d4e4e4e4e4d4e4c4a4d4a4b4f4f49484e4849494a49484948494b4949494a4a4a484a4747494546494a1d1c1e1c1c1c1c1c1b1c1c1c1b1c1c1c1c1c1c1b1c1b1b1d1b1c1e1e40404740404142403f40404142403f4040414040403f3e403d3e414353535a5554565654525554565854555657585655555351545051545547464b48474a4a484749494b4d484849484a484848464547434446473f3d433e3e423f3f3e3f3e3f403e3e3e3f403f3e3f3e3d3f3c3e40463a393e3b3a3d3c3c3a3c3b3d3c3b3b3b3b3d3b3b3b3a393b38383a3c4e4d51514e5052514e5050525250505151555150504f4d504c4e50556160636461626563606462646362646364676564656561665f63676b3f3d3e403e3f4241414341444241414140434141403f3e3f3c3c3d3f4a494a4e4a4a4e4c4b4e4d4f4e4f4f4f4f52504f4f4f4b4e494a4a4d4c4a4d4f4d4d514f4e514e4f4d4d4f4e4e504f4f4f4e4c4e4a4c4d505654565b56575c5a555b595a595a5b5a5b5d5b5b5b59575954555658605e60655f6064625f636262626365636467666565625f625c5d5e604d4b4c504c4d514f4d5150504f51505051535150514e4c4e4a4a4b4c62606168616268666168676565666867696c6b686c6564645f6061626f6b6c766e6e76726e7474727172767375787876827473736d6d6d6f706e6d766f717a786e7d777573727675777b76767b7472736d6c6d6f63625f686163696762696867656568676968666868646467616060615c5a58625a5c615f5b615f5f5e5f626063636262635f5e5f5a59595b53535159525459575258575755565857595a59585a565557525151525a58575f585a5f5d5a605f5e5d5f5f606462605f605e5d5e5958585a5553525854565c5c565d5c5a585959595a59585958585758545352556c6a6a726d6f78796e7574727373717476737272727374726d6b6b6d827f7f888286938b838d8a888a89888d8d8989888b89888781807f827b78777f7b8189817a85828184828087838180807f7d7d7f7979787b82807f888588948b86968c898989888c8a8a8a88898787877f7f7f826764646c6969706b69706d6c706e6c6d6c6b6c6c6a6a6b6b6464646647464649494a4c49484a4a4a4b4b4a4b4a49494a48484748444444455554535957585b59595c5c5b5b5a595a5a595a595a5b5f5d565554576a68686f6c6d716e6f74717170716e706f6f6f6f6e6d6f706968686b5b58585e5a5c5f5e5e63626562625e5f5f5e5e5e5d5d5d5f5958585b5653525a545558565457575858595a5c5c5b5a5a595a585c56555458090706060607070706070707070708070707060707070707060606065857575e595a5d5b5b5e5f6160605d61605e5e5e5d5b5a5d5958585a444140444242444342454445444445454445454443444245434241424947474c484a4d4b4b4d4c4d4c4c4c4d4d4d4e4c4c4b4a4c4b4a484c2c2a2a2c2b2b2d2c2b2e2e302f2d2d2e2d2c2d2c2c2b2a2c2b2b2a294846464a4a494c4b494d4d52504c4a4b4a4b4b4a48484749454546486966666d6a696f6d6a71797c736f6d6e6d6f706d6c6a696c6869696f4c49494f4d4c504e4b4f4f504f4e4f504f52534f4e4c4a4d484a4a4c44444348474549484549494a4948484848494b49484645474545484a5553525a56555958555a5b5c5a5a595a585b5c5b5b575659565657591d1c1c1e201d1e1e1d1e1e1e1e1d1e1e1d1e1e1e1d1d1c1d1c1c1c1d"
+
+# mat readgings for willow while standing on the 6.3lbs aluminum sheet
+MAT_READING_WILLOW = "cccccacbc9cacac9c9cacacacacaccc9c9c9cacccac9c9cac9cacacac4c4c3c4c5c4c4c4c3c3c3c3c4c4c4c3c3c3c3c4c3c3c3c3c3c3c3c3989898989898989898989898989898989898989898989898989898988f8f8f8f8f8e8e8f8f8f8e8f8f8f8f8e8e8f8e8f8e8e908f8f8f8f8f7a7a7a7a7a7a7a7a7a7a797a7a7a7a7a7a7a7a7a79797a7a7a7a7a7a9d9d9d9d9d9d9d9c9d9d9d9e9d9d9d9d9d9d9d9d9d9c9d9d9d9d9d9daaaaaaaaabaaaaaaababaaabababababaaaaaaababaaaaabaaaaaaaaa4a4a4a3a4a4a4a4a4a4a3a4a5a4a4a5a4a4a4a3a4a4a4a4a3a3a3a3a6a6a5a5a6a6a6a5a5a6a6a6a6a6a6a6a7a5a6a6a5a6a6a6a5a5a6a59b9b9b9b9b9b9b9b9b9b9b9c9b9c9c9c9c9b9b9c9b9b9b9b9b9b9b9b9897989898979798979897989898989898989898979797989798979786868686868686868686868686868686878686868686868686868686737473737373737373737373737373737373737373737373737173737b7b7c7b7b7b7b7b7b7b7b7c7c7c7c7c7b7b7b7b7b7b7b7b7b7b7b7b8c8c8c8b8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c989898989898989898989798989898989898989898989898989798989f9f9f9f9c9f9f9f9e9f9e9f9f9e9f9f9e9e9f9f9f9f9e9f9e9e9f9ea5a5a5a5a5a6a5a5a5a6a5a5a6a5a5a5a5a6a6a5a6a5a5a5a5a5a5a5a9a9a9a9a9aaa9a9a9a9a9a9aaa9a9a9a9a9a9a9aaa9a9a9a9aaa9a9aaa9a9aaaaaaaaaaaaaaaaaaa8aaaaaaa9aaaaabaaa9a9aaaaaaa9a99d9d9d9d9d9d9d9d9d9d9d9d9d9d9d9d9d9c9d9d9d9d9c9d9d9d9d9d9a9a9a9a999a9a9a9a9a9a9a9a9a999a99999a9a9a9a999a999a9a9a9c9b9b9b9b9b9b9b9b9b9b9b9a9b9b9b9b9b9b9b9b9b9a9b9b9b9b9ba0a0a0a0a1a0a0a0a0a0a0a0a0a0a0a0a1a0a1a0a0a0a09f9fa0a0a09e9e9e9e9e9e9e9e9e9e9e9e9f9e9e9e9e9e9e9e9e9e9e9f9e9e9e9eafafb0afafaeafafafafafafafafafafafafafb0afafaeafafaeafafadadadadacacadadacadadadadadadadadadadadadadadadacadadada8a8a8a8a8a7a8a7a7a8a8a8a7a7a8a8a8a8a8a8a8a7a7a8a7a8a5a8b5b5b5b4b5b5b5b4b4b5b5b5b4b4b5b5b5b5b5b5b6b5b5b5b4b5b4b5afafb0afafafafafafb0afb0afafafafafb0afafb0afafb0afafafafb0b0afafafafafafb0afafb0afb0b0afb0b0afb0b1afafb1afb0afafbcbcbcbcbcbcbcbbbcbcbcbcbcbcbcbcbcbebcbcbcbcbcbcbcbfbcbdb7b6b7b6b6b6b6b6b6b5b5b6b6b6b7b6b6b6b6b7b6b6b6b6b6b6b5b6a8a8a8a8a8a8a8a8a7a7a7a8a8a8a8a8a9a8a8a8a9aca8a7a8a8a8a8a4a4a4a4a4a4a4a4a4a4a4a4a2a4a4a4a4a4a5a4a4a5a5a4a4a4a4a4c3c3c3c3c3c4c3c3c4c3c2c4c3c4c3c2c2c3c3c3c2c2c4c3c3c4c3c3c8c8c8c8c8c9c9c8c8c9c9c9c8cac8c8c8c8c8c8c8c7c8c9c8c8c8c8cccccbcdcccdcccccdcdcdcecdcdcccdcccccccccccbcccccccdcccccbcbcbcccbcbcbcbcccccbcccbcccbcbcbcacbcbcbcacacbcacacbcbcdcdcccdcececececdcdcdcdcdcdcdcdcccccdcdcdcccccdcccdcecdbebec0bfbfbebebebebebfbfbfbebebebdbebebebebebebfc2bebebeb6b6b6b6b6b6b6b6b7b6b6b6b6b6b6b5b5b6b6b6b6b7b6b7b6b5b5b6c1c1c1c1c1c1c0c0c0c1c0c1c1c1c1c0c0c1c1c1c0c0c1c1c0c0c0c0bcbcbcbcbcbcbcbcbcbdbcbcbdbcbdbcbdbdbcbcbcbcbcbdbebcbcbbbab9b9b9b9b9b9b9b9b9b9bab9b9b9bab9bab9b9b9b9b9b9b9b9b9b9bcbcbcbdbdbcbcbcbcbdbcbdbdbebcbcbcbebdbdbcbcbcbdbcbcbcbcbababababcbbbababababababababababbbababab9bababababababaa6a6a6a6a6a6a6a6a6a6a5a6a6a6a6a6a6a6a6a6a6a6a8a7a7a6a6a6b1b0b1b0b0b0b1b1b1b1b0b1b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0bebebfbebebebebebdbdbfbebebebebebdbdbebebdbdbebdbdbdbebeb6b6b7b7b7b7b7b7b6b7b7b7b7b8b7b6b6b7b7b7b6b6b7b6b6b7b7b7b7b6b7b6b7b6b7b6b6b7b6b7b7b6b6b6b6b6b6b6b5b6b6b7b6b6b7bab6b6bab6b5b6b6b6b5b5b6b6b6b6b6b5b5b5b5b6b5b5b6b6b5b5b5b7babab9bab9b9b9b9b8b8b8b9b9b9bab8b8b8b8bab8b8b8b9b8b9b8b9c9c9c7c9c7c7c7c7c7c8c7c8c8c8c9c7c7c7c7c9c7c7c7c7c7c7c7c9a3a3a2a2a2a2a2a2a2a2a2a2a2a2a3a1a1a2a2a3a2a2a2a3a2a3a3a2"
+
+
+def test_two_samples_ideal():
+    """
+    Test which covers fitting a curve to two flawless samples of the mat
+    """
+    # create a calibrator
+    cal = Calibration(ROW_WIDTH, COL_HEIGHT, polyfit_degree=1)
+
+    # add two samples 
+    array = np.zeros((ROW_WIDTH, COL_HEIGHT))
+    reading = MatReading(ROW_WIDTH, COL_HEIGHT, 1, array)
+    cal.add_reading(reading)
+
+    array = np.ones((ROW_WIDTH, COL_HEIGHT))
+    reading = MatReading(ROW_WIDTH, COL_HEIGHT, 1, array)
+    cal.add_reading(reading)
+
+    # calculate the curves
+    cal.calculate_calibration_curves()
+
+    # expect the result to be y = 1. Test
+    x = np.arange(ROW_WIDTH * COL_HEIGHT, dtype=np.uint8).reshape((ROW_WIDTH, COL_HEIGHT))
+    y = cal.apply_calibration_curve(x)
+
+    truth = np.ones((ROW_WIDTH, COL_HEIGHT), dtype=np.double)
+
+    assert np.array_equal(y, truth)
+
+
+def test_five_samples_ideal():
+    """
+    Test which covers fitting a curve to five flawless samples of the mat
+    """
+    # create a calibrator
+    cal = Calibration(ROW_WIDTH, COL_HEIGHT, polyfit_degree=4)
+
+    # add 5 samples, fitting y = 0.001(x^2) + 0.001x + 1
+    poly = Polynomial([1, 0.001, 0.001])
+    array = np.full((ROW_WIDTH, COL_HEIGHT), 0, dtype=np.uint8)
+    reading = MatReading(ROW_WIDTH, COL_HEIGHT, poly(0), array)
+    cal.add_reading(reading)
+
+    array = np.full((ROW_WIDTH, COL_HEIGHT), 32, dtype=np.uint8)
+    reading = MatReading(ROW_WIDTH, COL_HEIGHT, poly(32), array)
+    cal.add_reading(reading)
+
+    array = np.full((ROW_WIDTH, COL_HEIGHT), 64, dtype=np.uint8)
+    reading = MatReading(ROW_WIDTH, COL_HEIGHT, poly(64), array)
+    cal.add_reading(reading)
+
+    array = np.full((ROW_WIDTH, COL_HEIGHT), 128, dtype=np.uint8)
+    reading = MatReading(ROW_WIDTH, COL_HEIGHT, poly(128), array)
+    cal.add_reading(reading)
+
+    array = np.full((ROW_WIDTH, COL_HEIGHT), 255, dtype=np.uint8)
+    reading = MatReading(ROW_WIDTH, COL_HEIGHT, poly(255), array)
+    cal.add_reading(reading)
+
+    # calculate the curves
+    cal.calculate_calibration_curves()
+
+    # expect the result to be y = 1. Test
+    x = np.arange(ROW_WIDTH * COL_HEIGHT, dtype=np.uint8).reshape((ROW_WIDTH, COL_HEIGHT))
+    y = cal.apply_calibration_curve(x)
+
+    # generate the expected result
+    truth = np.arange(ROW_WIDTH * COL_HEIGHT, dtype=np.double)
+    for i in range(len(truth)):
+        truth[i] = poly(int(truth[i]) % 256)
+
+    truth = np.round(truth.reshape((ROW_WIDTH, COL_HEIGHT)), 2)
+
+    # compare the actual and expected results. Interestingly enough, they are not exact
+    perc_errors = np.empty((ROW_WIDTH, COL_HEIGHT))
+    for i in range(ROW_WIDTH):
+        for j in range(COL_HEIGHT):
+            perc_errors[i, j] = 100 * ((y[i, j] - truth[i, j]) / truth[i, j])    # 100 * (meas - true) / true
+
+    perc_error = np.max(np.abs(perc_errors.flatten()))
+    print(f"Maximum percentage error between the true value and the polyfit value: {perc_error}")
+
+    assert perc_error < CONTRACT_MAX_ERROR_PERC
+
+
+def test_ten_samples_ideal_bad_case():
+    """
+    Test which covers fitting a curve to ten flawless samples of the mat
+    Expects awful error due to the high degree the polynomial is fit to
+    """
+    # create a calibrator
+    cal = Calibration(ROW_WIDTH, COL_HEIGHT, polyfit_degree=9)
+
+    # add 5 samples, fitting y = 0.001(x^2) + 0.001x + 1
+    poly = Polynomial([1, 0.001, 0.001])
+    array = np.full((ROW_WIDTH, COL_HEIGHT), 0, dtype=np.uint8)
+    reading = MatReading(ROW_WIDTH, COL_HEIGHT, poly(0), array)
+    cal.add_reading(reading)
+
+    array = np.full((ROW_WIDTH, COL_HEIGHT), 8, dtype=np.uint8)
+    reading = MatReading(ROW_WIDTH, COL_HEIGHT, poly(8), array)
+    cal.add_reading(reading)
+
+    array = np.full((ROW_WIDTH, COL_HEIGHT), 16, dtype=np.uint8)
+    reading = MatReading(ROW_WIDTH, COL_HEIGHT, poly(16), array)
+    cal.add_reading(reading)
+
+    array = np.full((ROW_WIDTH, COL_HEIGHT), 32, dtype=np.uint8)
+    reading = MatReading(ROW_WIDTH, COL_HEIGHT, poly(32), array)
+    cal.add_reading(reading)
+
+    array = np.full((ROW_WIDTH, COL_HEIGHT), 48, dtype=np.uint8)
+    reading = MatReading(ROW_WIDTH, COL_HEIGHT, poly(48), array)
+    cal.add_reading(reading)
+
+    array = np.full((ROW_WIDTH, COL_HEIGHT), 64, dtype=np.uint8)
+    reading = MatReading(ROW_WIDTH, COL_HEIGHT, poly(64), array)
+    cal.add_reading(reading)
+
+    array = np.full((ROW_WIDTH, COL_HEIGHT), 96, dtype=np.uint8)
+    reading = MatReading(ROW_WIDTH, COL_HEIGHT, poly(96), array)
+    cal.add_reading(reading)
+
+    array = np.full((ROW_WIDTH, COL_HEIGHT), 128, dtype=np.uint8)
+    reading = MatReading(ROW_WIDTH, COL_HEIGHT, poly(128), array)
+    cal.add_reading(reading)
+
+    array = np.full((ROW_WIDTH, COL_HEIGHT), 192, dtype=np.uint8)
+    reading = MatReading(ROW_WIDTH, COL_HEIGHT, poly(192), array)
+    cal.add_reading(reading)
+
+    array = np.full((ROW_WIDTH, COL_HEIGHT), 255, dtype=np.uint8)
+    reading = MatReading(ROW_WIDTH, COL_HEIGHT, poly(255), array)
+    cal.add_reading(reading)
+
+    # calculate the curves
+    cal.calculate_calibration_curves()
+
+    # expect the result to be y = 1. Test
+    x = np.arange(ROW_WIDTH * COL_HEIGHT, dtype=np.uint8).reshape((ROW_WIDTH, COL_HEIGHT))
+    y = cal.apply_calibration_curve(x)
+
+    # generate the expected result
+    truth = np.arange(ROW_WIDTH * COL_HEIGHT, dtype=np.double)
+    for i in range(len(truth)):
+        truth[i] = poly(int(truth[i]) % 256)
+
+    truth = np.round(truth.reshape((ROW_WIDTH, COL_HEIGHT)), 2)
+
+    # compare the actual and expected results. Interestingly enough, they are not exact
+    perc_errors = np.empty((ROW_WIDTH, COL_HEIGHT))
+    for i in range(ROW_WIDTH):
+        for j in range(COL_HEIGHT):
+            perc_errors[i, j] = 100 * ((y[i, j] - truth[i, j]) / truth[i, j])    # 100 * (meas - true) / true
+
+    perc_error = np.max(np.abs(perc_errors.flatten()))
+    print(f"Maximum percentage error between the true value and the polyfit value: {perc_error}")
+
+    # Surprisingly, using a higher order polynomial seems to not have much affect until order 8 - 9, where error begins to explode
+    # expect 2652.48 percent error (bad)
+    assert perc_error > CONTRACT_MAX_ERROR_PERC
+
+
+def test_three_samples_real_measurements():
+    
+    # create a calibrator
+    cal = Calibration(ROW_WIDTH, COL_HEIGHT, polyfit_degree=2)
+
+    array0 = mat_list_to_array(hex_string_to_array(MAT_READING_0LBS))
+    reading = MatReading(ROW_WIDTH, COL_HEIGHT, 0, array0)
+    cal.add_reading(reading)
+
+    array1 = mat_list_to_array(hex_string_to_array(MAT_READING_SHEET))
+    reading = MatReading(ROW_WIDTH, COL_HEIGHT, 6.213, array1)
+    cal.add_reading(reading)
+
+    array2 = mat_list_to_array(hex_string_to_array(MAT_READING_WILLOW))
+    reading = MatReading(ROW_WIDTH, COL_HEIGHT, 190, array2)
+    cal.add_reading(reading)
+
+    # calculate the curves
+    cal.calculate_calibration_curves()
+
+    bottle_array = mat_list_to_array(hex_string_to_array(MAT_READING_BOTTLE))
+    y = cal.apply_calibration_curve(bottle_array)
+
+    print(bottle_array)
+    print(y)

@@ -1,6 +1,9 @@
 # GUI which displays data from the mat interpreted by the board and transmitted over serial
 import sys, os
 from datetime import datetime
+import numpy as np
+
+from PIL import Image
 
 from PyQt6.QtGui import  *
 from PyQt6.QtWidgets import *
@@ -14,7 +17,9 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 matplotlib.use('QtAgg')
 
-from communicator import SessionWorker
+from modules.calibration import Calibration, MatReading, CalSampleWorker, MAX_RATED_PRESSURE_PA, DEFAULT_CAL_CURVES_PATH
+from modules.communicator import SessionWorker, ROW_WIDTH, COL_HEIGHT
+from modules.mat_handler import print_2darray
 
 
 class MainWindow(QMainWindow):
@@ -30,24 +35,32 @@ class MainWindow(QMainWindow):
 
         self.layout = QGridLayout()
         
-        #com port input box
-        self.port_input = QLineEdit("COM4", self)
+        # com port input box
+        self.port_input = QLineEdit("COM3", self)
         self.layout.addWidget(QLabel("Port:", self), 1, 0)
         self.layout.addWidget(self.port_input, 2, 0)
 
-        #baud rate input box
+        # baud rate input box
         self.baud_input = QLineEdit("115200", self)
+        self.baud_input.setValidator(QIntValidator(self))
         self.layout.addWidget(QLabel("Baud rate:", self), 1, 1)
         self.layout.addWidget(self.baud_input, 2, 1)
 
-        #calibrate mat
-        self.calibrate_b = QPushButton("Calibrate Mat")
-        self.calibrate_b.clicked.connect(self.calibrate_mat)
+        # calibrate mat
+        self.calibrate_b = QPushButton("Add Calibration Data")
+        self.calibrate_b.clicked.connect(self.get_calibration_data)
+        self.calibrate_complete_b = QPushButton("Complete Calibration")
+        self.calibrate_complete_b.clicked.connect(self.complete_calibration)
         self.calibrate_status = QLabel("Status: Not Calibrated")
+        self.calibrate_input = QLineEdit("", self)
+        self.calibrate_input.setValidator(QDoubleValidator(self))
+        self.layout.addWidget(QLabel("Calibration Weight (lbs)", self), 3, 1)
+        self.layout.addWidget(self.calibrate_complete_b, 3, 0)
         self.layout.addWidget(self.calibrate_b, 4, 0)
-        self.layout.addWidget(self.calibrate_status, 4, 1)
+        self.layout.addWidget(self.calibrate_input, 4, 1)
+        self.layout.addWidget(self.calibrate_status, 4, 2)
 
-        #start/stop mat recording session
+        # start/stop mat recording session
         self.start_session_b = QPushButton("Start Session")
         self.start_session_b.clicked.connect(self.start_session)
         self.stop_session_b = QPushButton("Stop Session")
@@ -56,14 +69,15 @@ class MainWindow(QMainWindow):
         self.session_status = QLabel("Status: Session Stopped")
         self.layout.addWidget(self.start_session_b, 5, 0)
         self.layout.addWidget(self.stop_session_b, 6, 0)
-        self.layout.addWidget(self.session_status, 5, 1)
+        self.layout.addWidget(self.session_status, 5, 2)
+        self.calibration = Calibration(ROW_WIDTH, COL_HEIGHT)    # the calibration class instance to apply to the session when it is started
         
-        #load past session
+        # load past session
         self.load_past_img_b = QPushButton("Load Past Session")
         self.load_past_img_b.clicked.connect(self.load_past_img)
         self.layout.addWidget(self.load_past_img_b, 7, 0)
 
-        #navigate past session buttons
+        # navigate past session buttons
         self.load_past_img_next_b = QPushButton("-->")
         self.load_past_img_prev_b = QPushButton("<--")
         self.load_past_img_next_b.clicked.connect(self.load_past_img_next)
@@ -71,7 +85,7 @@ class MainWindow(QMainWindow):
         self.layout.addWidget(self.load_past_img_next_b, 8, 1)
         self.layout.addWidget(self.load_past_img_prev_b, 8, 0)
    
-        #display image from file
+        # display image from file
         self.size = QSize(56*10, 28*10)
         self.im = QPixmap("default.png")
         self.label = QLabel()
@@ -90,8 +104,56 @@ class MainWindow(QMainWindow):
         self.session_thread = None
 
 
-    def calibrate_mat(self):
-        print("I will calibrate the board")
+    def get_calibration_data(self):
+        """
+        Should be called after the user has entered a value into the calibrate_input corresponding to a weight they have placed on the mat\
+        Adds the mat readings to a list of mat readings that are used to calculate mat calibration curves by self.get_calibration_data()
+        """
+        calibration_weight = float(self.calibrate_input.text())
+        print("Calibrating with weight", calibration_weight)
+
+        # start up the thread to collect a reading from the mat
+        cal_thread = QThread(self)
+        cal_worker = CalSampleWorker(self.port_input.text(), int(self.baud_input.text()), calibration_weight=calibration_weight)
+        cal_worker.moveToThread(cal_thread)
+
+        # connect important signals to the new thread
+        cal_thread.started.connect(cal_worker.run)
+        cal_worker.finished.connect(cal_thread.quit)
+        cal_worker.finished.connect(cal_worker.deleteLater)
+        cal_thread.finished.connect(cal_thread.deleteLater)
+
+        # start the thread to collect a reading from the mat
+        cal_thread.start()
+        self.calibrate_status.setText("Getting data...")
+        self.calibrate_b.setEnabled(False)
+        self.calibrate_complete_b.setEnabled(False)
+
+        # connect cleanup signals
+        cal_worker.reading_result.connect(
+            self.add_calibration_data
+        )
+        cal_thread.finished.connect(
+            lambda: self.calibrate_status.setText(f"{len(self.calibration.listOfMatReadings)} Cal Samples")
+        )
+        cal_thread.finished.connect(lambda: self.calibrate_b.setEnabled(True))
+        cal_thread.finished.connect(lambda: self.calibrate_complete_b.setEnabled(True))
+
+
+    def add_calibration_data(self, reading: MatReading):
+        """
+        Adds a MatReading to the calibration instance
+        """
+        self.calibration.add_reading(reading)
+
+
+    def complete_calibration(self):
+        """
+        Calculate the calibration curves and prevent further readings from being added
+        """
+        print(f"Calculating calibration curves")
+        self.calibration.calculate_calibration_curves()
+        self.calibrate_status.setText("Calibrated!")
 
 
     def start_session(self):
@@ -100,7 +162,12 @@ class MainWindow(QMainWindow):
         # set up the thread which the session worker will run on
         self.session_thread = QThread()
 
-        self.session = SessionWorker(self.port_input.text(), self.baud_input.text())
+        # load default calibration if the calibrator is uncalibrated
+        if not self.calibration.calibrated:
+            print("Using default calibration curves")
+            self.calibration.load_cal_curves(DEFAULT_CAL_CURVES_PATH)
+
+        self.session = SessionWorker(self.port_input.text(), self.baud_input.text(), calibrator=self.calibration)
 
         # move the session worker onto the thread
         self.session.moveToThread(self.session_thread)
@@ -124,8 +191,8 @@ class MainWindow(QMainWindow):
         self.session_thread.finished.connect(
             lambda: self.session_status.setText("Session stopped")
         )
-        self.session.imageSaved.connect(
-            self.load_img
+        self.session.calculated_pressures.connect(
+            self.render_pressure_array
         )
 
 
@@ -134,6 +201,36 @@ class MainWindow(QMainWindow):
         if self.session:
             self.session.stop()
  
+
+    def render_pressure_array(self, pressure_array: np.ndarray):
+        """
+        Converts an array of pressure values to an image based on the saved 
+        """
+
+        # 1. Convert the raw pressure values to color values based on a function
+        scaled_array = (pressure_array / MAX_RATED_PRESSURE_PA)
+
+        print_2darray(scaled_array)
+
+        im_array = np.full((ROW_WIDTH, COL_HEIGHT, 3), 255) * scaled_array[..., np.newaxis]
+        im_array = im_array.astype(np.uint8)
+        print(scaled_array.shape, im_array.shape)
+
+        #for i in range(COL_HEIGHT):
+        #    line = ""
+        #    for j in range(ROW_WIDTH):
+        #        line += str((im_array[j, i])) + " "
+        #    print(line)
+
+        # https://stackoverflow.com/questions/34232632/convert-python-opencv-image-numpy-array-to-pyqt-qpixmap-image
+        # https://copyprogramming.com/howto/pyqt5-convert-2d-np-array-to-qimage
+        
+        image = QImage(im_array.data, im_array.shape[1], im_array.shape[0], QImage.Format.Format_RGB888)
+        self.label.setPixmap(QPixmap(image).scaled(self.size))
+
+        # 3. Force the GUI to update its image
+
+
 
     def load_img(self, im_path):
         """
