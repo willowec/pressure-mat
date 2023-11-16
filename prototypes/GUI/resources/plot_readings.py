@@ -28,9 +28,11 @@ if __name__ == "__main__":
         expected_pressures.append(float(str(path).split('_')[2].split('pa')[0]))
 
     flat_readings = np.asarray(flat_readings)
+    max_sensval = np.max(flat_readings)
+    print(f"Maximum recorded sensor value: {max_sensval}")
     expected_pressures = np.asarray(expected_pressures)
 
-    f, axes = plt.subplots(nrows=2, ncols=1)
+    f, axes = plt.subplots(nrows=3, ncols=1)
 
     # plot the aggregate readings
     for pres, read in zip(expected_pressures, flat_readings):
@@ -68,6 +70,19 @@ if __name__ == "__main__":
 
     xcont = np.linspace(0, 255, 100)
     axes[1].plot(xcont, fit_function(xcont, a, b, c), '--', label="fitted")
+
+    # to figure out if it is possible to hit our % error specifications, plot the step size of the fit curve 
+    steps = []
+    for i in range(1, 255):
+        steps.append(fit_function(i, a, b, c) - fit_function(i-1, a, b, c))
+    
+    axes[2].plot(range(1, 255), steps)
+    axes[2].axvline(max_sensval, color='red', label="maximum recorded sensor value")
+    axes[2].set_title("Step size of fit exponential")
+    axes[2].set_ylim([0, (fit_function(max_sensval + 1, a, b, c) - fit_function(max_sensval, a, b, c))])
+    axes[2].set_xlabel("Sensor value (unitless)")
+    axes[2].set_ylabel("Step size (Pa)")
+
 
     f.tight_layout()
 
