@@ -15,6 +15,11 @@ from pathlib import Path
 def fit_function(x, a, b, c):
     return a * np.exp(b * x) + c
 
+
+def calc_percent_error(experimental, theoretical):
+    return (experimental - theoretical) / theoretical * 100
+
+
 p0 = [0.05, 0.05, 100]
 
 if __name__ == "__main__":
@@ -75,14 +80,27 @@ if __name__ == "__main__":
     steps = []
     for i in range(1, 255):
         steps.append(fit_function(i, a, b, c) - fit_function(i-1, a, b, c))
-    
-    axes[2].plot(range(1, 255), steps)
+    steps = np.asarray(steps)[0:max_sensval]
+
+    axes[2].plot(range(1, max_sensval + 1), steps)
     axes[2].axvline(max_sensval, color='red', label="maximum recorded sensor value")
+    axes[2].text(max_sensval + 1, 400, "Max recorded\nsensor value", color='red', fontsize='small')
+
     axes[2].set_title("Step size of fit exponential")
     axes[2].set_ylim([0, (fit_function(max_sensval + 1, a, b, c) - fit_function(max_sensval, a, b, c))])
     axes[2].set_xlabel("Sensor value (unitless)")
     axes[2].set_ylabel("Step size (Pa)")
 
+    # calculate the % error when a sample is taken near the greatest step size of the fit curve
+    max_step_size_index = np.argmax(steps)
+    value_at_max_step_size = fit_function(max_step_size_index, a, b, c)
+    upper_error = calc_percent_error(value_at_max_step_size, value_at_max_step_size + steps[max_step_size_index])
+    lower_error = calc_percent_error(value_at_max_step_size, value_at_max_step_size - steps[max_step_size_index])
+
+    print(f"Errors at the maximum step size {steps[max_step_size_index]}:")
+    print(f"   percentage error if the sensor value is off by one in the positive direction: {upper_error}")
+    print(f"   percentage error if the sensor value is off by one in the negative direction: {lower_error}")
+    print(value_at_max_step_size)
 
     f.tight_layout()
 
