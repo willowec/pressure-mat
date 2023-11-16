@@ -16,6 +16,7 @@ SENSOR_AREA_SQM = 0.0001        # Area of each individual sensor in square meter
 MAX_RATED_PRESSURE_PA = 5673.7  # Maximum pressure we expect any individual sensor to see
 
 DEFAULT_CAL_CURVES_PATH = "./resources/default_calibration_curves.npy"
+CAL_CURVE_P0 = [0.05, 0.05, 100]
 
 
 class MatReading:
@@ -51,7 +52,7 @@ class Calibration:
             self.height = mat_height
             self.polyfit_degree = polyfit_degree
             self.listOfMatReadings = []
-            self.cal_curves_array = np.empty((self.width, self.height), dtype=Polynomial)
+            self.cal_curves_array = np.empty((self.width, self.height, 3), dtype=np.float)  # list of coefficients
             self.calibrated = False
 
 
@@ -85,26 +86,24 @@ class Calibration:
                     matYVals[i] = self.listOfMatReadings[i].actual_pressure
 
                 try:
-                    self.cal_curves_array[rows,cols] = Polynomial.fit(matXVals, matYVals, self.polyfit_degree)
-                except np.linalg.LinAlgError as e:
-                    print(f"    Fitting error for x: {matXVals} y: {matYVals}. {e}")
+                    self.cal_curves_array[rows,cols] = self.fit(matXVals, matYVals, CAL_CURVE_P0)
+                except RuntimeError as e:
+                    # if the calibration fails, use the defaults
                     num_failures += 1
-                    self.cal_curves_array[rows, cols] = Polynomial([0] * self.polyfit_degree)
+                    self.cal_curves_array[rows, cols] = CAL_CURVE_P0
 
-        print(f"Calibrated with {num_failures} failures")
-
-        # for getting a default calibration
-        # np.save(DEFAULT_CAL_CURVES_PATH, self.cal_curves_array, allow_pickle=True)
+        print(f" Calibrated with {num_failures} failures.")
 
         self.calibrated = True
         return self.calibrated
     
 
-    def polyfit_scipy(self, x: np.array, y: np.array, degree) -> Polynomial:
+    def fit(self, x: np.array, y: np.array, p0: list) -> np.array:
         """
-        Function which takes an x and y, and uses scipy to fit them to a numpy polynomial
+        Function which takes an x and y, and uses scipy to find coefficients that when applied to self.fit_function closely fit (x, y). p0 is the starting point for the function's coefficients
         """
-        # TODO: use scipy for polyfit
+        params, cv = scipy.optimize.curve_fit(self.fit_function, x, y, p0=p0)
+        return np.asarray([params]) # return [a, b, c]
 
 
     def apply_calibration_curve(self, matReadings: np.ndarray):
@@ -121,7 +120,7 @@ class Calibration:
         for rows in range(self.width):
             for cols in range(self.height):
                 # apply the curve
-                calibratedValues[rows, cols] = self.cal_curves_array[rows,cols](matReadings[rows,cols])
+                calibratedValues[rows, cols] = self.fit_function(matReadings[rows,cols], *self.cal_curves_array[rows,cols])
 
         # clamp the results to sane values
         calibratedValues = np.clip(calibratedValues, 0, MAX_RATED_PRESSURE_PA)
@@ -133,13 +132,13 @@ class Calibration:
         """
         Loads calibration curves from a numpy file
         """
-        self.cal_curves_array = np.load(curves_path, allow_pickle=True)
+        self.cal_curves_array = np.load(curves_path, allow_pickle=False)
         self.calibrated = True
 
     
-    def exponential(self, x: np.array, a: float, b: float, c: float) -> np.array:
+    def fit_function(self, x: np.array, a, b, c):
         """
-        A simple exponential function
+        A general expnential function, the form which calibration curves should be fit to
         """
         return a * np.exp(b * x) + c
 

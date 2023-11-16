@@ -19,6 +19,8 @@ if __name__ == "__main__":
 
     calibration = Calibration(ROW_WIDTH, COL_HEIGHT, 2)
 
+    print("Attempting to generate calibration curves...")
+
     for path in data_files:
         # create a MatReading for each saved mat reading and append it to the calibrator
         reading = MatReading(ROW_WIDTH, COL_HEIGHT, 0, np.loadtxt(path, dtype=np.uint8, delimiter=','))
@@ -27,13 +29,19 @@ if __name__ == "__main__":
 
     calibration.calculate_calibration_curves()
 
+    # save the calibration curves to a default
+    np.save("default_calibration_curves.npy", calibration.cal_curves_array, allow_pickle=False)
+    print("Saved calibrations to default_calibration_curves.npy")
+
     f, axes = plt.subplots(nrows=1, ncols=1)
 
     # plot the calibration curves
     x = np.linspace(0, 255, 100)
-    curves = calibration.cal_curves_array.flatten()
-    for poly in curves:
-        axes.plot(x, poly(x))
+    curves = calibration.cal_curves_array
+    for i in range(curves.shape[0]):
+        for j in range(curves.shape[1]):
+            params = curves[i, j]
+            axes.plot(x, calibration.fit_function(x, *params))
 
     axes.set_title("Calculated Calibration Curves")
     axes.set_xlabel("Mat sensor reading (unitless)")
