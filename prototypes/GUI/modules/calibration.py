@@ -4,6 +4,7 @@ Module responsible for handling the calibration of the mat
 
 import numpy as np
 import scipy
+from scipy.optimize import Bounds
 from numpy.polynomial.polynomial import Polynomial
 
 from PyQt6.QtCore import QObject, pyqtSignal
@@ -17,6 +18,7 @@ MAX_RATED_PRESSURE_PA = 5673.7  # Maximum pressure we expect any individual sens
 
 DEFAULT_CAL_CURVES_PATH = "./resources/default_calibration_curves.npy"
 CAL_CURVE_P0 = [0.05, 0.05, 100]
+CAL_CURVE_BOUNDS = Bounds([0.01, 0.01, 10], [1, 1, 500])
 
 
 class MatReading:
@@ -102,7 +104,7 @@ class Calibration:
         """
         Function which takes an x and y, and uses scipy to find coefficients that when applied to self.fit_function closely fit (x, y). p0 is the starting point for the function's coefficients
         """
-        params, cv = scipy.optimize.curve_fit(self.fit_function, x, y, p0=p0)
+        params, cv = scipy.optimize.curve_fit(self.fit_function, x, y, p0=p0, bounds=CAL_CURVE_BOUNDS, method='trf')
         return np.asarray([params]) # return [a, b, c]
 
 
