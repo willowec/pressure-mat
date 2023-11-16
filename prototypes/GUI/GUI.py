@@ -208,9 +208,9 @@ class MainWindow(QMainWindow):
         """
 
         # 1. Convert the raw pressure values to color values based on a function
+        print(np.max(pressure_array.flatten()))
         scaled_array = (pressure_array / MAX_RATED_PRESSURE_PA)
 
-        print_2darray(scaled_array)
 
         im_array = np.full((ROW_WIDTH, COL_HEIGHT, 3), 255) * scaled_array[..., np.newaxis]
         im_array = im_array.astype(np.uint8)
