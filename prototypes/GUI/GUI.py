@@ -46,20 +46,6 @@ class MainWindow(QMainWindow):
         self.layout.addWidget(QLabel("Baud rate:", self), 1, 1)
         self.layout.addWidget(self.baud_input, 2, 1)
 
-        # calibrate mat
-        self.calibrate_b = QPushButton("Add Calibration Data")
-        self.calibrate_b.clicked.connect(self.get_calibration_data)
-        self.calibrate_complete_b = QPushButton("Complete Calibration")
-        self.calibrate_complete_b.clicked.connect(self.complete_calibration)
-        self.calibrate_status = QLabel("Status: Not Calibrated")
-        self.calibrate_input = QLineEdit("", self)
-        self.calibrate_input.setValidator(QDoubleValidator(self))
-        self.layout.addWidget(QLabel("Calibration Weight (lbs)", self), 3, 1)
-        self.layout.addWidget(self.calibrate_complete_b, 3, 0)
-        self.layout.addWidget(self.calibrate_b, 4, 0)
-        self.layout.addWidget(self.calibrate_input, 4, 1)
-        self.layout.addWidget(self.calibrate_status, 4, 2)
-
         # start/stop mat recording session
         self.start_session_b = QPushButton("Start Session")
         self.start_session_b.clicked.connect(self.start_session)
