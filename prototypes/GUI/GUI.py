@@ -71,15 +71,11 @@ class MainWindow(QMainWindow):
         self.layout.addWidget(self.load_past_img_next_b, 8, 1)
         self.layout.addWidget(self.load_past_img_prev_b, 8, 0)
    
-        # display image from file
-        self.size = QSize(56*10, 28*10)
-        self.im = QPixmap("default.png")
-        self.label = QLabel()
+        # set up image label
+        self.im_size = QSize(COL_HEIGHT*10, ROW_WIDTH*10)
+        self.im_label = QLabel()
         self.qimage = QImage()
-        self.im_scaled = self.im.scaled(self.size)
-        self.qimage=self.im_scaled.toImage()
-        self.label.setPixmap(self.im_scaled)
-        self.layout.addWidget(self.label, 0, 2)
+        self.layout.addWidget(self.im_label, 0, 2)
 
         widget = QWidget()
         widget.setLayout(self.layout)
@@ -212,7 +208,7 @@ class MainWindow(QMainWindow):
         # https://copyprogramming.com/howto/pyqt5-convert-2d-np-array-to-qimage
         
         image = QImage(im_array.data, im_array.shape[1], im_array.shape[0], QImage.Format.Format_RGB888)
-        self.label.setPixmap(QPixmap(image).scaled(self.size))
+        self.im_label.setPixmap(QPixmap(image).scaled(self.im_size))
 
         # 3. Force the GUI to update its image
 
@@ -229,7 +225,7 @@ class MainWindow(QMainWindow):
         self.current_img_index = int(self.current_img_path.stem)
 
         # update the pixmap with the new image
-        self.label.setPixmap(QPixmap(im_path).scaled(self.size))
+        self.im_label.setPixmap(QPixmap(im_path).scaled(self.im_size))
 
 
     def load_past_img(self):
@@ -283,7 +279,7 @@ class MainWindow(QMainWindow):
         when image navigator is clicked, this updates the image to the file with the next index
         """
         self.get_next_file(1)
-        self.label.setPixmap(QPixmap(self.current_img_path).scaled(self.size))
+        self.im_label.setPixmap(QPixmap(self.current_img_path).scaled(self.im_size))
 
 
     def load_past_img_prev(self):
@@ -291,7 +287,7 @@ class MainWindow(QMainWindow):
         when image navigator is clicked, this updates the image to the file with the previous index
         """
         self.get_next_file(-1)
-        self.label.setPixmap(QPixmap(self.current_img_path).scaled(self.size))
+        self.im_label.setPixmap(QPixmap(self.current_img_path).scaled(self.im_size))
 
 
     def closeEvent(self, event):
