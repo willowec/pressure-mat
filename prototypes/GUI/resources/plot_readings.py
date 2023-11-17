@@ -37,30 +37,30 @@ if __name__ == "__main__":
     print(f"Maximum recorded sensor value: {max_sensval}")
     expected_pressures = np.asarray(expected_pressures)
 
-    f, axes = plt.subplots(nrows=3, ncols=1)
+    f, axes = plt.subplots(nrows=2, ncols=2)
 
     # plot the aggregate readings
     for pres, read in zip(expected_pressures, flat_readings):
-        axes[0].scatter(read, [pres] * len(read))
+        axes[0][0].scatter(read, [pres] * len(read))
 
-    axes[0].set_title("Sensor values for different pressures")
-    axes[0].set_xlabel("Sensor ADC value (unitless)")
-    axes[0].set_ylabel("Actual pressure (Pa)")
-    axes[0].set_xlim([0, 255])
-    axes[0].set_ylim([0, 6000])
+    axes[0][0].set_title("Sensor values for different pressures")
+    axes[0][0].set_xlabel("Sensor ADC value (unitless)")
+    axes[0][0].set_ylabel("Actual pressure (Pa)")
+    axes[0][0].set_xlim([0, 255])
+    axes[0][0].set_ylim([0, 6000])
 
     # plot the average readings
     avg_readings = np.asarray([np.average(flat_reading) for flat_reading in flat_readings])
     z = sorted(zip(avg_readings, expected_pressures))
     xs = np.asarray([i[0] for i in z])
     ys = np.asarray([i[1] for i in z])
-    axes[1].plot(xs, ys)
+    axes[0][1].plot(xs, ys)
 
-    axes[1].set_title("Average sensor values for different pressures")
-    axes[1].set_xlabel("Average of each sensor's ADC value (unitless)")
-    axes[1].set_ylabel("Actual pressure (Pa)")
-    axes[1].set_xlim([0, 255])
-    axes[1].set_ylim([0, 6000])
+    axes[0][1].set_title("Average sensor values for different pressures")
+    axes[0][1].set_xlabel("Average of each sensor's ADC value (unitless)")
+    axes[0][1].set_ylabel("Actual pressure (Pa)")
+    axes[0][1].set_xlim([0, 255])
+    axes[0][1].set_ylim([0, 6000])
 
     # fit an exponential to the average readings
     # help from this page: https://swharden.com/blog/2020-09-24-python-exponential-fit/
@@ -74,7 +74,7 @@ if __name__ == "__main__":
     print(f"Fit an exponential to the input data with R² = {rSquared}. {a=}, {b=}, {c=}")
 
     xcont = np.linspace(0, 255, 100)
-    axes[1].plot(xcont, fit_function(xcont, a, b, c), '--', label="fitted")
+    axes[0][1].plot(xcont, fit_function(xcont, a, b, c), '--', label="fitted")
 
     # to figure out if it is possible to hit our % error specifications, plot the step size of the fit curve 
     steps = []
@@ -82,14 +82,24 @@ if __name__ == "__main__":
         steps.append(fit_function(i, a, b, c) - fit_function(i-1, a, b, c))
     steps = np.asarray(steps)[0:max_sensval]
 
-    axes[2].plot(range(1, max_sensval + 1), steps)
-    axes[2].axvline(max_sensval, color='red', label="maximum recorded sensor value")
-    axes[2].text(max_sensval + 1, 400, "Max recorded\nsensor value", color='red', fontsize='small')
+    axes[1][0].plot(range(1, max_sensval + 1), steps)
+    axes[1][0].axvline(max_sensval, color='red', label="maximum recorded sensor value")
+    axes[1][0].text(max_sensval + 1, 400, "Max recorded\nsensor value", color='red', fontsize='small')
 
-    axes[2].set_title("Step size of fit exponential")
-    axes[2].set_ylim([0, (fit_function(max_sensval + 1, a, b, c) - fit_function(max_sensval, a, b, c))])
-    axes[2].set_xlabel("Sensor value (unitless)")
-    axes[2].set_ylabel("Step size (Pa)")
+    axes[1][0].set_title("Step size of fit exponential")
+    axes[1][0].set_ylim([0, (fit_function(max_sensval + 1, a, b, c) - fit_function(max_sensval, a, b, c))])
+    axes[1][0].set_xlabel("Sensor value (unitless)")
+    axes[1][0].set_ylabel("Step size (Pa)")
+
+    # plot the %error experienced due to a single misstep
+    errors = [max(abs(calc_percent_error(fit_function(i, a, b, c), fit_function(i, a, b, c) + steps[i])),
+                  abs(calc_percent_error(fit_function(i, a, b, c), fit_function(i, a, b, c) + steps[i]))) 
+              for i in range(1, max_sensval)]
+
+    axes[1][1].plot(range(1, max_sensval), errors)
+    axes[1][1].set_title("Percentage error in the event of an off-by-one error in the sensor value")
+    axes[1][1].set_xlabel("Sensor value (unitless)")
+    axes[1][1].set_ylabel("Percentage error (%)")
 
     # calculate the % error when a sample is taken near the greatest step size of the fit curve
     max_step_size_index = np.argmax(steps)
@@ -100,9 +110,10 @@ if __name__ == "__main__":
     print(f"Errors at the maximum step size {steps[max_step_size_index]}:")
     print(f"   percentage error if the sensor value is off by one in the positive direction: {upper_error}")
     print(f"   percentage error if the sensor value is off by one in the negative direction: {lower_error}")
-    print(value_at_max_step_size)
 
     f.tight_layout()
+
+    print(errors[150])
 
     plt.show()
 
