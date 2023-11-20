@@ -74,3 +74,15 @@ def lbs_to_neutons(force_lbs: float) -> float:
     Function which converts pounds force to newtons force
     """
     return force_lbs * 4.44822
+
+
+def calc_mat_reading_stats(mat_samples_pa: np.array):
+    """
+    Calculates some useful statistics about the mat reading and returns them as a string
+    """
+    flat_mat = mat_samples_pa.flatten()
+    max_pa = np.max(flat_mat)
+    min_pa = np.min(flat_mat)
+    average_pa = round(np.average(flat_mat), 2)
+
+    return f"    Max pressure: {max_pa}Pa\n    Min pressure: {min_pa}Pa\n    Avg pressure: {average_pa}Pa"

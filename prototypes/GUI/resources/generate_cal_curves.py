@@ -12,6 +12,11 @@ sys.path.append('..')
 from modules.calibration import *
 
 
+def fit_function(x, a, b, c):
+    return a * np.exp(b * x) + c
+
+p0 = [0.05, 0.05, 100]
+
 if __name__ == "__main__":
     mat_readings = []
 
@@ -32,6 +37,27 @@ if __name__ == "__main__":
     # save the calibration curves to a default
     np.save("default_calibration_curves.npy", calibration.cal_curves_array, allow_pickle=False)
     print("Saved calibrations to default_calibration_curves.npy")
+
+
+    # also calculate an average calibration curve that can be applied to all sensors
+    data_files = Path("./raw_data").glob("*.csv")
+    avgs = []
+    pressures = []
+    for path in data_files:
+        avgs.append(np.average(np.loadtxt(path, dtype=np.uint8, delimiter=',').flatten()))
+        pressures.append(float(str(path).split('_')[2].split('pa')[0]))
+    
+    print(avgs, pressures)
+
+    params, cv = scipy.optimize.curve_fit(fit_function, avgs, pressures, p0=p0)
+
+    avg_cal_curves = np.empty_like(calibration.cal_curves_array)
+    for i in range(avg_cal_curves.shape[0]):
+        for j in range(avg_cal_curves.shape[1]):
+            avg_cal_curves[i, j] = np.asarray(params)
+
+    np.save("averaged_calibration_curves.npy", avg_cal_curves, allow_pickle=False)
+
 
     f, axes = plt.subplots(nrows=1, ncols=1)
 

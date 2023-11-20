@@ -19,7 +19,7 @@ matplotlib.use('QtAgg')
 
 from modules.calibration import Calibration, MatReading, CalSampleWorker, MAX_RATED_PRESSURE_PA, DEFAULT_CAL_CURVES_PATH
 from modules.communicator import SessionWorker, ROW_WIDTH, COL_HEIGHT
-from modules.mat_handler import print_2darray
+from modules.mat_handler import print_2darray, calc_mat_reading_stats
 
 
 class MainWindow(QMainWindow):
@@ -77,6 +77,10 @@ class MainWindow(QMainWindow):
         self.qimage = QImage()
         self.layout.addWidget(self.im_label, 0, 2)
 
+        # add a label for showing stats about the image
+        self.mat_stats_label = QLabel("Mat reading stats:\nNone")
+        self.layout.addWidget(self.mat_stats_label, 0, 1)
+
         widget = QWidget()
         widget.setLayout(self.layout)
         self.setCentralWidget(widget)
@@ -84,6 +88,14 @@ class MainWindow(QMainWindow):
 
         # declare the existance of a session thread
         self.session_thread = None
+
+
+    def show_reading_statistics(self, reading: np.ndarray):
+        """
+        Updates the mat_stats_label with statistics about the mat
+        """
+        stats = calc_mat_reading_stats(reading)
+        self.mat_stats_label.setText(stats)
 
 
     def get_calibration_data(self):
@@ -188,6 +200,8 @@ class MainWindow(QMainWindow):
         """
         Converts an array of pressure values to an image based on the saved 
         """
+
+        self.show_reading_statistics(pressure_array)
 
         # 1. Convert the raw pressure values to color values based on a function
         print(np.max(pressure_array.flatten()))
