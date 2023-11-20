@@ -17,7 +17,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 matplotlib.use('QtAgg')
 
-from modules.calibration import Calibration, MatReading, CalSampleWorker, MAX_RATED_PRESSURE_PA, DEFAULT_CAL_CURVES_PATH
+from modules.calibration import Calibration, MatReading, CalSampleWorker, MAX_RATED_PRESSURE_PA, DEFAULT_CAL_CURVES_PATH, AVERAGED_CAL_CURVES_PATH
 from modules.communicator import SessionWorker, ROW_WIDTH, COL_HEIGHT
 from modules.mat_handler import print_2darray, calc_mat_reading_stats
 
@@ -201,31 +201,21 @@ class MainWindow(QMainWindow):
         Converts an array of pressure values to an image based on the saved 
         """
 
+        # write the stats of the current reading
         self.show_reading_statistics(pressure_array)
 
-        # 1. Convert the raw pressure values to color values based on a function
-        print(np.max(pressure_array.flatten()))
+        # convert the raw pressure values to color values
         scaled_array = (pressure_array / MAX_RATED_PRESSURE_PA)
-
 
         im_array = np.full((ROW_WIDTH, COL_HEIGHT, 3), 255) * scaled_array[..., np.newaxis]
         im_array = im_array.astype(np.uint8)
-        print(scaled_array.shape, im_array.shape)
 
-        #for i in range(COL_HEIGHT):
-        #    line = ""
-        #    for j in range(ROW_WIDTH):
-        #        line += str((im_array[j, i])) + " "
-        #    print(line)
 
-        # https://stackoverflow.com/questions/34232632/convert-python-opencv-image-numpy-array-to-pyqt-qpixmap-image
-        # https://copyprogramming.com/howto/pyqt5-convert-2d-np-array-to-qimage
-        
+        # convert the numpy array directly to an image in memory. See these resources:
+        #   https://stackoverflow.com/questions/34232632/convert-python-opencv-image-numpy-array-to-pyqt-qpixmap-image
+        #   https://copyprogramming.com/howto/pyqt5-convert-2d-np-array-to-qimage
         image = QImage(im_array.data, im_array.shape[1], im_array.shape[0], QImage.Format.Format_RGB888)
         self.im_label.setPixmap(QPixmap(image).scaled(self.im_size))
-
-        # 3. Force the GUI to update its image
-
 
 
     def load_img(self, im_path):

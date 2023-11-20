@@ -17,6 +17,7 @@ SENSOR_AREA_SQM = 0.0001        # Area of each individual sensor in square meter
 MAX_RATED_PRESSURE_PA = 600  # Maximum pressure we expect any individual sensor to see
 
 DEFAULT_CAL_CURVES_PATH = "./resources/default_calibration_curves.npy"
+AVERAGED_CAL_CURVES_PATH = "./resources/averaged_calibration_curves.npy"
 CAL_CURVE_P0 = [0.05, 0.05, 100]
 CAL_CURVE_BOUNDS = Bounds([0.00001, 0.00001, 0], [100, 10, 500])
 
