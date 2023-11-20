@@ -6,6 +6,7 @@ import numpy as np
 ROW_WIDTH = 28
 COL_HEIGHT = 56
 MAT_SIZE = 1568
+SENSOR_AREA_SQM = 0.0001        # Area of each individual sensor in square meters (1cm^2)
 
 START_READING_COMMAND = "start_reading"
 GET_CAL_VALS_COMMAND = "get_cal_vals"
@@ -76,7 +77,11 @@ def lbs_to_neutons(force_lbs: float) -> float:
     return force_lbs * 4.44822
 
 
-def calc_mat_reading_stats(mat_samples_pa: np.array):
+def calc_percent_error(experimental, theoretical):
+    return (experimental - theoretical) / theoretical * 100
+
+
+def calc_mat_reading_stats(mat_samples_pa: np.array, expected_weight: float):
     """
     Calculates some useful statistics about the mat reading and returns them as a string
     """
@@ -85,4 +90,19 @@ def calc_mat_reading_stats(mat_samples_pa: np.array):
     min_pa = np.min(flat_mat)
     average_pa = round(np.average(flat_mat), 2)
 
-    return f"    Max pressure: {max_pa}Pa\n    Min pressure: {min_pa}Pa\n    Avg pressure: {average_pa}Pa"
+    errors_msg = "Put the expected distributed weight value (in lbs) into the entry to the left to see error!"
+    if expected_weight > 0:
+        expected_pa = lbs_to_neutons(expected_weight) / (MAT_SIZE * SENSOR_AREA_SQM)
+
+        errors = np.empty_like(flat_mat)
+        for i in range(len(errors)):
+            errors[i] = calc_percent_error(flat_mat[i], expected_pa)
+
+        min_err = round(np.min(np.abs(errors)), 2)
+        max_err = round(np.max(np.abs(errors)), 2)
+        avg_err = round(np.average(np.abs(errors)), 2)
+        median_err = round(np.median(np.abs(errors)), 2)
+
+        errors_msg = f"    Errors:\n    Min % err: {min_err}\n    Max % err: {max_err}\n    Avg % err: {avg_err}\n    Median % err: {median_err}"
+
+    return f"    Max pressure: {max_pa}Pa\n    Min pressure: {min_pa}Pa\n    Avg pressure: {average_pa}Pa\n    {errors_msg}"

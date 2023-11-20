@@ -81,6 +81,11 @@ class MainWindow(QMainWindow):
         self.mat_stats_label = QLabel("Mat reading stats:\nNone")
         self.layout.addWidget(self.mat_stats_label, 0, 1)
 
+        # add an entry for putting in the expected uniform weight value in lbs
+        self.mat_expected_weight = QLineEdit("-1", self)
+        self.mat_expected_weight.setValidator(QDoubleValidator(self))
+        self.layout.addWidget(self.mat_expected_weight, 0, 0)
+
         widget = QWidget()
         widget.setLayout(self.layout)
         self.setCentralWidget(widget)
@@ -94,7 +99,11 @@ class MainWindow(QMainWindow):
         """
         Updates the mat_stats_label with statistics about the mat
         """
-        stats = calc_mat_reading_stats(reading)
+        expected = -1
+        if self.mat_expected_weight.text() != '':
+            expected = float(self.mat_expected_weight.text())
+
+        stats = calc_mat_reading_stats(reading, expected)
         self.mat_stats_label.setText(stats)
 
 

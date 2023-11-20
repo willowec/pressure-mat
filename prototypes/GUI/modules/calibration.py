@@ -13,7 +13,6 @@ import serial
 
 from modules.mat_handler import *
 
-SENSOR_AREA_SQM = 0.0001        # Area of each individual sensor in square meters (1cm^2)
 MAX_RATED_PRESSURE_PA = 600  # Maximum pressure we expect any individual sensor to see
 
 DEFAULT_CAL_CURVES_PATH = "./resources/default_calibration_curves.npy"
