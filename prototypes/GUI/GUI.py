@@ -63,13 +63,13 @@ class MainWindow(QMainWindow):
         self.load_past_img_b.clicked.connect(self.load_past_img)
         self.layout.addWidget(self.load_past_img_b, 7, 0)
 
-        # navigate past session buttons
-        self.load_past_img_next_b = QPushButton("-->")
-        self.load_past_img_prev_b = QPushButton("<--")
-        self.load_past_img_next_b.clicked.connect(self.load_past_img_next)
-        self.load_past_img_prev_b.clicked.connect(self.load_past_img_prev)
-        self.layout.addWidget(self.load_past_img_next_b, 8, 1)
-        self.layout.addWidget(self.load_past_img_prev_b, 8, 0)
+        # navigate images with slider
+        self.slider = QSlider(Qt.Orientation.Horizontal, self)
+        self.slider.setTickInterval(1)
+        self.slider.setMinimum(0)
+        self.slider.setMaximum(0)
+        self.slider.sliderReleased.connect(self.get_img_file_from_slider(self.slider.value()))
+        self.layout.addWidget(self.slider, 1, 2)
    
         # display image from file
         self.size = QSize(56*10, 28*10)
@@ -234,12 +234,61 @@ class MainWindow(QMainWindow):
 
     def load_past_img(self):
         """
-        opens file selector, saves a selected image, scales it, then displays it
+        opens file selector, saves a selected image, scales it, then displays it, and updates the slider
         """
         fname = self.getfile()
         print("fname = ", fname)
 
+        self.current_img_path = fname
+
         self.load_img(im_path=fname)
+
+        #updating the slider with the current session folder
+        self.update_slider(fname[:(len(fname)-8)])
+
+    def get_img_file_from_slider(self, im_index):
+        """
+
+        """
+
+        self.current_img_index = im_index
+
+        next_file_name = str(im_index)
+
+        #add zeros to next_index to make it the propper file name
+        while(len(next_file_name) < 4):
+            next_file_name = "0" + next_file_name
+
+        next_file_name = next_file_name + ".png"
+
+        self.current_img_path = (self.current_img_path[:-8] + next_file_name)
+
+        self.load_past_img(self.current_img_path)
+
+
+    def update_slider(self, dir_path):
+        """
+        sets the maximum value of the slider bassed on how many images are in the session and sets slider position to that of the current image index
+        """
+
+        self.slider.setMaximum(self.count_files_in_folder(dir_path)-1)
+        self.slider.setValue(self.current_img_index)
+
+
+    def count_files_in_folder(self, dir_path):
+        """
+        Used to count the number of files in a folder. From https://pynative.com/python-count-number-of-files-in-a-directory/
+        """
+
+        count = 0
+        # Iterate directory
+        for path in os.listdir(dir_path):
+            # check if current path is a file
+            if os.path.isfile(os.path.join(dir_path, path)):
+                count += 1
+        # print('File count:', count)
+
+        return count
 
 
     def get_next_file(self, prev_or_next):
@@ -309,7 +358,7 @@ class MainWindow(QMainWindow):
         #default file path below
         file_path = ('./')
 
-        fname_full = QFileDialog.getOpenFileName(self, 'Open file', file_path,"Image files (*.png)")
+        fname_full = QFileDialog.getOpenFileName(self, 'Open file', file_path)
         return fname_full[0]
 
 
