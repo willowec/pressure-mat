@@ -123,7 +123,7 @@ class SessionWorker(QObject):
         """
         # create the image's filename
         sample_num = len(list(Path(self.path).glob('*')))
-        sample_path = Path(self.path).joinpath(f"{sample_num:05d}.png")
+        sample_path = Path(self.path).joinpath(f"{sample_num:05d}.npy")
 
         np.save(sample_path, pressure_array, allow_pickle=False)
 
