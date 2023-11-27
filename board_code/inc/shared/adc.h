@@ -6,6 +6,8 @@ This code is written assuming that the ADC's are max11643 chips
 #define ADC_HEADER
 
 #include <stdint.h>
+#include <stdbool.h>
+
 #include "hardware/spi.h"
 
 #define ADC_RESPONSE_LENGTH 28
@@ -14,6 +16,10 @@ This code is written assuming that the ADC's are max11643 chips
 #define SPI0_SCK_PIN        2
 #define SPI0_TX_PIN         3
 #define SPI0_RX_PIN         4
+
+#define SPI1_SCK_PIN        10
+#define SPI1_TX_PIN         11
+#define SPI1_RX_PIN         12
 
 #define SPI_CLOCKSPEED      2000000 // 2MHz
 #define CS_SELECT           0
@@ -28,12 +34,14 @@ This code is written assuming that the ADC's are max11643 chips
 struct adc_inst {
     uint8_t cs_pin;
     uint8_t eoc_pin;
+    spi_inst_t *spi_channel;
 };
 
 /*
     Initializes the spi channel used to talk to the ADCs, and calles initialze_adc() for both of them
+    Set dual_channel=true if using on board version 2 in order for each adc to have its own SPI channel
 */
-void initialize_adcs(struct adc_inst *adc1, struct adc_inst *adc2);
+void initialize_adcs(struct adc_inst *adc1, struct adc_inst *adc2, bool dual_channel);
 
 /*
     Initializes an ADC (sets setup register values, etc)

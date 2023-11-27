@@ -5,8 +5,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
-void initialize_adcs(struct adc_inst *adc1, struct adc_inst *adc2)
+void initialize_adcs(struct adc_inst *adc1, struct adc_inst *adc2, bool dual_channel)
 {
     // initialize the spi channels
     spi_init(spi0, SPI_CLOCKSPEED);
@@ -14,11 +15,26 @@ void initialize_adcs(struct adc_inst *adc1, struct adc_inst *adc2)
     gpio_set_function(SPI0_TX_PIN, GPIO_FUNC_SPI);
     gpio_set_function(SPI0_RX_PIN, GPIO_FUNC_SPI);
 
+    if (dual_channel) {
+        spi_init(spi1, SPI_CLOCKSPEED);
+        gpio_set_function(SPI1_SCK_PIN, GPIO_FUNC_SPI);
+        gpio_set_function(SPI1_TX_PIN, GPIO_FUNC_SPI);
+        gpio_set_function(SPI1_RX_PIN, GPIO_FUNC_SPI);
+    }
+
     // set up the adc1 and adc2 structs
     adc1->cs_pin = ADC1_CS_PIN;
     adc1->eoc_pin = ADC1_EOC_PIN;
     adc2->cs_pin = ADC2_CS_PIN;
     adc2->eoc_pin = ADC2_EOC_PIN;
+
+    // assign the spi channels to their ADC structs
+    adc1->spi_channel = spi0;
+    adc2->spi_channel = spi0;
+
+    if (dual_channel) {
+        adc2->spi_channel = spi1;
+    }
 
     // start the CS pins in not selected mode
     gpio_init(adc1->cs_pin);
@@ -88,7 +104,7 @@ void adc_write_blocking(struct adc_inst* adc, uint8_t *src, size_t len)
     // enable the CS pin to talk to the adc
     gpio_put(adc->cs_pin, CS_SELECT);
     sleep_us(1);
-    spi_write_blocking(spi0, src, len);
+    spi_write_blocking(adc->spi_channel, src, len);
 
     // disable the CS pin
     sleep_us(1);
@@ -102,7 +118,7 @@ void adc_read_blocking(struct adc_inst* adc, uint8_t repeated_tx_data, uint8_t *
     gpio_put(adc->cs_pin, CS_SELECT);
     sleep_us(1);
 
-    spi_read_blocking(spi0, repeated_tx_data, dst, len);
+    spi_read_blocking(adc->spi_channel, repeated_tx_data, dst, len);
 
     // disable the CS pin
     sleep_us(1);

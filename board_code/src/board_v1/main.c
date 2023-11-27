@@ -36,7 +36,7 @@ int main() {
     // initialize the adcs
     struct adc_inst *adc1 = malloc(sizeof(struct adc_inst));
     struct adc_inst *adc2 = malloc(sizeof(struct adc_inst));
-    initialize_adcs(adc1, adc2);
+    initialize_adcs(adc1, adc2, false); // false for single channel mode
 
     // initialize the shift registers
     initialize_shreg_pins();

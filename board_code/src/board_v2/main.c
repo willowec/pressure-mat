@@ -33,10 +33,10 @@ int main() {
 
     uint8_t *mat = (uint8_t *)calloc(MAT_SIZE, sizeof(uint8_t));
 
-    // initialize the adcs
+    // initialize the adcs 
     struct adc_inst *adc1 = malloc(sizeof(struct adc_inst));
     struct adc_inst *adc2 = malloc(sizeof(struct adc_inst));
-    initialize_adcs(adc1, adc2);
+    initialize_adcs(adc1, adc2, true);  // true for dual_channel mode
 
     // initialize the shift registers
     initialize_shreg_pins();
