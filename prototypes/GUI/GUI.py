@@ -31,7 +31,6 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("28x56 Mat Interface")
 
         self.current_img_path = "default.png"
-        self.current_img_index = -1
 
         self.layout = QGridLayout()
         
@@ -59,16 +58,16 @@ class MainWindow(QMainWindow):
         self.calibration = Calibration(ROW_WIDTH, COL_HEIGHT)    # the calibration class instance to apply to the session when it is started
         
         # load past session
-        self.load_past_img_b = QPushButton("Load Past Session")
-        self.load_past_img_b.clicked.connect(self.load_past_img)
-        self.layout.addWidget(self.load_past_img_b, 7, 0)
+        self.load_past_session_b = QPushButton("Load Past Session")
+        self.load_past_session_b.clicked.connect(self.load_past_session)
+        self.layout.addWidget(self.load_past_session_b, 7, 0)
 
         # navigate images with slider
         self.slider = QSlider(Qt.Orientation.Horizontal, self)
         self.slider.setTickInterval(1)
         self.slider.setMinimum(0)
         self.slider.setMaximum(0)
-        self.slider.sliderReleased.connect(self.get_img_file_from_slider(self.slider.value()))
+        self.slider.sliderReleased.connect(self.get_npy_file_from_slider)
         self.layout.addWidget(self.slider, 1, 2)
    
         # display image from file
@@ -217,22 +216,7 @@ class MainWindow(QMainWindow):
         # 3. Force the GUI to update its image
 
 
-
-    def load_img(self, im_path):
-        """
-        Loads the image at im_path and puts it on the image label for viewing
-        """
-        # find the relative path of the image (sessions/sessionname/xxxx.png), i.e. the last three elements of the path
-        self.current_img_path = Path('').joinpath(*Path(im_path).parts[-3:])
-
-        # get just the number from the filename
-        self.current_img_index = int(self.current_img_path.stem)
-
-        # update the pixmap with the new image
-        self.label.setPixmap(QPixmap(im_path).scaled(self.size))
-
-
-    def load_past_img(self):
+    def load_past_session(self):
         """
         opens file selector, saves a selected image, scales it, then displays it, and updates the slider
         """
@@ -241,38 +225,52 @@ class MainWindow(QMainWindow):
 
         self.current_img_path = fname
 
-        self.load_img(im_path=fname)
+        new_npy = np.load(fname, allow_pickle=False)
+
+        self.render_pressure_array(new_npy)
 
         #updating the slider with the current session folder
-        self.update_slider(fname[:(len(fname)-8)])
+        self.update_slider()
 
-    def get_img_file_from_slider(self, im_index):
+
+    def get_npy_file_from_slider(self):
         """
 
         """
 
-        self.current_img_index = im_index
+        print("Slider value = ", str(self.slider.value()))
 
-        next_file_name = str(im_index)
+        next_npy_file = str(self.slider.value())
 
         #add zeros to next_index to make it the propper file name
-        while(len(next_file_name) < 4):
-            next_file_name = "0" + next_file_name
+        while(len(next_npy_file) < 5):
+            next_npy_file = "0" + next_npy_file
 
-        next_file_name = next_file_name + ".png"
+        next_npy_file = next_npy_file + ".npy"
 
-        self.current_img_path = (self.current_img_path[:-8] + next_file_name)
+        print("next npy file name = ", next_npy_file)
 
-        self.load_past_img(self.current_img_path)
+        print(self.current_img_path)
+
+        print(os.path.dirname(self.current_img_path))
+
+        #converts current img path to path type to get the parent directory and then find the next npy file in that directory, then converts back to string
+        self.current_img_path = str((Path(self.current_img_path).parents[0]).joinpath(Path(next_npy_file)))
+
+        print(self.current_img_path)
+
+        new_npy = np.load(self.current_img_path, allow_pickle=False)
+
+        self.render_pressure_array(new_npy)
 
 
-    def update_slider(self, dir_path):
+    def update_slider(self):
         """
         sets the maximum value of the slider bassed on how many images are in the session and sets slider position to that of the current image index
         """
 
-        self.slider.setMaximum(self.count_files_in_folder(dir_path)-1)
-        self.slider.setValue(self.current_img_index)
+        self.slider.setMaximum(self.count_files_in_folder(Path(self.current_img_path).parents[0])-1)
+        self.slider.setValue(0)
 
 
     def count_files_in_folder(self, dir_path):
@@ -291,58 +289,6 @@ class MainWindow(QMainWindow):
         return count
 
 
-    def get_next_file(self, prev_or_next):
-        """
-        input 1 for next file, -1 for previous file. 
-        Performs string manipulations to update the current image index and file path
-        """
-        #check if valid arguement was passed to function
-        if(prev_or_next == 1 or prev_or_next == -1):
-
-            #check if trying to access a negative index file
-            if(self.current_img_index == 0 and prev_or_next == -1):
-                print("there is no image before image 0")
-                return            
-
-            next_file_index = self.current_img_index + prev_or_next
-            next_file_name = str(next_file_index)
-
-            #add zeros to next_index to make it the propper file name
-            while(len(next_file_name) < 4):
-                next_file_name = "0" + next_file_name
-
-            #remove the previous image's file name, but keep its path, add the next/previous file name
-            next_file_path = self.current_img_path[:(len(self.current_img_path)-8)] + next_file_name + ".png"
-
-            #if the next file exists then open it
-            if(os.path.isfile(next_file_path)):
-                self.current_img_index = next_file_index
-                self.current_img_path = next_file_path
-                
-            else:
-                print("next file does not exist")
-                return
-        else:
-            print("invalid arguement passed to get_next_img()")
-            return
-        
-
-    def load_past_img_next(self):
-        """
-        when image navigator is clicked, this updates the image to the file with the next index
-        """
-        self.get_next_file(1)
-        self.label.setPixmap(QPixmap(self.current_img_path).scaled(self.size))
-
-
-    def load_past_img_prev(self):
-        """
-        when image navigator is clicked, this updates the image to the file with the previous index
-        """
-        self.get_next_file(-1)
-        self.label.setPixmap(QPixmap(self.current_img_path).scaled(self.size))
-
-
     def closeEvent(self, event):
         """
         Called when the window is closed. Exit the application
@@ -358,9 +304,9 @@ class MainWindow(QMainWindow):
         #default file path below
         file_path = ('./')
 
-        fname_full = QFileDialog.getOpenFileName(self, 'Open file', file_path)
+        fname_full = QFileDialog.getOpenFileName(self, 'Open File', file_path)
+        self.current_img_path = fname_full
         return fname_full[0]
-
 
 
 if __name__ == "__main__":
