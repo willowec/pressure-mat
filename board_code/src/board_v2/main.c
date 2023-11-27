@@ -66,6 +66,13 @@ int main() {
             // perform one read of the mat and transmit it to the GUI
             read_mat(mat, adc1, adc2);
             transmit_mat(mat);
+        } 
+        else if (parsed_command == PRINT_INFO_COMMAND_ID) {
+            // print code info
+            printf("This is PressureMat software for board v2!\n");
+        } 
+        else {
+            printf("Unrecognized command\n");
         }
     }
     

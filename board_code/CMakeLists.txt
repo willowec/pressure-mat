@@ -12,23 +12,42 @@ set(CMAKE_CXX_STANDARD 17)
 # initialize the Raspberry Pi Pico SDK
 pico_sdk_init()
 
-include_directories("src" "inc")
+include_directories("src/shared" "inc/shared")
 
-add_executable(board_code_main
-    src/main.c
-    src/transmitter.c
-    src/adc.c
-    src/matterface.c
-    inc/transmitter.h
-    inc/adc.h
-    inc/matterface.h 
+add_executable(board_v1_main
+    src/board_v1/main.c
+    src/shared/transmitter.c
+    src/shared/adc.c
+    src/board_v1/matterface.c
+    inc/shared/transmitter.h
+    inc/shared/adc.h
+    inc/board_v1/matterface.h 
 )
+target_include_directories(board_v1_main PRIVATE "inc/board_v1" PRIVATE "src/board_v1")
 
 
-target_link_libraries(board_code_main pico_stdlib pico_multicore hardware_spi)
+add_executable(board_v2_main
+    src/board_v2/main.c
+    src/shared/transmitter.c
+    src/shared/adc.c
+    src/board_v2/matterface.c
+    inc/shared/transmitter.h
+    inc/shared/adc.h
+    inc/board_v2/matterface.h 
+)
+target_include_directories(board_v2_main PRIVATE "inc/board_v2" PRIVATE "src/board_v2")
 
-pico_enable_stdio_usb(board_code_main 1)
-pico_enable_stdio_uart(board_code_main 0)
 
+target_link_libraries(board_v1_main pico_stdlib pico_multicore hardware_spi)
 
-pico_add_extra_outputs(board_code_main)
+pico_enable_stdio_usb(board_v1_main 1)
+pico_enable_stdio_uart(board_v1_main 0)
+
+pico_add_extra_outputs(board_v1_main)
+
+target_link_libraries(board_v2_main pico_stdlib pico_multicore hardware_spi)
+
+pico_enable_stdio_usb(board_v2_main 1)
+pico_enable_stdio_uart(board_v2_main 0)
+
+pico_add_extra_outputs(board_v2_main)
