@@ -75,7 +75,7 @@ int main() {
         }
         sleep_ms(500);
 
-        i ++;
+        i++;
     }
 }
 

@@ -10,6 +10,7 @@ main.c file for the RP2040 code for the pressure matrix project
 #include "hardware/spi.h"
 #include "hardware/gpio.h"
 #include "pico/multicore.h"
+#include "pico/util/queue.h"
 
 #include "transmitter.h"
 #include "adc.h"

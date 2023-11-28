@@ -31,9 +31,11 @@ add_executable(board_v2_main
     src/shared/transmitter.c
     src/shared/adc.c
     src/board_v2/matterface.c
+    src/shared/custom_multicore.c
     inc/shared/transmitter.h
     inc/shared/adc.h
     inc/board_v2/matterface.h 
+    inc/shared/custom_multicore.h
 )
 target_include_directories(board_v2_main PRIVATE "inc/board_v2" PRIVATE "src/board_v2")
 
