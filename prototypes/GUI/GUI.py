@@ -67,7 +67,7 @@ class MainWindow(QMainWindow):
         self.slider.setTickInterval(1)
         self.slider.setMinimum(0)
         self.slider.setMaximum(0)
-        self.slider.sliderReleased.connect(self.get_npy_file_from_slider)
+        self.slider.valueChanged.connect(self.get_npy_file_from_slider)
         self.layout.addWidget(self.slider, 1, 2)
    
         # display image from file
@@ -221,7 +221,7 @@ class MainWindow(QMainWindow):
         opens file selector, saves a selected image, scales it, then displays it, and updates the slider
         """
         fname = self.getfile()
-        print("fname = ", fname)
+        #print("fname = ", fname)
 
         self.current_img_path = fname
 
@@ -235,29 +235,17 @@ class MainWindow(QMainWindow):
 
     def get_npy_file_from_slider(self):
         """
-
+        gets the current slider value, 
+        converts that value to a npy file name (xxxxx.npy), 
+        then renders the .npy file to the screen
         """
 
-        print("Slider value = ", str(self.slider.value()))
-
-        next_npy_file = str(self.slider.value())
-
-        #add zeros to next_index to make it the propper file name
-        while(len(next_npy_file) < 5):
-            next_npy_file = "0" + next_npy_file
-
+        #convert slider value to string with padded zeros and .npy extension
+        next_npy_file = f"{self.slider.value():05}"
         next_npy_file = next_npy_file + ".npy"
 
-        print("next npy file name = ", next_npy_file)
-
-        print(self.current_img_path)
-
-        print(os.path.dirname(self.current_img_path))
-
-        #converts current img path to path type to get the parent directory and then find the next npy file in that directory, then converts back to string
+        #converts current_img_path to path type to get the parent directory and then find the next npy file in that directory, then converts back to string
         self.current_img_path = str((Path(self.current_img_path).parents[0]).joinpath(Path(next_npy_file)))
-
-        print(self.current_img_path)
 
         new_npy = np.load(self.current_img_path, allow_pickle=False)
 
@@ -266,7 +254,7 @@ class MainWindow(QMainWindow):
 
     def update_slider(self):
         """
-        sets the maximum value of the slider bassed on how many images are in the session and sets slider position to that of the current image index
+        sets the maximum value of the slider bassed on how many images are in the session and sets slider position to zero
         """
 
         self.slider.setMaximum(self.count_files_in_folder(Path(self.current_img_path).parents[0])-1)
@@ -284,7 +272,6 @@ class MainWindow(QMainWindow):
             # check if current path is a file
             if os.path.isfile(os.path.join(dir_path, path)):
                 count += 1
-        # print('File count:', count)
 
         return count
 
