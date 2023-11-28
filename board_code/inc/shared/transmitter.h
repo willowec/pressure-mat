@@ -19,6 +19,12 @@ Header file responsible for communicating via USB serial connection to the conne
 #define GET_CAL_VALS_COMMAND_ID     2
 #define PRINT_INFO_COMMAND_ID       3
 
+
+// Each queueItem contains one row of the mat
+typedef struct queueItem {
+  uint8_t *row_data;
+} item;
+
 /*
     Function which takes a string that has passed over serial and decides what to do based on it
 */

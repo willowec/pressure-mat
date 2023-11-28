@@ -10,6 +10,7 @@ registers and ADC's to read the mat in partial or in full
 #include <stdlib.h>
 
 #include "pico/stdlib.h"
+#include "pico/util/queue.h"
 
 #include "adc.h"
 
@@ -51,7 +52,7 @@ void initialize_EOC_interrupts();
 reads the entire mat and writes it to the char array 'mat'
 'mat' should be of length MAT_SIZE
 */
-void read_mat(uint8_t *mat, struct adc_inst *adc1, struct adc_inst *adc2);
+void read_mat(queue_t *mat_queue, struct adc_inst *adc1, struct adc_inst *adc2);
 
 /*
 for debugging purposes: prints the mat in a human readable format

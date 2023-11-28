@@ -9,14 +9,39 @@ main.c file for the RP2040 code for the pressure matrix project
 #include "pico/stdlib.h"
 #include "hardware/spi.h"
 #include "hardware/gpio.h"
-#include "pico/multicore.h"
 #include "pico/util/queue.h"
 
 #include "transmitter.h"
 #include "adc.h"
 #include "matterface.h"
+#include "custom_multicore.h"
 
 #define LED_PIN         25
+
+// The queue that passes data from core0 to core1 
+queue_t queue;
+
+int core1_main() {
+    /*
+     * Core 1 handles transmitting the mat to the connected computer in parallel with mat reads
+     * 
+     * As data is recieved on the queue, send it over serial sequentially. Once a full mat read has been sent, send a newline
+     */  
+
+    int i;
+    struct queueItem temp;
+
+    while (1) {
+        for (i = 0; i < COL_HEIGHT; i++) {
+            queue_remove_blocking(&queue, &temp);
+            transmit_row(temp.row_data);
+        }
+
+        putchar('\n');
+    }   
+
+    return 1;
+}
 
 
 int main() {
@@ -32,7 +57,7 @@ int main() {
         gpio_put(LED_PIN, 1);
     }
 
-    uint8_t *mat = (uint8_t *)calloc(MAT_SIZE, sizeof(uint8_t));
+    //uint8_t *mat = (uint8_t *)calloc(MAT_SIZE, sizeof(uint8_t));
 
     // initialize the adcs 
     struct adc_inst *adc1 = malloc(sizeof(struct adc_inst));
@@ -44,6 +69,12 @@ int main() {
 
     // intiialize the matterface eoc interrupts
     initialize_EOC_interrupts();
+
+    // initialize the queue
+    queue_init(&queue, sizeof(item), COL_HEIGHT);
+
+    // start up the second core
+    launch_core1((void *)core1_main);
 
     // Parse commands from the GUI before entering a session
 	char input_string[256];
@@ -68,8 +99,7 @@ int main() {
         }
         else if (parsed_command == GET_CAL_VALS_COMMAND_ID) {
             // perform one read of the mat and transmit it to the GUI
-            read_mat(mat, adc1, adc2);
-            transmit_mat(mat);
+            read_mat(&queue, adc1, adc2);
         } 
         else if (parsed_command == PRINT_INFO_COMMAND_ID) {
             // print code info
@@ -83,13 +113,12 @@ int main() {
     while (1) {
         // indicate read is occuring by flashing led
         gpio_put(LED_PIN, 1);
-        read_mat(mat, adc1, adc2);
+        read_mat(&queue, adc1, adc2);
         gpio_put(LED_PIN, 0);
         //prettyprint_mat(mat);
-        transmit_mat(mat);
     }
 
-    free(mat);
+    //free(mat);
 
     return 1;   // should never exit
 }

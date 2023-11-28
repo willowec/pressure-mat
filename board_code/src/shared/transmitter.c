@@ -38,9 +38,13 @@ void initialize_transmitter()
 // definition of send_row
 void transmit_row(uint8_t *row)
 {
-    printf("Writing row. first char: %d\n\r", row[0]);
-    fwrite(row, 1, ROW_WIDTH, stdout);
-    fflush(stdout);
+    // transmits one row over serial in hexadecimal format
+    int i;
+    for (i = 0; i < ROW_WIDTH; i++) {
+        printf("%02x", row[i]);
+    }
+
+    // does not close with newline: to finish transmission, send a newline
 }
 
 // definition of send_mat

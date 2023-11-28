@@ -92,11 +92,14 @@ class SessionWorker(QObject):
                     continue
 
                 # trim off the \n\r
+                print(m)
                 m = str(m.decode('utf-8')[:-2])
 
                 # get the mat as a flat list
                 flat_mat = hex_string_to_array(m)
                 # prettyprint_mat(flat_mat)
+
+                print(len(flat_mat))
 
                 data_array = mat_list_to_array(flat_mat)
                 # print_2darray(im_array)

@@ -6,10 +6,14 @@
 #include "pico/stdlib.h"
 
 #include "matterface.h"
+#include "transmitter.h"
 
 
 // For the interrupt-based mat read to function, some global variables are required
-uint8_t *mat_ptr;
+queue_t *mat_queue_ptr;
+uint8_t row_data[ROW_WIDTH] = {-1};
+struct queueItem row_item;
+
 int column;
 struct adc_inst *adc1_instance;
 struct adc_inst *adc2_instance;
@@ -88,7 +92,7 @@ void EOC_callback(uint gpio, uint32_t events)
 
         // read the conversion results
         adc_read_blocking(adc1_instance, 0, resp, ADC_RESPONSE_LENGTH);
-        cleanup_adc_response(resp, mat_ptr + (column * ROW_WIDTH));
+        cleanup_adc_response(resp, row_data);
     }
     else if (gpio == ADC2_EOC_PIN) {
         // handle ADC2 results
@@ -96,11 +100,15 @@ void EOC_callback(uint gpio, uint32_t events)
 
         // read the conversion results
         adc_read_blocking(adc2_instance, 0, resp, ADC_RESPONSE_LENGTH);
-        cleanup_adc_response(resp, mat_ptr + (column * ROW_WIDTH) + CHANNELS_PER_ADC);
+        cleanup_adc_response(resp, row_data + CHANNELS_PER_ADC);
     }
 
     // step 2
     if ((!waiting_for_adc1) && (!waiting_for_adc2)) {
+        // Both adc's have been read! push the row data onto the queue
+        row_item.row_data = row_data;
+        queue_add_blocking(mat_queue_ptr, &row_item);
+
         shift_shreg(0);
         column++;
 
@@ -133,14 +141,14 @@ void initialize_EOC_interrupts()
     gpio_set_irq_enabled(ADC2_EOC_PIN, GPIO_IRQ_EDGE_FALL, true);
 }
 
-void read_mat(uint8_t *mat, struct adc_inst *adc1, struct adc_inst *adc2)
+void read_mat(queue_t *mat_queue, struct adc_inst *adc1, struct adc_inst *adc2)
 {
     // start with a one in the shregs
     shift_shreg(1); // shift in a one
     shift_shreg(0); // move the one to the output line
 
     // set up the global variables for interrupt handling
-    mat_ptr = mat;
+    mat_queue_ptr = mat_queue;
     adc1_instance = adc1;
     adc2_instance = adc2;
     

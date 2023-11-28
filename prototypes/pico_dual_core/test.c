@@ -33,11 +33,7 @@ int core1_main() {
 
         printf("Popped %d\n", temp.value);
     }
-    /*
-    while (queue_try_remove(&queue, &temp)) {
-        printf("Item popped from queue: %d\n", temp.value);
-    }
-    */
+
 }
 
 int main() {
