@@ -15,7 +15,7 @@ struct adc_inst *adc1_instance;
 struct adc_inst *adc2_instance;
 bool waiting_for_adc1;
 bool waiting_for_adc2;
-volatile bool reading_mat;
+volatile bool reading_mat;  // must be volatile for global changes
 
 
 void initialize_shreg_pins()
