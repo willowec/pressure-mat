@@ -15,7 +15,7 @@ struct adc_inst *adc1_instance;
 struct adc_inst *adc2_instance;
 bool waiting_for_adc1;
 bool waiting_for_adc2;
-bool reading_mat;
+volatile bool reading_mat;
 
 
 void initialize_shreg_pins()
@@ -163,9 +163,8 @@ void read_mat(uint8_t *mat, struct adc_inst *adc1, struct adc_inst *adc2)
     adc_write_blocking(adc2_instance, &conv_req, 1);
 
     // now just busy-wait until the mat is completely read.
-    volatile int i = 0;
+    int i = 0;
     while(reading_mat) 
-        printf("%d: %d\n", i, reading_mat);
         i++;
     
     printf("Waited %d cycles for mat to finish reading\n", i);
