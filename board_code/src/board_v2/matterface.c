@@ -61,7 +61,6 @@ void clear_shreg()
 void EOC_callback(uint gpio, uint32_t events) 
 {
     if (!reading_mat) {
-        printf("called after done\n");
         return;   // do not process events if not reading the mat
     } 
 
@@ -101,7 +100,6 @@ void EOC_callback(uint gpio, uint32_t events)
     }
 
     // step 2
-    printf("%d %d %d\n", waiting_for_adc1, waiting_for_adc2, column);
     if ((!waiting_for_adc1) && (!waiting_for_adc2)) {
         shift_shreg(0);
         column++;
@@ -109,8 +107,6 @@ void EOC_callback(uint gpio, uint32_t events)
         // if column == COL_HEIGHT, then we are finished and should not send more readings
         if (column == COL_HEIGHT) {
             reading_mat = false;
-
-            printf("Finished reading mat!! %d\n", reading_mat);
         }
         else {
             // delay before the next ADC request set
@@ -167,7 +163,7 @@ void read_mat(uint8_t *mat, struct adc_inst *adc1, struct adc_inst *adc2)
     while(reading_mat) 
         i++;
     
-    printf("Waited %d cycles for mat to finish reading\n", i);
+    //printf("Waited %d cycles for mat to finish reading\n", i);
 
     return;
 }

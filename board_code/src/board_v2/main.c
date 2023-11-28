@@ -82,7 +82,6 @@ int main() {
     
     while (1) {
         sleep_ms(900);
-
         
         // indicate read is occuring by flashing led
         gpio_put(LED_PIN, 1);
