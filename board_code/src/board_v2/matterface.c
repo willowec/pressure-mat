@@ -8,10 +8,11 @@
 #include "matterface.h"
 #include "transmitter.h"
 
+#define LED_PIN         25
 
 // For the interrupt-based mat read to function, some global variables are required
 queue_t *mat_queue_ptr;
-uint8_t row_data[ROW_WIDTH] = {-1};
+uint8_t row_data[ROW_WIDTH] = {9};
 struct queueItem row_item;
 
 int column;
@@ -81,6 +82,7 @@ void EOC_callback(uint gpio, uint32_t events)
      */
 
     int i;
+    bool ret;
 
     // define a temp array for storing and processing the values returned from the ADCs
     uint8_t *resp = (uint8_t *)malloc(ADC_RESPONSE_LENGTH);
@@ -107,6 +109,7 @@ void EOC_callback(uint gpio, uint32_t events)
     if ((!waiting_for_adc1) && (!waiting_for_adc2)) {
         // Both adc's have been read! push the row data onto the queue
         row_item.row_data = row_data;
+
         queue_add_blocking(mat_queue_ptr, &row_item);
 
         shift_shreg(0);

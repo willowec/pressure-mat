@@ -19,6 +19,7 @@ Header file responsible for communicating via USB serial connection to the conne
 #define GET_CAL_VALS_COMMAND_ID     2
 #define PRINT_INFO_COMMAND_ID       3
 
+#define TRANSMIT_SLEEP_US           1000  // amount of time to sleep between transmissions
 
 // Each queueItem contains one row of the mat
 typedef struct queueItem {

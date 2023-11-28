@@ -40,6 +40,7 @@ class SessionWorker(QObject):
         self.baud = int(baud)
         self.polling = False
         self.calibrator = calibrator
+        self.total_errors = 0
 
 
     def setup(self):
@@ -87,13 +88,25 @@ class SessionWorker(QObject):
                 # mat data is transmitted as a string in hexadecimal format
                 m = ser.readline()
 
-                # skip if the result of a timeout
-                if m == b'':
+                # skip if the result of a timeout (empty)
+                if m == '':
+                    print("Serial timed out!! a")
+                    continue
+
+                m = str(m.decode('utf-8'))
+
+                # skip if the result of a timeout (no newline)
+                if not (m[-1] == '\n'):
+                    print("Serial timed out!! b", m)
+                    continue
+
+                # skip if the line is a debug message
+                if m.startswith("DEBUG"):
+                    print(m)
                     continue
 
                 # trim off the \n\r
-                print(m)
-                m = str(m.decode('utf-8')[:-2])
+                m = m[:-2]
 
                 # get the mat as a flat list
                 flat_mat = hex_string_to_array(m)
@@ -101,7 +114,12 @@ class SessionWorker(QObject):
 
                 print(len(flat_mat))
 
-                data_array = mat_list_to_array(flat_mat)
+                try:
+                    data_array = mat_list_to_array(flat_mat)
+                except IndexError:
+                    self.total_errors += 1
+                    print("INDEX ERROR~!!")
+                    continue
                 # print_2darray(im_array)
 
                 pressure_array = self.calibrator.apply_calibration_curve(data_array)
@@ -110,6 +128,8 @@ class SessionWorker(QObject):
                 self.save_npy(pressure_array)
 
                 self.calculated_pressures.emit(pressure_array)
+
+                print("Total errors:", self.total_errors)
 
 
     def stop(self):

@@ -38,6 +38,8 @@ int core1_main() {
         }
 
         putchar('\n');
+
+        printf("DEBUG i=%d\n", i);
     }   
 
     return 1;
@@ -57,8 +59,6 @@ int main() {
         gpio_put(LED_PIN, 1);
     }
 
-    //uint8_t *mat = (uint8_t *)calloc(MAT_SIZE, sizeof(uint8_t));
-
     // initialize the adcs 
     struct adc_inst *adc1 = malloc(sizeof(struct adc_inst));
     struct adc_inst *adc2 = malloc(sizeof(struct adc_inst));
@@ -71,7 +71,7 @@ int main() {
     initialize_EOC_interrupts();
 
     // initialize the queue
-    queue_init(&queue, sizeof(item), COL_HEIGHT);
+    queue_init(&queue, sizeof(item), COL_HEIGHT * 2);
 
     // start up the second core
     launch_core1((void *)core1_main);
@@ -111,14 +111,9 @@ int main() {
     }
     
     while (1) {
-        // indicate read is occuring by flashing led
-        gpio_put(LED_PIN, 1);
+        // read the mat continuously until power-down
         read_mat(&queue, adc1, adc2);
-        gpio_put(LED_PIN, 0);
-        //prettyprint_mat(mat);
     }
-
-    //free(mat);
 
     return 1;   // should never exit
 }

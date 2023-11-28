@@ -41,8 +41,9 @@ void transmit_row(uint8_t *row)
     // transmits one row over serial in hexadecimal format
     int i;
     for (i = 0; i < ROW_WIDTH; i++) {
-        printf("%02x", row[i]);
+        fprintf(stdout, "%02x", row[i]);
     }
+    fflush(stdout);
 
     // does not close with newline: to finish transmission, send a newline
 }
