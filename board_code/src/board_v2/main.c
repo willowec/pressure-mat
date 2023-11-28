@@ -68,7 +68,6 @@ int main() {
         else if (parsed_command == GET_CAL_VALS_COMMAND_ID) {
             // perform one read of the mat and transmit it to the GUI
             read_mat(mat, adc1, adc2);
-            printf("Exited after finishing reading the mat\n");
             transmit_mat(mat);
         } 
         else if (parsed_command == PRINT_INFO_COMMAND_ID) {
