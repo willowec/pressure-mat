@@ -63,6 +63,24 @@ void initialize_adc(struct adc_inst *adc)
 }
 
 
+void cleanup_adc_response(uint8_t *resp, uint8_t *out_values)
+{
+    int i;
+
+    /*
+        Results from the ADC come in a pretty messed up format. For 14 conversion requests, we have to request 
+        28 bytes of data back from the ADC. It comes in the following hexadecimal arrangement (where x is 4 bits of sample value):
+            0x x0 0x x0 0x x0 0x x0 0x x0 0x x0 0x x0 0x x0 0x x0 0x x0 0x x0 0x x0 0x x0 0x x0 
+        We want the response to be in the following format instead:
+            xx xx xx xx xx xx xx xx xx xx xx xx xx xx
+    */
+    for (i = 0; i < ADC_RESPONSE_LENGTH; i+=2) {
+        // resp[i] is 0x, resp[i+1] is x0. we want out_vals[] to be xx
+        out_values[i/2] = (resp[i] << 4) | (resp[i+1] >> 4);
+    }
+}
+
+
 void get_adc_values(struct adc_inst* adc, uint8_t *out_vals)
 {
     // write a conversion request in scan mode 00 for channels 0 -> (CHANNELS_PER_ADC - 1), for CHANNELS_PER_ADC total channels
@@ -82,18 +100,7 @@ void get_adc_values(struct adc_inst* adc, uint8_t *out_vals)
 
     // read the conversion results
     adc_read_blocking(adc, 0, resp, ADC_RESPONSE_LENGTH);
-
-    /*
-        Results from the ADC come in a pretty messed up format. For 14 conversion requests, we have to request 
-        28 bytes of data back from the ADC. It comes in the following hexadecimal arrangement (where x is 4 bits of sample value):
-            0x x0 0x x0 0x x0 0x x0 0x x0 0x x0 0x x0 0x x0 0x x0 0x x0 0x x0 0x x0 0x x0 0x x0 
-        We want the response to be in the following format instead:
-            xx xx xx xx xx xx xx xx xx xx xx xx xx xx
-    */
-    for (i = 0; i < ADC_RESPONSE_LENGTH; i+=2) {
-        // resp[i] is 0x, resp[i+1] is x0. we want out_vals[] to be xx
-        out_vals[i/2] = (resp[i] << 4) | (resp[i+1] >> 4);
-    }
+    cleanup_adc_response(resp, out_vals);
 
     free(resp);
 }
@@ -103,11 +110,11 @@ void adc_write_blocking(struct adc_inst* adc, uint8_t *src, size_t len)
 {
     // enable the CS pin to talk to the adc
     gpio_put(adc->cs_pin, CS_SELECT);
-    sleep_us(1);
+    busy_wait_us_32(1); // busy_wait_us needs to be used because this function is called from an interrupt handler
     spi_write_blocking(adc->spi_channel, src, len);
 
     // disable the CS pin
-    sleep_us(1);
+    busy_wait_us_32(1);
     gpio_put(adc->cs_pin, CS_DESELECT);
 }
 
@@ -116,11 +123,11 @@ void adc_read_blocking(struct adc_inst* adc, uint8_t repeated_tx_data, uint8_t *
 {
     // enable the CS pin to talk to the adc
     gpio_put(adc->cs_pin, CS_SELECT);
-    sleep_us(1);
+    busy_wait_us_32(1);
 
     spi_read_blocking(adc->spi_channel, repeated_tx_data, dst, len);
 
     // disable the CS pin
-    sleep_us(1);
+    busy_wait_us_32(1);
     gpio_put(adc->cs_pin, CS_DESELECT);
 }

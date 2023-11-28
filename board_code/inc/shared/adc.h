@@ -63,4 +63,9 @@ void adc_write_blocking(struct adc_inst* adc, uint8_t *src, size_t len);
 */
 void adc_read_blocking(struct adc_inst* adc, uint8_t repeated_tx_data, uint8_t *dst, size_t len);
 
+/*
+    Takes the raw response to a conversion request from the ADC and cleans it up to be a simple array of readings
+*/
+void cleanup_adc_response(uint8_t *resp, uint8_t *out_values);
+
 #endif

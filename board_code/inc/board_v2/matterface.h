@@ -7,6 +7,10 @@ registers and ADC's to read the mat in partial or in full
 #define MATTERAFCE
 
 #include <stdint.h>
+#include <stdlib.h>
+
+#include "pico/stdlib.h"
+
 #include "adc.h"
 
 
@@ -19,7 +23,8 @@ registers and ADC's to read the mat in partial or in full
 #define SH_SERIN_PIN    17
 #define SH_SEROUT_PIN   16
 
-#define SHREG_GPIO_SLEEP_US     1000   // sleep for 1ms between gpio actions   
+#define SHREG_GPIO_SLEEP_US     1000    // sleep time in us between shreg gpio actions   
+#define ADC_READ_SLEEP_US       1000    // sleep time in us between adc reads 
 
 /*
 Sets up the gpio pins sued for communicating with the shift registers
@@ -29,7 +34,6 @@ void initialize_shreg_pins();
 /*
 Writes inval to the shift registers, and then clocks 
 the shift registers so that they shift their values by 1
-
 */
 void shift_shreg(int inval);
 
@@ -37,6 +41,11 @@ void shift_shreg(int inval);
 Resets the shift registers so that they are all outputting 0
 */
 void clear_shreg();
+
+/*
+Sets up the interrupts for EOC pins
+*/
+void initialize_EOC_interrupts();
 
 /*
 reads the entire mat and writes it to the char array 'mat'
