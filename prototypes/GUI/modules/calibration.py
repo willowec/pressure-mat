@@ -53,7 +53,7 @@ class Calibration:
             self.height = mat_height
             self.polyfit_degree = polyfit_degree
             self.listOfMatReadings = []
-            self.cal_curves_array = np.empty((self.width, self.height, 3), dtype=np.float)  # list of coefficients
+            self.cal_curves_array = np.empty((self.width, self.height, 3), dtype=np.float64)  # list of coefficients
             self.calibrated = False
 
 
