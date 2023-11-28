@@ -152,6 +152,9 @@ void read_mat(uint8_t *mat, struct adc_inst *adc1, struct adc_inst *adc2)
     // indicate that a read is currently happening
     reading_mat = true;
 
+    // do one initial wait for good measure
+    sleep_us(ADC_READ_SLEEP_US);
+
     // send the first ADC read requests to get things started
     // write a conversion request in scan mode 00 for channels 0 -> (CHANNELS_PER_ADC - 1), for CHANNELS_PER_ADC total channels
     uint8_t conv_req = 0b10000000 | ((CHANNELS_PER_ADC - 1) << 3);
