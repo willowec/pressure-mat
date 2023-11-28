@@ -55,6 +55,8 @@ class Calibration:
             self.listOfMatReadings = []
             self.cal_curves_array = np.empty((self.width, self.height, 3), dtype=np.float64)  # list of coefficients
             self.calibrated = False
+            self.dc_offsets = np.zeros((self.width, self.height), dtype=np.float64)
+            self.zeroing_data = []
 
 
     def add_reading(self, actualMatReading: MatReading):
@@ -142,6 +144,34 @@ class Calibration:
         A general expnential function, the form which calibration curves should be fit to
         """
         return a * np.exp(b * x) + c
+
+    def apply_dc_offsets(self, array_to_offset: np.ndarray):
+        """
+        Applys the dc offsets to a passed ndarray/matreading. Run calc_dc_offsets() before use. 
+        """
+
+        return (array_to_offset - self.dc_offsets)
+
+
+    def calc_dc_offsets(self):
+        """
+        Updates the dc_offsets array by averaging the zeroing data. Zeroing data must contain 10 ndarrays before use.
+        """
+
+        for i in self.zeroing_data:
+            self.dc_offsets += self.zeroing_data[i]
+        
+        self.dc_offsets = (self.dc_offsets / 10)
+
+
+    def add_zeroing_data(self, new_zeroing_data: np.ndarray):
+        """
+        Appends new mat readings to the zeroing data list. Need exactly 10 for zeroing to work.
+        """
+
+        self.zeroing_data.append(new_zeroing_data)
+
+
 
 
 

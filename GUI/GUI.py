@@ -62,6 +62,14 @@ class MainWindow(QMainWindow):
         self.load_past_session_b.clicked.connect(self.load_past_session)
         self.layout.addWidget(self.load_past_session_b, 7, 0)
 
+        # zero mat
+        self.zero_mat_b = QPushButton("Zero Mat")
+        self.zero_mat_b.clicked.connect(self.zero_mat)
+        self.zeroing_status = QLabel("Status: Not Zeroed")
+        self.layout.addWidget(self.zero_mat_b, 8, 0)
+        self.layout.addWidget(self.zeroing_status, 8, 1)
+
+
         # navigate images with slider
         self.slider = QSlider(Qt.Orientation.Horizontal, self)
         self.slider.setTickInterval(1)
@@ -106,56 +114,90 @@ class MainWindow(QMainWindow):
         self.mat_stats_label.setText(stats)
 
 
-    def get_calibration_data(self):
+    # def get_calibration_data(self):
+    #     """
+    #     Should be called after the user has entered a value into the calibrate_input corresponding to a weight they have placed on the mat\
+    #     Adds the mat readings to a list of mat readings that are used to calculate mat calibration curves by self.get_calibration_data()
+    #     """
+    #     calibration_weight = float(self.calibrate_input.text())
+    #     print("Calibrating with weight", calibration_weight)
+
+    #     # start up the thread to collect a reading from the mat
+    #     cal_thread = QThread(self)
+    #     cal_worker = CalSampleWorker(self.port_input.text(), int(self.baud_input.text()), calibration_weight=calibration_weight)
+    #     cal_worker.moveToThread(cal_thread)
+
+    #     # connect important signals to the new thread
+    #     cal_thread.started.connect(cal_worker.run)
+    #     cal_worker.finished.connect(cal_thread.quit)
+    #     cal_worker.finished.connect(cal_worker.deleteLater)
+    #     cal_thread.finished.connect(cal_thread.deleteLater)
+
+    #     # start the thread to collect a reading from the mat
+    #     cal_thread.start()
+    #     self.calibrate_status.setText("Getting data...")
+    #     self.calibrate_b.setEnabled(False)
+    #     self.calibrate_complete_b.setEnabled(False)
+
+    #     # connect cleanup signals
+    #     cal_worker.reading_result.connect(
+    #         self.add_calibration_data
+    #     )
+    #     cal_thread.finished.connect(
+    #         lambda: self.calibrate_status.setText(f"{len(self.calibration.listOfMatReadings)} Cal Samples")
+    #     )
+    #     cal_thread.finished.connect(lambda: self.calibrate_b.setEnabled(True))
+    #     cal_thread.finished.connect(lambda: self.calibrate_complete_b.setEnabled(True))
+
+
+    # def add_calibration_data(self, reading: MatReading):
+    #     """
+    #     Adds a MatReading to the calibration instance
+    #     """
+    #     self.calibration.add_reading(reading)
+
+
+    # def complete_calibration(self):
+    #     """
+    #     Calculate the calibration curves and prevent further readings from being added
+    #     """
+    #     print(f"Calculating calibration curves")
+    #     self.calibration.calculate_calibration_curves()
+    #     self.calibrate_status.setText("Calibrated!")
+
+    def zero_mat(self):
         """
-        Should be called after the user has entered a value into the calibrate_input corresponding to a weight they have placed on the mat\
-        Adds the mat readings to a list of mat readings that are used to calculate mat calibration curves by self.get_calibration_data()
+
         """
-        calibration_weight = float(self.calibrate_input.text())
-        print("Calibrating with weight", calibration_weight)
+        
+        print("Zeroing mat")
 
-        # start up the thread to collect a reading from the mat
-        cal_thread = QThread(self)
-        cal_worker = CalSampleWorker(self.port_input.text(), int(self.baud_input.text()), calibration_weight=calibration_weight)
-        cal_worker.moveToThread(cal_thread)
+        for i in range(10):
 
-        # connect important signals to the new thread
-        cal_thread.started.connect(cal_worker.run)
-        cal_worker.finished.connect(cal_thread.quit)
-        cal_worker.finished.connect(cal_worker.deleteLater)
-        cal_thread.finished.connect(cal_thread.deleteLater)
+            # start up the thread to collect a reading from the mat
+            cal_thread = QThread(self)
+            cal_worker = CalSampleWorker(self.port_input.text(), int(self.baud_input.text()), calibration_weight=0)
+            cal_worker.moveToThread(cal_thread)
 
-        # start the thread to collect a reading from the mat
-        cal_thread.start()
-        self.calibrate_status.setText("Getting data...")
-        self.calibrate_b.setEnabled(False)
-        self.calibrate_complete_b.setEnabled(False)
+            # connect important signals to the new thread
+            cal_thread.started.connect(cal_worker.run)
+            cal_worker.finished.connect(cal_thread.quit)
+            cal_worker.finished.connect(cal_worker.deleteLater)
+            cal_thread.finished.connect(cal_thread.deleteLater)
 
-        # connect cleanup signals
-        cal_worker.reading_result.connect(
-            self.add_calibration_data
-        )
-        cal_thread.finished.connect(
-            lambda: self.calibrate_status.setText(f"{len(self.calibration.listOfMatReadings)} Cal Samples")
-        )
-        cal_thread.finished.connect(lambda: self.calibrate_b.setEnabled(True))
-        cal_thread.finished.connect(lambda: self.calibrate_complete_b.setEnabled(True))
+            # start the thread to collect a reading from the mat
+            cal_thread.start()
+            self.zeroing_status.setText("Getting data...")
+            self.zero_mat_b.setEnabled(False)
 
-
-    def add_calibration_data(self, reading: MatReading):
-        """
-        Adds a MatReading to the calibration instance
-        """
-        self.calibration.add_reading(reading)
-
-
-    def complete_calibration(self):
-        """
-        Calculate the calibration curves and prevent further readings from being added
-        """
-        print(f"Calculating calibration curves")
-        self.calibration.calculate_calibration_curves()
-        self.calibrate_status.setText("Calibrated!")
+            # connect cleanup signals
+            cal_worker.reading_result.connect(
+                self.calibration.add_zeroing_data
+            )
+            cal_thread.finished.connect(
+                lambda: self.zeroing_status.setText(f"{len(self.calibration.listOfMatReadings)} Cal Samples")
+            )
+            cal_thread.finished.connect(lambda: self.zero_mat_b.setEnabled(True))
 
 
     def start_session(self):
