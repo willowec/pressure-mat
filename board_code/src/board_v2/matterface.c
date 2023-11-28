@@ -110,7 +110,7 @@ void EOC_callback(uint gpio, uint32_t events)
         if (column == COL_HEIGHT) {
             reading_mat = false;
 
-            printf("Finished reading mat!!\n");
+            printf("Finished reading mat!! %d\n", reading_mat);
         }
         else {
             // delay before the next ADC request set
@@ -163,8 +163,9 @@ void read_mat(uint8_t *mat, struct adc_inst *adc1, struct adc_inst *adc2)
     adc_write_blocking(adc2_instance, &conv_req, 1);
 
     // now just busy-wait until the mat is completely read.
-    int i = 0;
+    volatile int i = 0;
     while(reading_mat) 
+        printf("%d: %d\n", i, reading_mat);
         i++;
     
     printf("Waited %d cycles for mat to finish reading\n", i);
