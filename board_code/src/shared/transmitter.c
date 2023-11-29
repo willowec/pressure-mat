@@ -36,6 +36,16 @@ void initialize_transmitter()
     stdio_init_all();
 }
 
+// definition of transmit_verification
+void transmit_verification()
+{
+    // transmit {255, 254, 254, 255} becaue maximum real-world mat value is ~207
+    putchar_raw(255);
+    putchar_raw(254);
+    putchar_raw(254);
+    putchar_raw(255);
+}
+
 // definition of transmit_row
 void transmit_row(uint8_t *row)
 {
@@ -56,4 +66,5 @@ void transmit_mat(uint8_t *mat)
     for (i = 0; i < COL_HEIGHT; i++) {
         transmit_row(mat + (i * ROW_WIDTH));
     }
+    transmit_verification();
 }

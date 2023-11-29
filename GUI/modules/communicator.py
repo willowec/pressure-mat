@@ -19,6 +19,10 @@ from modules.calibration import Calibration
 from modules.mat_handler import *
 
 
+# the verificaiton message sent by the board must be hanled
+VERIFICATION_WIDTH = 4
+VERIFICATION_SEQUENCE = [255, 254, 254, 255]
+
 
 class SessionWorker(QObject):
     """
@@ -85,23 +89,25 @@ class SessionWorker(QObject):
             ser.write((START_READING_COMMAND + '\n').encode('utf-8'))
             self.polling = True
             while self.polling:
-                # mat data is transmitted as a string in hexadecimal format
-                bytes = ser.read(MAT_SIZE)
+                # mat data is transmitted as raw bytes
+                bytes = ser.read(VERIFICATION_WIDTH + MAT_SIZE)
                 if bytes == b'':
                     print("Serial timed out!")
                     continue
                 
                 flat_mat = [x for x in bytes]
 
+                # ensure that the verifiation message was aligned
+                for ver, val in zip(VERIFICATION_SEQUENCE, flat_mat[0:4]):
+                    assert ver == val
+
+                flat_mat = flat_mat[4:] # trim the verification sequence
+
                 print(flat_mat)
                 print(len(flat_mat))
 
-                try:
-                    data_array = mat_list_to_array(flat_mat)
-                except IndexError:
-                    self.total_errors += 1
-                    print("INDEX ERROR~!!")
-                    continue
+                data_array = mat_list_to_array(flat_mat)
+
                 # print_2darray(im_array)
 
                 pressure_array = self.calibrator.apply_calibration_curve(data_array)

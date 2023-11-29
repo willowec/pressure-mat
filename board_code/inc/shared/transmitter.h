@@ -30,6 +30,11 @@ int parse_input(char *string);
 void initialize_transmitter();
 
 /*
+    Function which transmits a short verification string that the GUI can use to make sure mat readings are in sync
+*/
+void transmit_verification();
+
+/*
     Function which transmits one row of the mat (28, 8-bit values) over serial USB to the connected computer
 */
 void transmit_row(uint8_t *row);

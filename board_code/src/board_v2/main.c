@@ -36,6 +36,8 @@ int core1_main() {
             queue_remove_blocking(&queue, &temp);
             transmit_row(temp.row_data);
         }
+
+        transmit_verification();
     }   
 
     return 1;
