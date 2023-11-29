@@ -7,6 +7,7 @@
 
 #include "hardware/gpio.h"
 
+#include "matterface.h"
 #include "transmitter.h"
 
 
@@ -35,36 +36,24 @@ void initialize_transmitter()
     stdio_init_all();
 }
 
-// definition of send_row
+// definition of transmit_row
 void transmit_row(uint8_t *row)
 {
     // transmits one row over serial in hexadecimal format
-    int i, ret;
+    int i;
     for (i = 0; i < ROW_WIDTH; i++) {
-        ret = printf("%02x", row[i]);
-        if (ret != 2) {
-            // error occured!!
-            while(1) {
-                gpio_put(25, 1);    // turn on the led
-                sleep_ms(1);
-                gpio_put(25, 0);    // turn on the led
-                sleep_ms(1);
-            }
-        }
+        putchar_raw(row[i]);
     }
     fflush(stdout);
 
     // does not close with newline: to finish transmission, send a newline
 }
 
-// definition of send_mat
+// definition of transmit_mat
 void transmit_mat(uint8_t *mat)
 {
-    // transmit the data over serial in hexadecimal format
     int i;
-    for (i = 0; i < MAT_SIZE; i++) {
-        printf("%02x", mat[i]);
+    for (i = 0; i < COL_HEIGHT; i++) {
+        transmit_row(mat + (i * ROW_WIDTH));
     }
-    putchar('\n');
 }
-

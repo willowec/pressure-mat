@@ -86,30 +86,14 @@ class SessionWorker(QObject):
             self.polling = True
             while self.polling:
                 # mat data is transmitted as a string in hexadecimal format
-                m = ser.readline()
-                m = str(m.decode('utf-8'))
+                bytes = ser.read(MAT_SIZE)
+                if bytes == b'':
+                    print("Serial timed out!")
+                    continue
                 
-                # skip if the result of a timeout (empty)
-                if m == '' or m == '\r\n':
-                    continue
+                flat_mat = [x for x in bytes]
 
-                # skip if the result of a timeout (no newline)
-                if not (m[-1] == '\n'):
-                    print("Serial timed out!! b", m)
-                    continue
-
-                # skip if the line is a debug message
-                if m.startswith("DEBUG"):
-                    print(m)
-                    continue
-
-                # trim off the \n\r
-                m = m[:-2]
-
-                # get the mat as a flat list
-                flat_mat = hex_string_to_array(m)
-                # prettyprint_mat(flat_mat)
-
+                print(flat_mat)
                 print(len(flat_mat))
 
                 try:

@@ -35,7 +35,6 @@ void shift_shreg(int inval)
     gpio_put(SH_CLK_PIN, 0);
 }
 
-// TODO: does this put the shregs in high impedance mode or outputting 0?
 void clear_shreg()
 {
     // flicker the clear pin

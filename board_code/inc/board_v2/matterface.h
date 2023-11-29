@@ -28,6 +28,12 @@ registers and ADC's to read the mat in partial or in full
 #define ADC_READ_SLEEP_US       1    // sleep time in us between adc reads 
 #define MAT_READ_SLEEP_US       1    // sleep time in us between mat reads
 
+
+// Each queueItem contains one row of the mat
+typedef struct queueItem {
+  uint8_t *row_data;
+} item;
+
 /*
 Sets up the gpio pins sued for communicating with the shift registers
 */

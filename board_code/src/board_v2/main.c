@@ -36,8 +36,6 @@ int core1_main() {
             queue_remove_blocking(&queue, &temp);
             transmit_row(temp.row_data);
         }
-        putchar('\n');
-        // printf("DEBUG i=%d\n", i);
     }   
 
     return 1;
