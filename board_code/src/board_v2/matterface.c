@@ -146,6 +146,9 @@ void initialize_EOC_interrupts()
 
 void read_mat(queue_t *mat_queue, struct adc_inst *adc1, struct adc_inst *adc2)
 {
+    // do not start reading the mat if a read is already happening
+    if (reading_mat) return;
+
     // start with a one in the shregs
     shift_shreg(1); // shift in a one
     shift_shreg(0); // move the one to the output line
@@ -164,7 +167,7 @@ void read_mat(queue_t *mat_queue, struct adc_inst *adc1, struct adc_inst *adc2)
     reading_mat = true;
 
     // do one initial wait for good measure
-    sleep_us(ADC_READ_SLEEP_US);
+    sleep_us(MAT_READ_SLEEP_US);
 
     // send the first ADC read requests to get things started
     // write a conversion request in scan mode 00 for channels 0 -> (CHANNELS_PER_ADC - 1), for CHANNELS_PER_ADC total channels

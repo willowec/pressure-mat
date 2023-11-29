@@ -87,13 +87,11 @@ class SessionWorker(QObject):
             while self.polling:
                 # mat data is transmitted as a string in hexadecimal format
                 m = ser.readline()
-
-                # skip if the result of a timeout (empty)
-                if m == '':
-                    print("Serial timed out!! a")
-                    continue
-
                 m = str(m.decode('utf-8'))
+                
+                # skip if the result of a timeout (empty)
+                if m == '' or m == '\r\n':
+                    continue
 
                 # skip if the result of a timeout (no newline)
                 if not (m[-1] == '\n'):

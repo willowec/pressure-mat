@@ -39,9 +39,18 @@ void initialize_transmitter()
 void transmit_row(uint8_t *row)
 {
     // transmits one row over serial in hexadecimal format
-    int i;
+    int i, ret;
     for (i = 0; i < ROW_WIDTH; i++) {
-        fprintf(stdout, "%02x", row[i]);
+        ret = printf("%02x", row[i]);
+        if (ret != 2) {
+            // error occured!!
+            while(1) {
+                gpio_put(25, 1);    // turn on the led
+                sleep_ms(1);
+                gpio_put(25, 0);    // turn on the led
+                sleep_ms(1);
+            }
+        }
     }
     fflush(stdout);
 

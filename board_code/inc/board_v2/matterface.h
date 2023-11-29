@@ -26,6 +26,7 @@ registers and ADC's to read the mat in partial or in full
 
 #define SHREG_GPIO_SLEEP_US     1    // sleep time in us between shreg gpio actions   
 #define ADC_READ_SLEEP_US       1    // sleep time in us between adc reads 
+#define MAT_READ_SLEEP_US       1    // sleep time in us between mat reads
 
 /*
 Sets up the gpio pins sued for communicating with the shift registers
