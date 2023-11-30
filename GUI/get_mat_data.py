@@ -25,20 +25,19 @@ if __name__ == "__main__":
     with serial.Serial(args.port, baudrate=115200, timeout=10) as ser:
         # send the message to start reading the mat
         ser.write((GET_CAL_VALS_COMMAND + '\n').encode('utf-8'))
-        # mat data is transmitted as a string in hexadecimal format
-        m = ser.readline()
-
-        # skip if the result of a timeout
-        if m == b'':
-            print(" Timred out!!")
+        
+        # mat data is transmitted as raw bytes
+        bytes = ser.read(VERIFICATION_WIDTH + MAT_SIZE)
+        if bytes == b'':
+            print("Serial timed out!")
             quit()
+                
+        flat_mat = [x for x in bytes]
 
-        # trim off the \n\r
-        m = str(m.decode('utf-8')[:-2])
-
-        # get the mat as a flat list
-        flat_mat = hex_string_to_array(m)
-        # prettyprint_mat(flat_mat)
+        # ensure that the verifiation message was aligned
+        for ver, val in zip(VERIFICATION_SEQUENCE, flat_mat[-4:]):
+            if not (ver == val):
+                raise Exception("Verification sequence not found in mat transmission")
 
         data_array = mat_list_to_array(flat_mat)
 

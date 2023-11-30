@@ -11,18 +11,10 @@ SENSOR_AREA_SQM = 0.0001        # Area of each individual sensor in square meter
 START_READING_COMMAND = "start_reading"
 GET_CAL_VALS_COMMAND = "get_cal_vals"
 
+# the verificaiton message sent by the board
+VERIFICATION_WIDTH = 4
+VERIFICATION_SEQUENCE = [255, 254, 254, 255]
 
-
-def hex_string_to_array(hex_string):
-    """
-    Converts a string of 02x hexadecimal numbers to an array
-    """
-    numbers = []
-    for i in range(0, len(hex_string), 2):
-        x = hex_string[i: i+2]
-        numbers.append(int(x, 16))
-    
-    return numbers
 
 
 def print_2darray(array: np.ndarray):

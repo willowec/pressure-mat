@@ -173,13 +173,20 @@ class CalSampleWorker(QObject):
         # request calibration readings from the mat
         with serial.Serial(port=self.port, baudrate=self.baud, timeout=10) as ser:
             # send the message to start reading the mat
-            ser.write((GET_CAL_VALS_COMMAND + '\n').encode('utf-8'))
-            
-            m = ser.readline()
-            print(m)
-            m = str(m.decode('utf-8')[:-2])
+            bytes = ser.read(VERIFICATION_WIDTH + MAT_SIZE)
+            if bytes == b'':
+                print("Serial timed out!")
+                return
+                
+            flat_mat = [x for x in bytes]
 
-            mat_vals = mat_list_to_array(hex_string_to_array(m))
+            # ensure that the verifiation message was aligned
+            for ver, val in zip(VERIFICATION_SEQUENCE, flat_mat[-4:]):
+                if not (ver == val):
+                    raise Exception("Verification sequence not found in mat transmission")
+
+
+            mat_vals = mat_list_to_array(flat_mat)
             reading = MatReading(ROW_WIDTH, COL_HEIGHT, self.calibration_weight, mat_vals)
 
             self.reading_result.emit(reading)
