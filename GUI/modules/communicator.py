@@ -90,6 +90,7 @@ class SessionWorker(QObject):
         
         print("opening serial")
         with serial.Serial(self.port, baudrate=self.baud, timeout=10) as ser:
+            ser.set_buffer_size(rx_size = 1700, tx_size = 1700)
             # send the message to start reading the mat
             ser.write((START_READING_COMMAND + '\n').encode('utf-8'))
             self.polling = True
@@ -107,7 +108,14 @@ class SessionWorker(QObject):
                 # ensure that the verifiation message was aligned
                 for ver, val in zip(VERIFICATION_SEQUENCE, flat_mat[-4:]):
                     if not (ver == val):
-                        raise Exception("Verification sequence not found in mat transmission")
+                        print("====ERROR OCCURED! FIXING!!!====")
+                        # a verification error has occured, probably because the fifo filled up
+                        # to resolve it, simply wipe the fifo and read until the next verification sequence
+                        ser.reset_input_buffer()
+                        hist = np.zeros(VERIFICATION_WIDTH, dtype=np.uint8)
+                        while(not np.array_equal(hist, np.asarray(VERIFICATION_SEQUENCE, dtype=np.uint8))):
+                            hist = np.roll(hist, -1)
+                            hist[-1] = int.from_bytes(ser.read(1), "big")
 
                 data_array = mat_list_to_array(flat_mat)
 
@@ -123,6 +131,8 @@ class SessionWorker(QObject):
                 delta_ns = now_ns - prev_sample_time_ns
                 self.delta_times.append(delta_ns)
                 prev_sample_time_ns = now_ns
+
+                print(f"Buffer size: {ser.in_waiting}")
 
                 self.session_stats.emit(f"Sample rate: {(1/delta_ns * 1000000000):.2f}Hz")
 
