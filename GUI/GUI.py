@@ -52,9 +52,11 @@ class MainWindow(QMainWindow):
         self.stop_session_b.setEnabled(False)   # start disabled because there is no session yet
         self.stop_session_b.clicked.connect(self.stop_session)
         self.session_status = QLabel("Status: Session Stopped")
+        self.session_stats = QLabel("Session stats: No session")
         self.layout.addWidget(self.start_session_b, 5, 0)
         self.layout.addWidget(self.stop_session_b, 6, 0)
         self.layout.addWidget(self.session_status, 5, 2)
+        self.layout.addWidget(self.session_stats, 6, 2)
         self.calibration = Calibration(ROW_WIDTH, COL_HEIGHT)    # the calibration class instance to apply to the session when it is started
         
         # load past session
@@ -106,58 +108,6 @@ class MainWindow(QMainWindow):
         self.mat_stats_label.setText(stats)
 
 
-    def get_calibration_data(self):
-        """
-        Should be called after the user has entered a value into the calibrate_input corresponding to a weight they have placed on the mat\
-        Adds the mat readings to a list of mat readings that are used to calculate mat calibration curves by self.get_calibration_data()
-        """
-        calibration_weight = float(self.calibrate_input.text())
-        print("Calibrating with weight", calibration_weight)
-
-        # start up the thread to collect a reading from the mat
-        cal_thread = QThread(self)
-        cal_worker = CalSampleWorker(self.port_input.text(), int(self.baud_input.text()), calibration_weight=calibration_weight)
-        cal_worker.moveToThread(cal_thread)
-
-        # connect important signals to the new thread
-        cal_thread.started.connect(cal_worker.run)
-        cal_worker.finished.connect(cal_thread.quit)
-        cal_worker.finished.connect(cal_worker.deleteLater)
-        cal_thread.finished.connect(cal_thread.deleteLater)
-
-        # start the thread to collect a reading from the mat
-        cal_thread.start()
-        self.calibrate_status.setText("Getting data...")
-        self.calibrate_b.setEnabled(False)
-        self.calibrate_complete_b.setEnabled(False)
-
-        # connect cleanup signals
-        cal_worker.reading_result.connect(
-            self.add_calibration_data
-        )
-        cal_thread.finished.connect(
-            lambda: self.calibrate_status.setText(f"{len(self.calibration.listOfMatReadings)} Cal Samples")
-        )
-        cal_thread.finished.connect(lambda: self.calibrate_b.setEnabled(True))
-        cal_thread.finished.connect(lambda: self.calibrate_complete_b.setEnabled(True))
-
-
-    def add_calibration_data(self, reading: MatReading):
-        """
-        Adds a MatReading to the calibration instance
-        """
-        self.calibration.add_reading(reading)
-
-
-    def complete_calibration(self):
-        """
-        Calculate the calibration curves and prevent further readings from being added
-        """
-        print(f"Calculating calibration curves")
-        self.calibration.calculate_calibration_curves()
-        self.calibrate_status.setText("Calibrated!")
-
-
     def start_session(self):
         print("I will start a mat recording session capped at 1 hour")
 
@@ -196,13 +146,35 @@ class MainWindow(QMainWindow):
         self.session.calculated_pressures.connect(
             self.render_pressure_array
         )
-
+        self.session.session_stats.connect(
+            self.update_session_stats
+        )
+        self.session.finished_session_stats.connect(
+            self.finish_session_stats
+        )
 
     def stop_session(self):
         print("I will stop the mat recording session")
         if self.session:
             self.session.stop()
  
+
+    def update_session_stats(self, message):
+        """
+        Callback function for the session_stats signal of the SessionWorker. Updates the GUI with some live statistics
+        """
+        self.session_stats.setText(f"Session stats:\n{message}")
+
+
+    def finish_session_stats(self, message):
+        """
+        Callback function for the finished_session_stats signal of SessionWorker, adds overall stats to the GUI
+        """
+        print("calling finish")
+        self.session.session_stats.disconnect()
+        stats_text = self.session_stats.text()
+        self.session_stats.setText(stats_text + '\n' + message)
+
 
     def render_pressure_array(self, pressure_array: np.ndarray):
         """
@@ -224,6 +196,7 @@ class MainWindow(QMainWindow):
         #   https://copyprogramming.com/howto/pyqt5-convert-2d-np-array-to-qimage
         image = QImage(im_array.data, im_array.shape[1], im_array.shape[0], QImage.Format.Format_RGB888)
         self.im_label.setPixmap(QPixmap(image).scaled(self.im_size))
+
 
     def load_past_session(self):
         """

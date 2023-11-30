@@ -117,11 +117,11 @@ class Calibration:
         #   at least one decimal of precision at 1lbs
         calibratedValues = np.zeros((self.width, self.height), dtype=np.double)
 
-        # itterate through every sensor of the mat calculate the calibrated value at that sensor
+        # iterate through every sensor of the mat calculate the calibrated value at that sensor
         for rows in range(self.width):
             for cols in range(self.height):
                 # apply the curve
-                calibratedValues[rows, cols] = self.fit_function(matReadings[rows,cols], *self.cal_curves_array[rows,cols])
+                calibratedValues[rows, cols] = self.fit_function(matReadings[rows,cols], * self.cal_curves_array[rows,cols])
 
         # clamp the results to sane values
         calibratedValues = np.clip(calibratedValues, 0, MAX_RATED_PRESSURE_PA)

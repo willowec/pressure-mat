@@ -5,7 +5,7 @@ Module responsible for communicating directly with the mat interface board
 from PyQt6.QtCore import QObject, pyqtSignal
 
 from datetime import datetime
-import os
+import os, time
 
 from pathlib import Path
 
@@ -32,6 +32,12 @@ class SessionWorker(QObject):
     # a signal which indicates an image has been saved at the path in the signal
     calculated_pressures = pyqtSignal(np.ndarray)
 
+    # a signal used to transmit live formatted statistics about the session
+    session_stats = pyqtSignal(str)
+
+    # a signal used to transmit statistics about the session after it has finished
+    finished_session_stats = pyqtSignal(str)
+
     def __init__(self, port: int, baud: int, calibrator: Calibration=None):
         super(SessionWorker, self).__init__()
 
@@ -40,6 +46,10 @@ class SessionWorker(QObject):
         self.baud = int(baud)
         self.polling = False
         self.calibrator = calibrator
+
+        # variables used to track statistics about the session
+        self.start_time_ns = time.time_ns()
+        self.delta_times = []
 
 
     def setup(self):
@@ -83,6 +93,8 @@ class SessionWorker(QObject):
             # send the message to start reading the mat
             ser.write((START_READING_COMMAND + '\n').encode('utf-8'))
             self.polling = True
+
+            prev_sample_time_ns = time.time_ns()
             while self.polling:
                 # mat data is transmitted as raw bytes
                 bytes = ser.read(VERIFICATION_WIDTH + MAT_SIZE)
@@ -106,11 +118,29 @@ class SessionWorker(QObject):
 
                 self.calculated_pressures.emit(pressure_array)
 
+                # update the timing statistics
+                now_ns = time.time_ns()
+                delta_ns = now_ns - prev_sample_time_ns
+                self.delta_times.append(delta_ns)
+                prev_sample_time_ns = now_ns
+
+                self.session_stats.emit(f"Sample rate: {(1/delta_ns * 1000000000):.2f}Hz")
+
 
     def stop(self):
         print('stopping')
-
         self.polling = False
+
+        # calculate the finished session stats
+        average_delta_ns = np.average(self.delta_times)
+        average_sample_rate = 1 / average_delta_ns * 1000000000
+
+        msg = f"Total session time: {((time.time_ns() - self.start_time_ns) / 1000000000):.2f}s\n"
+        msg += f"Average sample rate: {average_sample_rate:02f}Hz\n"
+
+        self.finished_session_stats.emit(msg)
+
+        # clean up this thread
         self.finished.emit()
 
 
