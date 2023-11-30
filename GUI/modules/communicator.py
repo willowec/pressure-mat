@@ -50,6 +50,7 @@ class SessionWorker(QObject):
         # variables used to track statistics about the session
         self.start_time_ns = time.time_ns()
         self.delta_times = []
+        self.transmission_errors = 0
 
 
     def setup(self):
@@ -108,6 +109,7 @@ class SessionWorker(QObject):
                 # ensure that the verifiation message was aligned
                 for ver, val in zip(VERIFICATION_SEQUENCE, flat_mat[-4:]):
                     if not (ver == val):
+                        self.transmission_errors += 1
                         print("====ERROR OCCURED! FIXING!!!====")
                         # a verification error has occured, probably because the fifo filled up
                         # to resolve it, simply wipe the fifo and read until the next verification sequence
@@ -116,6 +118,8 @@ class SessionWorker(QObject):
                         while(not np.array_equal(hist, np.asarray(VERIFICATION_SEQUENCE, dtype=np.uint8))):
                             hist = np.roll(hist, -1)
                             hist[-1] = int.from_bytes(ser.read(1), "big")
+
+                        break
 
                 data_array = mat_list_to_array(flat_mat)
 
@@ -147,6 +151,7 @@ class SessionWorker(QObject):
 
         msg = f"Total session time: {((time.time_ns() - self.start_time_ns) / 1000000000):.2f}s\n"
         msg += f"Average sample rate: {average_sample_rate:02f}Hz\n"
+        msg += f"Total # transmission errors: {self.transmission_errors}\n"
 
         self.finished_session_stats.emit(msg)
 
