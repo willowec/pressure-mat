@@ -168,7 +168,7 @@ class Calibration:
         """
         Appends new mat readings to the zeroing data list. Need exactly 10 for zeroing to work.
         """
-
+        print("Added zeroing data")
         self.zeroing_data.append(new_zeroing_data)
 
 
@@ -194,12 +194,14 @@ class CalSampleWorker(QObject):
         self.port = port
         self.baud = baud
         self.calibration_weight = calibration_weight
+        #print("created new cal worker")
 
 
     def run(self):
         """
         Work thread of the CalSampleWorker
         """
+        #print("ran new cal worker")
         # request calibration readings from the mat
         with serial.Serial(port=self.port, baudrate=self.baud, timeout=10) as ser:
             # send the message to start reading the mat
