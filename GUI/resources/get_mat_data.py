@@ -3,7 +3,11 @@ Small program that allows for getting raw data from the mat for testing purposes
 """
 
 import argparse
-import serial
+import serial, sys
+
+# hack to allow importing the modules: add parent directory to path
+sys.path.append('..')
+from modules.calibration import *
 
 from modules.calibration import *
 from modules.communicator import *
