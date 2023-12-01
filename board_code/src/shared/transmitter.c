@@ -62,6 +62,8 @@ void transmit_row(uint8_t *row)
 // definition of transmit_mat
 void transmit_mat(uint8_t *mat)
 {
+    sleep_ms(THROTTLE_SLEEP_MS);    // THROTTLE_SLEEP_MS set by CMake
+
     int i;
     for (i = 0; i < COL_HEIGHT; i++) {
         transmit_row(mat + (i * ROW_WIDTH));

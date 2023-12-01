@@ -110,7 +110,7 @@ class SessionWorker(QObject):
                 for ver, val in zip(VERIFICATION_SEQUENCE, flat_mat[-4:]):
                     if not (ver == val):
                         self.transmission_errors += 1
-                        print("====ERROR OCCURED! FIXING!!!====")
+                        print("====TRANSMISSION ERROR OCCURED! FIXING!!!====")
                         # a verification error has occured, probably because the fifo filled up
                         # to resolve it, simply wipe the fifo and read until the next verification sequence
                         ser.reset_input_buffer()
@@ -136,9 +136,7 @@ class SessionWorker(QObject):
                 self.delta_times.append(delta_ns)
                 prev_sample_time_ns = now_ns
 
-                print(f"Buffer size: {ser.in_waiting}")
-
-                self.session_stats.emit(f"Sample rate: {(1/delta_ns * 1000000000):.2f}Hz")
+                self.session_stats.emit(f"Sample rate: {(1/delta_ns * 1000000000):.2f}Hz\nQueued RX size: {ser.in_waiting}")
 
 
     def stop(self):
