@@ -43,6 +43,7 @@ class MatReading:
         self.matMatrix = rawMatValues
 
 
+
 class Calibration:
     """
     Class which handles calibrating the mat by taking raw mat readings and converting them into a calibrated mat output of the same size.
@@ -150,7 +151,7 @@ class Calibration:
         Applys the dc offsets to a passed ndarray/matreading. Run calc_dc_offsets() before use. 
         """
 
-        return (array_to_offset - self.dc_offsets)
+        return np.clip((array_to_offset - self.apply_calibration_curve(self.dc_offsets)),0,1000000000)
 
 
     def calc_dc_offsets(self):
@@ -170,8 +171,6 @@ class Calibration:
         """
         print("Added zeroing data")
         self.zeroing_data.append(new_zeroing_data)
-
-
 
 
 

@@ -101,9 +101,9 @@ class SessionWorker(QObject):
                 data_array = mat_list_to_array(flat_mat)
                 # print_2darray(im_array)
 
-                zeroed_ADC_array = self.calibrator.apply_dc_offsets(data_array)
+                pressure_array = self.calibrator.apply_calibration_curve(data_array)
 
-                pressure_array = self.calibrator.apply_calibration_curve(zeroed_ADC_array)
+                pressure_array = self.calibrator.apply_dc_offsets(pressure_array)
 
                 # save the pressure values as an npy
                 self.save_npy(pressure_array)
