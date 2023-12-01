@@ -9,6 +9,8 @@ Call with the index of the sensor you want to calibrate. Follow the instrutions 
 
 import argparse
 import serial, sys
+import matplotlib.pyplot as plt
+import numpy as np
 
 # hack to allow importing the modules: add parent directory to path
 sys.path.append('..')
@@ -19,6 +21,11 @@ from modules.communicator import *
 from modules.mat_handler import *
 
 
+def fit_function(x, a, b, c):
+    return a * np.exp(b * x) + c
+
+p0 = [0.05, 0.05, 100]
+
 expected_pressures_g_to_pa = {
     500 : 52.813,
     200 : 75.977,
@@ -27,6 +34,7 @@ expected_pressures_g_to_pa = {
     20  : 161.925,
     10  : 192.205
 }
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(usage=USAGE)
@@ -70,4 +78,16 @@ if __name__ == "__main__":
 
         print(f"   Reading acquired for weight {weight}g")
 
-    print(cal_vals)
+    print("Fitting curve...")
+
+    params, cv = scipy.optimize.curve_fit(fit_function, list(cal_vals.keys()), list(cal_vals.values()), p0=p0)
+
+    print(f"Fit parameters: {params}")
+
+    # plot the calibration curve
+    x = np.linspace(0, 255, 100)
+    plt.plot(x, fit_function(x, *params))
+    plt.title(f"Calibration curve for sensor {args.index_x}, {args.index_y}")
+    plt.xlabel("Sensor value")
+    plt.ylabel("Pressure (Pa)")
+    plt.show()
