@@ -225,6 +225,7 @@ class MainWindow(QMainWindow):
             self.run_cal_worker_thread(self.cal_thread9, self.cal_worker9,index)
         else:
             print("End of zeroing")
+            self.calibration.calc_dc_offsets()
             self.zero_mat_b.setEnabled(True)
             self.zeroing_status.setText("Zeroing Complete")
             return

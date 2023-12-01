@@ -158,8 +158,8 @@ class Calibration:
         Updates the dc_offsets array by averaging the zeroing data. Zeroing data must contain 10 ndarrays before use.
         """
 
-        for i in self.zeroing_data:
-            self.dc_offsets += self.zeroing_data[i]
+        for i in range(len(self.zeroing_data)):
+            self.dc_offsets += self.zeroing_data[i].matMatrix
         
         self.dc_offsets = (self.dc_offsets / 10)
 
