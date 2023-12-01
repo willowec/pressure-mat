@@ -43,6 +43,7 @@ class MatReading:
         self.matMatrix = rawMatValues
 
 
+
 class Calibration:
     """
     Class which handles calibrating the mat by taking raw mat readings and converting them into a calibrated mat output of the same size.
@@ -55,6 +56,8 @@ class Calibration:
             self.listOfMatReadings = []
             self.cal_curves_array = np.empty((self.width, self.height, 3), dtype=np.float64)  # list of coefficients
             self.calibrated = False
+            self.dc_offsets = np.zeros((self.width, self.height), dtype=np.float64)
+            self.zeroing_data = []
 
 
     def add_reading(self, actualMatReading: MatReading):
@@ -143,6 +146,32 @@ class Calibration:
         """
         return a * np.exp(b * x) + c
 
+    def apply_dc_offsets(self, array_to_offset: np.ndarray):
+        """
+        Applys the dc offsets to a passed ndarray/matreading. Run calc_dc_offsets() before use. 
+        """
+
+        return np.clip((array_to_offset - self.apply_calibration_curve(self.dc_offsets)),0,1000000000)
+
+
+    def calc_dc_offsets(self):
+        """
+        Updates the dc_offsets array by averaging the zeroing data. Zeroing data must contain 10 ndarrays before use.
+        """
+
+        for i in range(len(self.zeroing_data)):
+            self.dc_offsets += self.zeroing_data[i].matMatrix
+        
+        self.dc_offsets = (self.dc_offsets / 10)
+
+
+    def add_zeroing_data(self, new_zeroing_data: np.ndarray):
+        """
+        Appends new mat readings to the zeroing data list. Need exactly 10 for zeroing to work.
+        """
+        print("Added zeroing data")
+        self.zeroing_data.append(new_zeroing_data)
+
 
 
 class CalSampleWorker(QObject):
@@ -164,12 +193,14 @@ class CalSampleWorker(QObject):
         self.port = port
         self.baud = baud
         self.calibration_weight = calibration_weight
+        #print("created new cal worker")
 
 
     def run(self):
         """
         Work thread of the CalSampleWorker
         """
+        #print("ran new cal worker")
         # request calibration readings from the mat
         with serial.Serial(port=self.port, baudrate=self.baud, timeout=10) as ser:
             # send the message to start reading the mat

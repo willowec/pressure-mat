@@ -125,6 +125,8 @@ class SessionWorker(QObject):
 
                 pressure_array = self.calibrator.apply_calibration_curve(data_array)
 
+                pressure_array = self.calibrator.apply_dc_offsets(pressure_array)
+
                 # save the pressure values as an npy
                 self.save_npy(pressure_array)
 

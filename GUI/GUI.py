@@ -64,6 +64,14 @@ class MainWindow(QMainWindow):
         self.load_past_session_b.clicked.connect(self.load_past_session)
         self.layout.addWidget(self.load_past_session_b, 7, 0)
 
+        # zero mat
+        self.zero_mat_b = QPushButton("Zero Mat")
+        self.zero_mat_b.clicked.connect(self.zero_mat)
+        self.zeroing_status = QLabel("Status: Not Zeroed")
+        self.layout.addWidget(self.zero_mat_b, 8, 0)
+        self.layout.addWidget(self.zeroing_status, 8, 1)
+
+
         # navigate images with slider
         self.slider = QSlider(Qt.Orientation.Horizontal, self)
         self.slider.setTickInterval(1)
@@ -106,6 +114,100 @@ class MainWindow(QMainWindow):
 
         stats = calc_mat_reading_stats(reading, expected)
         self.mat_stats_label.setText(stats)
+
+
+    def zero_mat(self, index:int=0):
+        """
+        A recursive function that reads the mat 10 times, and adds those readings to the zeroing zeroing data in the calibration class
+        """
+            
+        if(index == 0):
+            print("Zeroing mat")
+            self.zero_mat_b.setEnabled(False)
+
+            # start up the thread to collect a reading from the mat
+            self.cal_thread0 = QThread(self)
+            self.cal_worker0 = CalSampleWorker(self.port_input.text(), int(self.baud_input.text()), calibration_weight=0)
+            self.run_cal_worker_thread(self.cal_thread0, self.cal_worker0,index)
+        elif(index == 1):
+            # start up the thread to collect a reading from the mat
+            self.cal_thread1 = QThread(self)
+            self.cal_worker1 = CalSampleWorker(self.port_input.text(), int(self.baud_input.text()), calibration_weight=0)
+            self.run_cal_worker_thread(self.cal_thread1, self.cal_worker1,index)
+        elif(index == 2):
+            # start up the thread to collect a reading from the mat
+            self.cal_thread2 = QThread(self)
+            self.cal_worker2 = CalSampleWorker(self.port_input.text(), int(self.baud_input.text()), calibration_weight=0)
+            self.run_cal_worker_thread(self.cal_thread2, self.cal_worker2, index)
+        elif(index == 3):
+            # start up the thread to collect a reading from the mat
+            self.cal_thread3 = QThread(self)
+            self.cal_worker3 = CalSampleWorker(self.port_input.text(), int(self.baud_input.text()), calibration_weight=0)
+            self.run_cal_worker_thread(self.cal_thread3, self.cal_worker3, index)
+        elif(index == 4):
+            # start up the thread to collect a reading from the mat
+            self.cal_thread4 = QThread(self)
+            self.cal_worker4 = CalSampleWorker(self.port_input.text(), int(self.baud_input.text()), calibration_weight=0)
+            self.run_cal_worker_thread(self.cal_thread4, self.cal_worker4, index)
+        elif(index == 5):
+            # start up the thread to collect a reading from the mat
+            self.cal_thread5 = QThread(self)
+            self.cal_worker5 = CalSampleWorker(self.port_input.text(), int(self.baud_input.text()), calibration_weight=0)
+            self.run_cal_worker_thread(self.cal_thread5, self.cal_worker5, index)
+        elif(index == 6):
+            # start up the thread to collect a reading from the mat
+            self.cal_thread6 = QThread(self)
+            self.cal_worker6 = CalSampleWorker(self.port_input.text(), int(self.baud_input.text()), calibration_weight=0)
+            self.run_cal_worker_thread(self.cal_thread6, self.cal_worker6, index)
+        elif(index == 7):
+            # start up the thread to collect a reading from the mat
+            self.cal_thread7 = QThread(self)
+            self.cal_worker7 = CalSampleWorker(self.port_input.text(), int(self.baud_input.text()), calibration_weight=0)
+            self.run_cal_worker_thread(self.cal_thread7, self.cal_worker7, index)
+        elif(index == 8):
+            # start up the thread to collect a reading from the mat
+            self.cal_thread8 = QThread(self)
+            self.cal_worker8 = CalSampleWorker(self.port_input.text(), int(self.baud_input.text()), calibration_weight=0)
+            self.run_cal_worker_thread(self.cal_thread8, self.cal_worker8, index)
+        elif(index == 9):
+            # start up the thread to collect a reading from the mat
+            self.cal_thread9 = QThread(self)
+            self.cal_worker9 = CalSampleWorker(self.port_input.text(), int(self.baud_input.text()), calibration_weight=0)
+            self.run_cal_worker_thread(self.cal_thread9, self.cal_worker9,index)
+        else:
+            print("End of zeroing")
+            self.calibration.calc_dc_offsets()
+            self.zero_mat_b.setEnabled(True)
+            self.zeroing_status.setText("Zeroing Complete")
+            return
+        
+
+
+    def run_cal_worker_thread(self, thread: QThread, worker: CalSampleWorker, index:int):
+        """
+        Runs QThread and Worker to gather mat readings. Calls Zero_mat() of the next index when done
+        """
+        # start up the thread to collect a reading from the mat
+        worker.moveToThread(thread)
+
+        # connect important signals to the new thread
+        thread.started.connect(worker.run)
+        worker.finished.connect(thread.quit)
+        worker.finished.connect(worker.deleteLater)
+        thread.finished.connect(thread.deleteLater)
+
+        # start the thread to collect a reading from the mat
+        thread.start()
+        self.zeroing_status.setText("Getting data...")
+        
+        # connect cleanup signals
+        worker.reading_result.connect(
+            self.calibration.add_zeroing_data
+        )
+
+        thread.finished.connect(
+            lambda: self.zero_mat(index+1)
+        )
 
 
     def start_session(self):
