@@ -17,9 +17,9 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 matplotlib.use('QtAgg')
 
-from modules.calibration import Calibration, MatReading, CalSampleWorker, MAX_RATED_PRESSURE_PA, DEFAULT_CAL_CURVES_PATH, AVERAGED_CAL_CURVES_PATH
+from modules.calibration import Calibration, CalSampleWorker, MAX_RATED_PRESSURE_PA, DEFAULT_CAL_CURVES_PATH
 from modules.communicator import SessionWorker, ROW_WIDTH, COL_HEIGHT
-from modules.mat_handler import print_2darray, calc_mat_reading_stats
+from modules.mat_handler import calc_mat_reading_stats
 
 
 class MainWindow(QMainWindow):
