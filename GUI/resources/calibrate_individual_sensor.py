@@ -7,7 +7,8 @@ USAGE = """
 Call with the index of the sensor you want to calibrate. Follow the instrutions the program gives you.
 """
 
-import argparse
+import argparse, os
+from pathlib import Path
 import serial, sys
 import matplotlib.pyplot as plt
 import numpy as np
@@ -19,6 +20,9 @@ from modules.calibration import *
 from modules.calibration import *
 from modules.communicator import *
 from modules.mat_handler import *
+
+# calibration paths folder
+cal_curves_folder = Path("individual_cal_curves")
 
 
 def fit_function(x, a, b, c):
@@ -45,6 +49,12 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     cal_vals = {}
+
+    # ensure a directory exists to put the cal curves in
+    try:
+        cal_curves_folder.mkdir()
+    except FileExistsError:
+        pass # ignore folder already existing
 
     print(f"Starting calibration routine for sensor ({args.index_x}, {args.index_y})")
 
@@ -83,6 +93,9 @@ if __name__ == "__main__":
     params, cv = scipy.optimize.curve_fit(fit_function, list(cal_vals.keys()), list(cal_vals.values()), p0=p0)
 
     print(f"Fit parameters: {params}")
+
+    # save the cal curves
+    np.save(cal_curves_folder.joinpath(f"cal_curve_({args.index_x}, {args.index_y}).npy"), np.array(params))
 
     # plot the calibration curve
     x = np.linspace(0, 255, 100)
