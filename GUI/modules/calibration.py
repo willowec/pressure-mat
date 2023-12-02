@@ -59,6 +59,9 @@ class Calibration:
             self.dc_offsets = np.zeros((self.width, self.height), dtype=np.float64)
             self.zeroing_data = []
 
+            # load the default cal curves
+            self.load_cal_curves(DEFAULT_CAL_CURVES_PATH)
+
 
     def add_reading(self, actualMatReading: MatReading):
         """
@@ -193,7 +196,6 @@ class CalSampleWorker(QObject):
         self.port = port
         self.baud = baud
         self.calibration_weight = calibration_weight
-        #print("created new cal worker")
 
 
     def run(self):

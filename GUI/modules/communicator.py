@@ -119,12 +119,11 @@ class SessionWorker(QObject):
                             hist = np.roll(hist, -1)
                             hist[-1] = int.from_bytes(ser.read(1), "big")
 
-                        break
+                        break   # do not false positive another error
 
                 data_array = mat_list_to_array(flat_mat)
 
                 pressure_array = self.calibrator.apply_calibration_curve(data_array)
-
                 pressure_array = self.calibrator.apply_dc_offsets(pressure_array)
 
                 # save the pressure values as an npy

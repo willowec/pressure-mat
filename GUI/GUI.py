@@ -1,5 +1,5 @@
 # GUI which displays data from the mat interpreted by the board and transmitted over serial
-import sys, os
+import sys, os, re
 from datetime import datetime
 import numpy as np
 
@@ -71,6 +71,10 @@ class MainWindow(QMainWindow):
         self.layout.addWidget(self.zero_mat_b, 8, 0)
         self.layout.addWidget(self.zeroing_status, 8, 1)
 
+        # small area calibration loading
+        self.load_small_area_calibration_b = QPushButton("Load small area cal")
+        self.load_small_area_calibration_b.clicked.connect(self.load_small_area_cal)
+        self.layout.addWidget(self.load_small_area_calibration_b, 5, 1)
 
         # navigate images with slider
         self.slider = QSlider(Qt.Orientation.Horizontal, self)
@@ -102,6 +106,31 @@ class MainWindow(QMainWindow):
 
         # declare the existance of a session thread
         self.session_thread = None
+
+
+    def load_small_area_cal(self):
+        """
+        Loads the folder of small area calibration curves and applies them to the calibrator.
+        """
+        cal_curves = Path("./resources/individual_cal_curves")
+
+        # init calibration curves to be a flat line
+        for i in range(self.calibration.cal_curves_array.shape[0]):
+            for j in range(self.calibration.cal_curves_array.shape[1]):
+                self.calibration.cal_curves_array[i, j] = np.array([0, 0, 0])
+
+        # overwrite calibrated sensors with their curves
+        for params_npy in list(cal_curves.glob('*.npy')):
+            # get the index for the params from the filename
+            idx = re.findall(r"[0-9]", str(params_npy))
+            x = int(idx[0])
+            y = int(idx[1])
+
+            # load the parameters and shove them into the cal curves of the calibration
+            params = np.load(params_npy)
+
+            self.calibration.cal_curves_array[x, y] = np.array(params)
+            print(f"Loaded calibration params for ({x}, {y})")
 
 
     def show_reading_statistics(self, reading: np.ndarray):
@@ -255,6 +284,7 @@ class MainWindow(QMainWindow):
             self.finish_session_stats
         )
 
+
     def stop_session(self):
         print("I will stop the mat recording session")
         if self.session:
@@ -272,7 +302,6 @@ class MainWindow(QMainWindow):
         """
         Callback function for the finished_session_stats signal of SessionWorker, adds overall stats to the GUI
         """
-        print("calling finish")
         self.session.session_stats.disconnect()
         stats_text = self.session_stats.text()
         self.session_stats.setText(stats_text + '\n' + message)
@@ -282,7 +311,6 @@ class MainWindow(QMainWindow):
         """
         Converts an array of pressure values to an image based on the saved 
         """
-
         # write the stats of the current reading
         self.show_reading_statistics(pressure_array)
 
