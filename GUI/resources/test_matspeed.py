@@ -1,5 +1,5 @@
 """
-Program which calculates mat read speed of the mat without any overhead
+Program which calculates the sample rate of the mat without any calibration/data saving overhead
 """
 
 import matplotlib.pyplot as plt

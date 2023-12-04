@@ -2,6 +2,7 @@
 File for helper functions related to the Mat that multiple modules may need to import
 """
 import numpy as np
+import os
 
 ROW_WIDTH = 28
 COL_HEIGHT = 56
@@ -17,18 +18,34 @@ VERIFICATION_SEQUENCE = [255, 254, 254, 255]
 
 
 
-def print_2darray(array: np.ndarray):
+def print_2darray(array: np.ndarray, highlight_max: bool=False):
     """
     Function which prints a 2d uint8 numpy array in a readable format
     """
+    max_index = None
+    if highlight_max:
+        os.system("") # enable color printing on windows terminals
+        max_index = np.unravel_index(array.argmax(), array.shape)
+
     for row in range(array.shape[1]):
         line = ""
-        for i in range(array.shape[0]):
+        for col in range(array.shape[0]):
+
+            suffix = ""
+            if max_index is not None:
+                # add a color code when printing the value if it is at the max index
+                if (max_index[0] == col and max_index[1] == row):
+                    line += "\x1b[1;92m" # make the value green
+                    suffix = "\x1b[38;5;15m" # return to white afterwards
             try:
-                line += f"{array[i, row]:03d} "
+                line += f"{array[col, row]:03d} "
             except ValueError:
-                line += f"{array[i, row]:3.2f} "
+                line += f"{array[col, row]:3.2f} "
+
+            line += suffix
         print(line)
+    
+    return max_index
 
 
 def prettyprint_mat(mat_as_list: list):

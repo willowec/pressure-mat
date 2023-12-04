@@ -19,6 +19,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("expected_weight_lbs", type=float, help="The weight being evenly distributed over the mat")
     parser.add_argument("port", type=str, default="COM3", help="The com port the mat is plugged in to")
+    parser.add_argument("--no_save", action=argparse.BooleanOptionalAction, help="Flag which suppresses saving results and just prints them along with the index of the max value")
 
     args = parser.parse_args()
 
@@ -45,6 +46,12 @@ if __name__ == "__main__":
 
         data_array = mat_list_to_array(flat_mat)
 
-        path = f"resources/raw_data/matreading_{expected_pressure:4.4f}pa.csv"
-        print(f"Saving measured mat values for expected weight {args.expected_weight_lbs:4.4f}lbs and expected pressure {expected_pressure:4.4f} to {path}")
-        np.savetxt(path, data_array, fmt="%03d", delimiter=',')
+        if args.no_save:
+            print(f"{args.no_save=}, printing out the mat.")
+            max_index = print_2darray(data_array, True)
+            print(f"Max value found at index {max_index}")
+        else:
+            path = f"resources/raw_data/matreading_{expected_pressure:4.4f}pa.csv"
+            print(f"Saving measured mat values for expected weight {args.expected_weight_lbs:4.4f}lbs and expected pressure {expected_pressure:4.4f} to {path}")
+            np.savetxt(path, data_array, fmt="%03d", delimiter=',')
+            

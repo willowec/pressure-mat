@@ -234,6 +234,7 @@ class MainWindow(QMainWindow):
             self.calibration.add_zeroing_data
         )
 
+        # recursively call zero_mat until enough data is collected
         thread.finished.connect(
             lambda: self.zero_mat(index+1)
         )
