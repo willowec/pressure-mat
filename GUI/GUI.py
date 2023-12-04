@@ -139,7 +139,10 @@ class MainWindow(QMainWindow):
         """
         expected = -1
         if self.mat_expected_weight.text() != '':
-            expected = float(self.mat_expected_weight.text())
+            try:
+                expected = float(self.mat_expected_weight.text())
+            except ValueError as e:
+                print("Failed to convert string to expected weight value!", e)
 
         stats = calc_mat_reading_stats(reading, expected)
         self.mat_stats_label.setText(stats)
