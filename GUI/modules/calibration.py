@@ -149,6 +149,7 @@ class Calibration:
         """
         return a * np.exp(b * x) + c
 
+
     def apply_dc_offsets(self, array_to_offset: np.ndarray):
         """
         Applys the dc offsets to a passed ndarray/matreading. Run calc_dc_offsets() before use. 

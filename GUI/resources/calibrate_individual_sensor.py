@@ -35,8 +35,9 @@ expected_pressures_g_to_pa = {
     200 : 75.977,
     100 : 102.691,
     50  : 123.808,
-    20  : 161.925,
-    10  : 192.205
+    #20  : 161.925, # both 20g and 10g are below the "noise floor" of the mat at rest.
+    #10  : 192.205
+    0 : 0
 }
 
 
@@ -49,6 +50,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     cal_vals = {}
+    
 
     # ensure a directory exists to put the cal curves in
     try:
@@ -90,17 +92,38 @@ if __name__ == "__main__":
 
     print("Fitting curve...")
 
-    params, cv = scipy.optimize.curve_fit(fit_function, list(cal_vals.keys()), list(cal_vals.values()), p0=p0)
+    expected_pressures = [expected_pressures_g_to_pa[k] for k in cal_vals.keys()]
+    measured_values = list(cal_vals.values())
 
-    print(f"Fit parameters: {params}")
+    print(expected_pressures, measured_values)
 
-    # save the cal curves
-    np.save(cal_curves_folder.joinpath(f"cal_curve_({args.index_x}, {args.index_y}).npy"), np.array(params))
+    try:
+        params, cv = scipy.optimize.curve_fit(fit_function, measured_values, expected_pressures, p0=p0)
 
-    # plot the calibration curve
-    x = np.linspace(0, 255, 100)
-    plt.plot(x, fit_function(x, *params))
-    plt.title(f"Calibration curve for sensor {args.index_x}, {args.index_y}")
-    plt.xlabel("Sensor value")
-    plt.ylabel("Pressure (Pa)")
-    plt.show()
+        print(f"Fit parameters: {params}")
+
+        # save the cal curves
+        np.save(cal_curves_folder.joinpath(f"cal_curve_({args.index_x}, {args.index_y}).npy"), np.array(params))
+
+        # plot the calibration curve
+        plt.figure(1)
+        x = np.linspace(0, 255, 100)
+        plt.plot(x, fit_function(x, *params))
+        plt.title(f"Calibration curve for sensor {args.index_x}, {args.index_y}")
+        plt.xlabel("Sensor value")
+        plt.ylabel("Pressure (Pa)")
+    
+    except Exception as e:
+
+        plt.figure(2)
+        plt.scatter(measured_values, expected_pressures)
+        plt.title(f"Expected pressures for measured sensor values at index ({args.index_x}, {args.index_y})")
+        plt.xlabel("Sensor value")
+        plt.ylabel("Pressure (Pa)")
+        plt.xlim([0, 255])
+
+        # annotate
+        for i, gs in enumerate(list(cal_vals.keys())):
+            plt.annotate(f"{gs}g", (measured_values[i], expected_pressures[i]))
+        
+        plt.show()
