@@ -110,7 +110,7 @@ def calc_mat_reading_stats(mat_samples_pa: np.array, expected_weight: float):
 
     errors_msg = "Put the expected distributed weight value (in lbs) into the entry to the left to see error!"
     if expected_weight > 0:
-        expected_pa = lbs_to_neutons(expected_weight) / (MAT_SIZE * SENSOR_AREA_SQM)
+        expected_pa = distributed_lbs_to_sensor_pressure(expected_weight)
 
         errors = np.empty_like(flat_mat)
         for i in range(len(errors)):
@@ -121,6 +121,6 @@ def calc_mat_reading_stats(mat_samples_pa: np.array, expected_weight: float):
         avg_err = round(np.average(np.abs(errors)), 2)
         median_err = round(np.median(np.abs(errors)), 2)
 
-        errors_msg = f"    Errors:\n    Min % err: {min_err}\n    Max % err: {max_err}\n    Avg % err: {avg_err}\n    Median % err: {median_err}"
+        errors_msg = f"Expected Pressure on each sensor: {expected_pa:05f}\n    Errors:\n    Min % err: {min_err}\n    Max % err: {max_err}\n    Avg % err: {avg_err}\n    Median % err: {median_err}"
 
     return f"    Max pressure: {max_pa}Pa\n    Min pressure: {min_pa}Pa\n    Avg pressure: {average_pa}Pa\n    {errors_msg}"
