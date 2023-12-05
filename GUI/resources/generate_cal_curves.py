@@ -16,7 +16,7 @@ from modules.mat_handler import *
 def fit_function(x, a, b, c):
     return a * np.exp(b * x) + c
 
-p0 = [0.05, 0.05, 100]
+p0 = [0.0007204221429716851, 0.04216285053306005, 0.047785412782311236] # the initial parameters are taken from the averaged curve fit
 
 if __name__ == "__main__":
     mat_readings = []

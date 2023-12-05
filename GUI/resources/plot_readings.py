@@ -46,8 +46,6 @@ if __name__ == "__main__":
     axes[0][0].set_title("Sensor values for different pressures")
     axes[0][0].set_xlabel("Sensor ADC value (unitless)")
     axes[0][0].set_ylabel("Actual pressure (Pa)")
-    axes[0][0].set_xlim([0, 255])
-    axes[0][0].set_ylim([0, 6000])
 
     # plot the average readings
     avg_readings = np.asarray([np.average(flat_reading) for flat_reading in flat_readings])
@@ -59,8 +57,6 @@ if __name__ == "__main__":
     axes[0][1].set_title("Average sensor values for different pressures")
     axes[0][1].set_xlabel("Average of each sensor's ADC value (unitless)")
     axes[0][1].set_ylabel("Actual pressure (Pa)")
-    axes[0][1].set_xlim([0, 255])
-    axes[0][1].set_ylim([0, 6000])
 
     # fit an exponential to the average readings
     # help from this page: https://swharden.com/blog/2020-09-24-python-exponential-fit/
@@ -88,8 +84,6 @@ if __name__ == "__main__":
     #axes[1][0].text(max_sensval + 1, 400, "Max recorded\nsensor value", color='red', fontsize='small')
 
     axes[1][0].set_title("Step size of fit exponential for pressures seen by the sensors")
-    axes[1][0].set_xlim([0, 6000])
-    axes[1][0].set_ylim([-5, 300])
     axes[1][0].set_xlabel("Applied Pressure (Pa)")
     axes[1][0].set_ylabel("Step size (Pa)")
 
