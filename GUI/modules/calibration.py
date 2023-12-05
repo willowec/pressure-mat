@@ -13,7 +13,7 @@ import serial
 
 from modules.mat_handler import *
 
-MAX_RATED_PRESSURE_PA = 600  # Maximum pressure we expect any individual sensor to see
+MAX_RATED_PRESSURE_PA = 5  # Maximum pressure we expect any individual sensor to see
 
 DEFAULT_CAL_CURVES_PATH = "./resources/default_calibration_curves.npy"
 AVERAGED_CAL_CURVES_PATH = "./resources/averaged_calibration_curves.npy"

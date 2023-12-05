@@ -73,7 +73,9 @@ if __name__ == "__main__":
     axes.set_title("Calculated Calibration Curves")
     axes.set_xlabel("Mat sensor reading (unitless)")
     axes.set_ylabel("Mapped pressure value (Pa)")
-    axes.set_ylim([0, 1000])
+    axes.set_xlim([0, 210])
+    axes.set_ylim([-5, 100])
+    axes.axvline(207, color='red')
 
     f.tight_layout()
 
