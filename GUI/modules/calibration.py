@@ -35,6 +35,7 @@ class MatReading:
         self.matMatrix = rawMatValues
 
 
+
 class Calibration:
     """
     Class which handles calibrating the mat by taking raw mat readings and converting them into a calibrated mat output of the same size.
