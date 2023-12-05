@@ -7,7 +7,8 @@ import os
 ROW_WIDTH = 28
 COL_HEIGHT = 56
 MAT_SIZE = 1568
-SENSOR_AREA_SQM = 0.0001        # Area of each individual sensor in square meters (1cm^2)
+SENSOR_AREA_SQM = 0.00005   # Area of each individual sensor in square meters (0.5cm^2)
+MAT_AREA_SQM = 0.1568       # Area of the entire mat in square meters   
 
 START_READING_COMMAND = "start_reading"
 GET_CAL_VALS_COMMAND = "get_cal_vals"
@@ -84,6 +85,14 @@ def lbs_to_neutons(force_lbs: float) -> float:
     Function which converts pounds force to newtons force
     """
     return force_lbs * 4.44822
+
+
+def distributed_lbs_to_sensor_pressure(force_lbs: float) -> float:
+    """
+    Function which takes a weight in pounds that is evenly distributed across the mat and calculates the pressure a single sensor should see
+    """
+    total_pressure_pa = lbs_to_neutons(force_lbs) / (MAT_AREA_SQM) # the expected pressure experienced b the whole mat
+    return total_pressure_pa * SENSOR_AREA_SQM / MAT_AREA_SQM  # actual_pressure is in pascals
 
 
 def calc_percent_error(experimental, theoretical):

@@ -83,13 +83,14 @@ if __name__ == "__main__":
         steps.append(fit_function(i, a, b, c) - fit_function(i-1, a, b, c))
     steps = np.asarray(steps)[0:max_sensval]
 
-    axes[1][0].plot(range(1, max_sensval + 1), steps)
-    axes[1][0].axvline(max_sensval, color='red', label="maximum recorded sensor value")
-    axes[1][0].text(max_sensval + 1, 400, "Max recorded\nsensor value", color='red', fontsize='small')
+    axes[1][0].plot([fit_function(i, a, b, c) for i in range(1, max_sensval + 1)], steps)
+    #axes[1][0].axvline(fit_function(max_sensval + 1, a, b, c), color='red', label="maximum recorded sensor value")
+    #axes[1][0].text(max_sensval + 1, 400, "Max recorded\nsensor value", color='red', fontsize='small')
 
-    axes[1][0].set_title("Step size of fit exponential")
-    axes[1][0].set_ylim([0, (fit_function(max_sensval + 1, a, b, c) - fit_function(max_sensval, a, b, c))])
-    axes[1][0].set_xlabel("Sensor value (unitless)")
+    axes[1][0].set_title("Step size of fit exponential for pressures seen by the sensors")
+    axes[1][0].set_xlim([0, 6000])
+    axes[1][0].set_ylim([-5, 300])
+    axes[1][0].set_xlabel("Applied Pressure (Pa)")
     axes[1][0].set_ylabel("Step size (Pa)")
 
     # plot the %error experienced due to a single misstep

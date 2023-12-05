@@ -10,6 +10,7 @@ import sys
 # hack to allow importing the modules: add parent directory to path
 sys.path.append('..')
 from modules.calibration import *
+from modules.mat_handler import *
 
 
 def fit_function(x, a, b, c):

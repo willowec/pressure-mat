@@ -23,7 +23,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    expected_pressure = lbs_to_neutons(args.expected_weight_lbs) / (MAT_SIZE * SENSOR_AREA_SQM)
+    expected_pressure = distributed_lbs_to_sensor_pressure(args.expected_weight_lbs)
 
     # save the raw mat samples to a csv file named as the expected pressure values that should be experienced by the sensors
 

@@ -30,18 +30,9 @@ class MatReading:
     def __init__(self, matWidth:int, matHeight: int, actualWeight: float, rawMatValues: np.ndarray):
         self.width = matWidth
         self.height = matHeight
-        self.actual_pressure = lbs_to_neutons(actualWeight) / (MAT_SIZE * SENSOR_AREA_SQM)  # actual_pressure is in pascals
+
+        self.actual_pressure = distributed_lbs_to_sensor_pressure(actualWeight)
         self.matMatrix = rawMatValues
-
-
-    def update_values(self, actualWeight, rawMatValues: np.ndarray):
-        """
-        Change the actual pressure each sensor experienced and the raw mat values of the MatReading
-            actualWeight should be passed in unit lbs
-        """
-        self.actual_pressure = lbs_to_neutons(actualWeight) / (MAT_SIZE * SENSOR_AREA_SQM)
-        self.matMatrix = rawMatValues
-
 
 
 class Calibration:
@@ -60,7 +51,10 @@ class Calibration:
             self.zeroing_data = []
 
             # load the default cal curves
-            self.load_cal_curves(AVERAGED_CAL_CURVES_PATH)
+            try:
+                self.load_cal_curves(AVERAGED_CAL_CURVES_PATH)
+            except FileNotFoundError as e:
+                print("Could not load default calibration curves")
 
 
     def add_reading(self, actualMatReading: MatReading):
