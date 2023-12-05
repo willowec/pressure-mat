@@ -54,7 +54,7 @@ if __name__ == "__main__":
     z = sorted(zip(avg_readings, expected_pressures))
     xs = np.asarray([i[0] for i in z])
     ys = np.asarray([i[1] for i in z])
-    axes[0][1].plot(xs, ys)
+    axes[0][1].plot(xs, ys, label="Average sensor value")
 
     axes[0][1].set_title("Average sensor values for different pressures")
     axes[0][1].set_xlabel("Average of each sensor's ADC value (unitless)")
@@ -74,7 +74,8 @@ if __name__ == "__main__":
     print(f"Fit an exponential to the input data with R² = {rSquared}. {a=}, {b=}, {c=}")
 
     xcont = np.linspace(0, 255, 100)
-    axes[0][1].plot(xcont, fit_function(xcont, a, b, c), '--', label="fitted")
+    axes[0][1].plot(xcont, fit_function(xcont, a, b, c), '--', label="Exponential curve fit")
+    axes[0][1].legend()
 
     # to figure out if it is possible to hit our % error specifications, plot the step size of the fit curve 
     steps = []

@@ -60,7 +60,7 @@ class Calibration:
             self.zeroing_data = []
 
             # load the default cal curves
-            self.load_cal_curves(DEFAULT_CAL_CURVES_PATH)
+            self.load_cal_curves(AVERAGED_CAL_CURVES_PATH)
 
 
     def add_reading(self, actualMatReading: MatReading):
