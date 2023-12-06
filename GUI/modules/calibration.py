@@ -65,7 +65,7 @@ class Calibration:
         self.listOfMatReadings.append(actualMatReading)
 
 
-    def calculate_calibration_curves(self) -> bool:
+    def calculate_calibration_curves(self, drop_values_greater_than=255) -> list:
         """
         updates the cal_curves_array at every sensor with the polyfit results 
         returns True on success
@@ -76,28 +76,51 @@ class Calibration:
             self.polyfit_degree = num_weights - 1
             print("Warning: calibrating using lower polyfit degree than specified due to not being fed enough samples")
 
-        # array of X and Y values to be put into polyfit X = mat reading, Y = actual weight on mat
-        matXVals = np.empty(num_weights, dtype=np.uint8)
-        matYVals = np.empty(num_weights, dtype=np.uint8)
 
         num_failures = 0
+        r_squareds = []
         for rows in range(self.width):
             for cols in range(self.height):
+                matXVals = []
+                matYVals = []
                 for i in range(num_weights):
-                    matXVals[i] = self.listOfMatReadings[i].matMatrix[rows,cols]
-                    matYVals[i] = self.listOfMatReadings[i].actual_pressure
+                    x_val = self.listOfMatReadings[i].matMatrix[rows,cols]
+                    y_val = self.listOfMatReadings[i].actual_pressure
+
+                    # eliminate from matXVals and matYVals any values at or over drop_values_greater_than
+                    if x_val < drop_values_greater_than:
+                        matXVals.append(x_val)
+                        matYVals.append(y_val)
+                    else:
+                        print(f"        Skipped datapoint (x={x_val}) at ({rows}, {cols})")
+                
+                x_vals = np.asarray(matXVals)
+                y_vals = np.asarray(matYVals)
 
                 try:
-                    self.cal_curves_array[rows,cols] = self.fit(matXVals, matYVals, CAL_CURVE_P0)
+                    self.cal_curves_array[rows,cols] = self.fit(x_vals, y_vals, CAL_CURVE_P0)
                 except RuntimeError as e:
                     # if the calibration fails, use the defaults
                     num_failures += 1
                     self.cal_curves_array[rows, cols] = CAL_CURVE_P0
 
+                
+                # determine quality of the fit
+                squaredDiffs = np.square(y_vals - self.fit_function(x_vals, *self.cal_curves_array[rows,cols]))
+                squaredDiffsFromMean = np.square(y_vals - np.mean(y_vals))
+                rSquared = 1 - np.sum(squaredDiffs) / np.sum(squaredDiffsFromMean)
+                r_squareds.append(rSquared)
+
         print(f"   Calibrated with {num_failures} failures. \n        params min: {np.min(self.cal_curves_array, axis=1)}\n        params max: {np.max(self.cal_curves_array, axis=1)}")
 
         self.calibrated = True
-        return self.calibrated
+
+        # return the characteristics of the fits
+        r_squareds = np.asarray(r_squareds)
+        min_r2 = np.min(r_squareds)
+        avg_r2 = np.average(r_squareds)
+
+        return min_r2, avg_r2
     
 
     def fit(self, x: np.array, y: np.array, p0: list) -> np.array:

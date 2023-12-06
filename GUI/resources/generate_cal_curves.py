@@ -33,7 +33,8 @@ if __name__ == "__main__":
         reading.actual_pressure = float(str(path).split('_')[2].split('pa')[0])
         calibration.add_reading(reading)
 
-    calibration.calculate_calibration_curves()
+    min_r2, avg_r2 = calibration.calculate_calibration_curves(drop_values_greater_than=200)
+    print(f"Minimum R2 of all curves: {min_r2}. Average R2 for all curves: {avg_r2}")
 
     # save the calibration curves to a default
     np.save("default_calibration_curves.npy", calibration.cal_curves_array, allow_pickle=False)
@@ -76,6 +77,11 @@ if __name__ == "__main__":
         average_curve.append(point_sum / n)
 
     avg_params, cv = scipy.optimize.curve_fit(fit_function, list(range(255)), average_curve, p0=p0)
+
+    squaredDiffs = np.square(average_curve - fit_function(np.asarray(list(range(255))), *avg_params))
+    squaredDiffsFromMean = np.square(average_curve - np.mean(average_curve))
+    rSquared = 1 - np.sum(squaredDiffs) / np.sum(squaredDiffsFromMean)
+    print(f"R2 for averaged curve is {rSquared}")
 
     # save out the average cal curves
     avg_cal_curves = np.empty_like(calibration.cal_curves_array)
