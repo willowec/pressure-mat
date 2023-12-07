@@ -5224,7 +5224,7 @@
           (reference "#PWR02") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "#PWR02") (unit 1)
         )
@@ -5267,7 +5267,7 @@
           (reference "D31") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D31") (unit 1)
         )
@@ -5307,7 +5307,7 @@
           (reference "D19") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D19") (unit 1)
         )
@@ -5341,7 +5341,7 @@
           (reference "C9") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "C1") (unit 1)
         )
@@ -5378,7 +5378,7 @@
           (reference "R1") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "R1") (unit 1)
         )
@@ -5411,7 +5411,7 @@
           (reference "#PWR09") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "#PWR09") (unit 1)
         )
@@ -5445,7 +5445,7 @@
           (reference "C8") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "C2") (unit 1)
         )
@@ -5482,7 +5482,7 @@
           (reference "C15") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "C8") (unit 1)
         )
@@ -5525,7 +5525,7 @@
           (reference "D4") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D4") (unit 1)
         )
@@ -5555,7 +5555,7 @@
           (reference "#PWR09") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "#PWR09") (unit 1)
         )
@@ -5588,7 +5588,7 @@
           (reference "#PWR01") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "#PWR01") (unit 1)
         )
@@ -5631,7 +5631,7 @@
           (reference "D24") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D24") (unit 1)
         )
@@ -5671,7 +5671,7 @@
           (reference "D46") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D46") (unit 1)
         )
@@ -5701,7 +5701,7 @@
           (reference "#PWR024") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "#PWR048") (unit 1)
         )
@@ -5731,7 +5731,7 @@
           (reference "#PWR01") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "#PWR01") (unit 1)
         )
@@ -5768,7 +5768,7 @@
           (reference "R1") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "R1") (unit 1)
         )
@@ -5816,7 +5816,7 @@
           (reference "U3") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "U3") (unit 1)
         )
@@ -5849,7 +5849,7 @@
           (reference "#PWR02") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "#PWR02") (unit 1)
         )
@@ -5892,7 +5892,7 @@
           (reference "D40") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D40") (unit 1)
         )
@@ -5922,7 +5922,7 @@
           (reference "#PWR02") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "#PWR02") (unit 1)
         )
@@ -5959,7 +5959,7 @@
           (reference "R1") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "R1") (unit 1)
         )
@@ -5996,7 +5996,7 @@
           (reference "R1") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "R1") (unit 1)
         )
@@ -6033,7 +6033,7 @@
           (reference "R1") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "R1") (unit 1)
         )
@@ -6076,7 +6076,7 @@
           (reference "D1") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D1") (unit 1)
         )
@@ -6106,7 +6106,7 @@
           (reference "#PWR09") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "#PWR09") (unit 1)
         )
@@ -6162,7 +6162,7 @@
           (reference "U9") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "U9") (unit 1)
         )
@@ -6196,7 +6196,7 @@
           (reference "R1") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "R1") (unit 1)
         )
@@ -6233,7 +6233,7 @@
           (reference "C16") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "C10") (unit 1)
         )
@@ -6266,7 +6266,7 @@
           (reference "#PWR09") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "#PWR09") (unit 1)
         )
@@ -6299,7 +6299,7 @@
           (reference "#PWR011") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "#PWR011") (unit 1)
         )
@@ -6332,7 +6332,7 @@
           (reference "#PWR02") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "#PWR02") (unit 1)
         )
@@ -6375,7 +6375,7 @@
           (reference "D23") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D23") (unit 1)
         )
@@ -6415,7 +6415,7 @@
           (reference "D6") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D6") (unit 1)
         )
@@ -6449,7 +6449,7 @@
           (reference "R1") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "R1") (unit 1)
         )
@@ -6486,7 +6486,7 @@
           (reference "R1") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "R1") (unit 1)
         )
@@ -6519,7 +6519,7 @@
           (reference "#PWR02") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "#PWR02") (unit 1)
         )
@@ -6562,7 +6562,7 @@
           (reference "D30") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D30") (unit 1)
         )
@@ -6593,7 +6593,7 @@
           (reference "C10") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "C2") (unit 1)
         )
@@ -6630,7 +6630,7 @@
           (reference "C1") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "C1") (unit 1)
         )
@@ -6663,7 +6663,7 @@
           (reference "#PWR01") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "#PWR01") (unit 1)
         )
@@ -6706,7 +6706,7 @@
           (reference "D35") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D35") (unit 1)
         )
@@ -6740,7 +6740,7 @@
           (reference "R1") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "R1") (unit 1)
         )
@@ -6773,7 +6773,7 @@
           (reference "#PWR017") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "#PWR043") (unit 1)
         )
@@ -6807,7 +6807,7 @@
           (reference "R1") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "R1") (unit 1)
         )
@@ -6841,7 +6841,7 @@
           (reference "C14") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "C2") (unit 1)
         )
@@ -6884,7 +6884,7 @@
           (reference "D13") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D13") (unit 1)
         )
@@ -6911,7 +6911,7 @@
       (effects (font (size 1.27 1.27)) hide)
     )
     (instances
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "H1") (unit 1)
         )
@@ -6941,7 +6941,7 @@
           (reference "#PWR012") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "#PWR012") (unit 1)
         )
@@ -6974,7 +6974,7 @@
           (reference "#PWR01") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "#PWR01") (unit 1)
         )
@@ -7007,7 +7007,7 @@
           (reference "#PWR09") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "#PWR028") (unit 1)
         )
@@ -7047,7 +7047,7 @@
           (reference "D56") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D56") (unit 1)
         )
@@ -7078,7 +7078,7 @@
           (reference "C2") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "C2") (unit 1)
         )
@@ -7111,7 +7111,7 @@
           (reference "#PWR01") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "#PWR01") (unit 1)
         )
@@ -7148,7 +7148,7 @@
           (reference "R1") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "R1") (unit 1)
         )
@@ -7185,7 +7185,7 @@
           (reference "C11") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "C1") (unit 1)
         )
@@ -7218,7 +7218,7 @@
           (reference "#PWR02") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "#PWR02") (unit 1)
         )
@@ -7251,7 +7251,7 @@
           (reference "#PWR022") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "#PWR054") (unit 1)
         )
@@ -7281,7 +7281,7 @@
           (reference "#PWR020") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "#PWR055") (unit 1)
         )
@@ -7321,7 +7321,7 @@
           (reference "D11") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D11") (unit 1)
         )
@@ -7361,7 +7361,7 @@
           (reference "D5") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D5") (unit 1)
         )
@@ -7406,7 +7406,7 @@
           (reference "U4") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "U4") (unit 1)
         )
@@ -7439,7 +7439,7 @@
           (reference "#PWR01") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "#PWR01") (unit 1)
         )
@@ -7482,7 +7482,7 @@
           (reference "D12") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D12") (unit 1)
         )
@@ -7512,7 +7512,7 @@
           (reference "#PWR01") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "#PWR01") (unit 1)
         )
@@ -7545,7 +7545,7 @@
           (reference "#PWR028") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "#PWR030") (unit 1)
         )
@@ -7575,7 +7575,7 @@
           (reference "#PWR01") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "#PWR01") (unit 1)
         )
@@ -7608,7 +7608,7 @@
           (reference "#PWR02") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "#PWR02") (unit 1)
         )
@@ -7651,7 +7651,7 @@
           (reference "D8") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D8") (unit 1)
         )
@@ -7681,7 +7681,7 @@
           (reference "#PWR02") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "#PWR02") (unit 1)
         )
@@ -7724,7 +7724,7 @@
           (reference "D28") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D28") (unit 1)
         )
@@ -7764,7 +7764,7 @@
           (reference "D16") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D16") (unit 1)
         )
@@ -7804,7 +7804,7 @@
           (reference "D36") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D36") (unit 1)
         )
@@ -7844,7 +7844,7 @@
           (reference "D41") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D41") (unit 1)
         )
@@ -7884,7 +7884,7 @@
           (reference "D32") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D32") (unit 1)
         )
@@ -7924,7 +7924,7 @@
           (reference "D52") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D52") (unit 1)
         )
@@ -7964,7 +7964,7 @@
           (reference "D34") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D34") (unit 1)
         )
@@ -8004,7 +8004,7 @@
           (reference "D9") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D9") (unit 1)
         )
@@ -8044,7 +8044,7 @@
           (reference "D14") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D14") (unit 1)
         )
@@ -8078,7 +8078,7 @@
           (reference "R1") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "R1") (unit 1)
         )
@@ -8111,7 +8111,7 @@
           (reference "#PWR05") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "#PWR09") (unit 1)
         )
@@ -8141,7 +8141,7 @@
           (reference "#PWR01") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "#PWR01") (unit 1)
         )
@@ -8189,7 +8189,7 @@
           (reference "U1") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "U1") (unit 1)
         )
@@ -8222,7 +8222,7 @@
           (reference "#PWR02") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "#PWR02") (unit 1)
         )
@@ -8265,7 +8265,7 @@
           (reference "D20") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D20") (unit 1)
         )
@@ -8299,7 +8299,7 @@
           (reference "R1") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "R1") (unit 1)
         )
@@ -8332,7 +8332,7 @@
           (reference "#PWR025") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "#PWR010") (unit 1)
         )
@@ -8362,7 +8362,7 @@
           (reference "#PWR019") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "#PWR045") (unit 1)
         )
@@ -8396,7 +8396,7 @@
           (reference "R1") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "R1") (unit 1)
         )
@@ -8429,7 +8429,7 @@
           (reference "#PWR023") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "#PWR053") (unit 1)
         )
@@ -8463,7 +8463,7 @@
           (reference "C15") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "C8") (unit 1)
         )
@@ -8506,7 +8506,7 @@
           (reference "D44") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D44") (unit 1)
         )
@@ -8536,7 +8536,7 @@
           (reference "#PWR029") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "#PWR029") (unit 1)
         )
@@ -8576,7 +8576,7 @@
           (reference "D27") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D27") (unit 1)
         )
@@ -8616,7 +8616,7 @@
           (reference "D47") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D47") (unit 1)
         )
@@ -8656,7 +8656,7 @@
           (reference "D15") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D15") (unit 1)
         )
@@ -8696,7 +8696,7 @@
           (reference "D54") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D54") (unit 1)
         )
@@ -8730,7 +8730,7 @@
           (reference "R1") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "R1") (unit 1)
         )
@@ -8763,7 +8763,7 @@
           (reference "#PWR018") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "#PWR044") (unit 1)
         )
@@ -8803,7 +8803,7 @@
           (reference "D29") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D29") (unit 1)
         )
@@ -8843,7 +8843,7 @@
           (reference "D2") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D2") (unit 1)
         )
@@ -8888,7 +8888,7 @@
           (reference "U6") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "U6") (unit 1)
         )
@@ -8921,7 +8921,7 @@
           (reference "#PWR02") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "#PWR02") (unit 1)
         )
@@ -8973,7 +8973,7 @@
           (reference "J5") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "J3") (unit 1)
         )
@@ -9007,7 +9007,7 @@
           (reference "R1") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "R1") (unit 1)
         )
@@ -9040,7 +9040,7 @@
           (reference "#PWR014") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "#PWR014") (unit 1)
         )
@@ -9088,7 +9088,7 @@
           (reference "U7") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "U7") (unit 1)
         )
@@ -9121,7 +9121,7 @@
           (reference "#PWR02") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "#PWR02") (unit 1)
         )
@@ -9154,7 +9154,7 @@
           (reference "#PWR01") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "#PWR01") (unit 1)
         )
@@ -9191,7 +9191,7 @@
           (reference "C13") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "C1") (unit 1)
         )
@@ -9234,7 +9234,7 @@
           (reference "D39") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D39") (unit 1)
         )
@@ -9287,7 +9287,7 @@
           (reference "U8") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "U8") (unit 1)
         )
@@ -9321,7 +9321,7 @@
           (reference "R1") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "R1") (unit 1)
         )
@@ -9354,7 +9354,7 @@
           (reference "#PWR02") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "#PWR02") (unit 1)
         )
@@ -9387,7 +9387,7 @@
           (reference "#PWR01") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "#PWR01") (unit 1)
         )
@@ -9430,7 +9430,7 @@
           (reference "D37") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D37") (unit 1)
         )
@@ -9470,7 +9470,7 @@
           (reference "D33") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D33") (unit 1)
         )
@@ -9510,7 +9510,7 @@
           (reference "D48") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D48") (unit 1)
         )
@@ -9540,7 +9540,7 @@
           (reference "#PWR026") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "#PWR011") (unit 1)
         )
@@ -9570,7 +9570,7 @@
           (reference "#PWR014") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "#PWR014") (unit 1)
         )
@@ -9613,7 +9613,7 @@
           (reference "D50") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D50") (unit 1)
         )
@@ -9647,7 +9647,7 @@
           (reference "R1") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "R1") (unit 1)
         )
@@ -9690,7 +9690,7 @@
           (reference "D42") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D42") (unit 1)
         )
@@ -9720,7 +9720,7 @@
           (reference "#PWR01") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "#PWR01") (unit 1)
         )
@@ -9757,7 +9757,7 @@
           (reference "R1") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "R1") (unit 1)
         )
@@ -9790,7 +9790,7 @@
           (reference "#PWR027") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "#PWR012") (unit 1)
         )
@@ -9824,7 +9824,7 @@
           (reference "R1") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "R1") (unit 1)
         )
@@ -9861,7 +9861,7 @@
           (reference "R1") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "R1") (unit 1)
         )
@@ -9894,7 +9894,7 @@
           (reference "#PWR01") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "#PWR01") (unit 1)
         )
@@ -9937,7 +9937,7 @@
           (reference "D10") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D10") (unit 1)
         )
@@ -9977,7 +9977,7 @@
           (reference "D22") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D22") (unit 1)
         )
@@ -10011,7 +10011,7 @@
           (reference "C16") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "C10") (unit 1)
         )
@@ -10048,7 +10048,7 @@
           (reference "R1") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "R1") (unit 1)
         )
@@ -10085,7 +10085,7 @@
           (reference "R1") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "R1") (unit 1)
         )
@@ -10128,7 +10128,7 @@
           (reference "D3") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D3") (unit 1)
         )
@@ -10162,7 +10162,7 @@
           (reference "R1") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "R1") (unit 1)
         )
@@ -10205,7 +10205,7 @@
           (reference "D7") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D7") (unit 1)
         )
@@ -10236,7 +10236,7 @@
           (reference "C4") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "C2") (unit 1)
         )
@@ -10279,7 +10279,7 @@
           (reference "D53") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D53") (unit 1)
         )
@@ -10319,7 +10319,7 @@
           (reference "D45") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D45") (unit 1)
         )
@@ -10359,7 +10359,7 @@
           (reference "D38") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D38") (unit 1)
         )
@@ -10399,7 +10399,7 @@
           (reference "D49") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D49") (unit 1)
         )
@@ -10429,7 +10429,7 @@
           (reference "#PWR09") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "#PWR09") (unit 1)
         )
@@ -10472,7 +10472,7 @@
           (reference "D17") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D17") (unit 1)
         )
@@ -10502,7 +10502,7 @@
           (reference "#PWR09") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "#PWR09") (unit 1)
         )
@@ -10535,7 +10535,7 @@
           (reference "#PWR09") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "#PWR09") (unit 1)
         )
@@ -10572,7 +10572,7 @@
           (reference "R1") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "R1") (unit 1)
         )
@@ -10605,7 +10605,7 @@
           (reference "#PWR012") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "#PWR012") (unit 1)
         )
@@ -10638,7 +10638,7 @@
           (reference "#PWR01") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "#PWR01") (unit 1)
         )
@@ -10668,7 +10668,7 @@
       (effects (font (size 1.27 1.27)) hide)
     )
     (instances
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "H3") (unit 1)
         )
@@ -10698,7 +10698,7 @@
           (reference "#PWR012") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "#PWR012") (unit 1)
         )
@@ -10735,7 +10735,7 @@
           (reference "C7") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "C1") (unit 1)
         )
@@ -10768,7 +10768,7 @@
           (reference "#PWR02") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "#PWR02") (unit 1)
         )
@@ -10811,7 +10811,7 @@
           (reference "D18") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D18") (unit 1)
         )
@@ -10851,7 +10851,7 @@
           (reference "D21") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D21") (unit 1)
         )
@@ -10881,7 +10881,7 @@
           (reference "#PWR021") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "#PWR056") (unit 1)
         )
@@ -10921,7 +10921,7 @@
           (reference "D43") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D43") (unit 1)
         )
@@ -10955,7 +10955,7 @@
           (reference "C3") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "C1") (unit 1)
         )
@@ -11003,7 +11003,7 @@
           (reference "U2") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "U2") (unit 1)
         )
@@ -11037,7 +11037,7 @@
           (reference "C12") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "C2") (unit 1)
         )
@@ -11089,7 +11089,7 @@
           (reference "J6") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "J4") (unit 1)
         )
@@ -11129,7 +11129,7 @@
           (reference "D26") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D26") (unit 1)
         )
@@ -11163,7 +11163,7 @@
           (reference "R1") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "R1") (unit 1)
         )
@@ -11200,7 +11200,7 @@
           (reference "R1") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "R1") (unit 1)
         )
@@ -11230,7 +11230,7 @@
       (effects (font (size 1.27 1.27)) hide)
     )
     (instances
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "H4") (unit 1)
         )
@@ -11264,7 +11264,7 @@
           (reference "R1") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "R1") (unit 1)
         )
@@ -11297,7 +11297,7 @@
           (reference "#PWR09") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "#PWR09") (unit 1)
         )
@@ -11330,7 +11330,7 @@
           (reference "#PWR012") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "#PWR012") (unit 1)
         )
@@ -11364,7 +11364,7 @@
           (reference "C6") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "C2") (unit 1)
         )
@@ -11459,7 +11459,7 @@
           (reference "J2") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "J2") (unit 1)
         )
@@ -11492,7 +11492,7 @@
           (reference "#PWR02") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "#PWR02") (unit 1)
         )
@@ -11535,7 +11535,7 @@
           (reference "D55") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D55") (unit 1)
         )
@@ -11562,7 +11562,7 @@
       (effects (font (size 1.27 1.27)) hide)
     )
     (instances
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "H2") (unit 1)
         )
@@ -11596,7 +11596,7 @@
           (reference "C5") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "C1") (unit 1)
         )
@@ -11639,7 +11639,7 @@
           (reference "D51") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D51") (unit 1)
         )
@@ -11731,7 +11731,7 @@
           (reference "J1") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "J1") (unit 1)
         )
@@ -11779,7 +11779,7 @@
           (reference "U5") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "U5") (unit 1)
         )
@@ -11822,7 +11822,7 @@
           (reference "D25") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/e0559890-1aa0-4336-9a3e-110d23fe279d"
           (reference "D25") (unit 1)
         )

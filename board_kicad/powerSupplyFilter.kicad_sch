@@ -357,7 +357,7 @@
           (reference "#PWR03") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "#PWR01") (unit 1)
         )
@@ -389,7 +389,7 @@
     (pin "1" (uuid 66264fb0-d868-4645-ae7f-a90fcd20a160))
     (pin "2" (uuid 1b52ecff-361e-4754-a05c-d5fc7f90e893))
     (instances
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/4a059b75-7de0-4eb9-8588-5d4fb226c6d3"
           (reference "FL1") (unit 1)
         )
@@ -418,7 +418,7 @@
     (pin "1" (uuid c885f8b1-aee5-4452-95a9-2ca56ca118c3))
     (pin "2" (uuid 066339ee-6f6e-4e9e-9b07-c3b2ea48b98a))
     (instances
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/4a059b75-7de0-4eb9-8588-5d4fb226c6d3"
           (reference "C20") (unit 1)
         )
@@ -448,7 +448,7 @@
           (reference "#PWR03") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "#PWR01") (unit 1)
         )
@@ -487,7 +487,7 @@
           (reference "#PWR06") (unit 1)
         )
       )
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7"
           (reference "#PWR02") (unit 1)
         )
@@ -522,7 +522,7 @@
     (pin "1" (uuid 158f98f8-fc94-4423-ba83-22f7f7d67f90))
     (pin "2" (uuid c1bf549b-26a2-48f0-9a47-53f229426ba5))
     (instances
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7/4a059b75-7de0-4eb9-8588-5d4fb226c6d3"
           (reference "C19") (unit 1)
         )
