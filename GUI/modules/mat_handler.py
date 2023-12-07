@@ -7,7 +7,7 @@ import os
 ROW_WIDTH = 28
 COL_HEIGHT = 56
 MAT_SIZE = 1568
-SENSOR_AREA_SQM = 0.00005   # Area of each individual sensor in square meters (0.5cm^2)
+SENSOR_AREA_SQM = 0.000025  # Area of each individual sensor in square meters (0.5cm^2)
 MAT_AREA_SQM = 0.1568       # Area of the entire mat in square meters   
 
 START_READING_COMMAND = "start_reading"
@@ -96,7 +96,7 @@ def distributed_lbs_to_sensor_pressure(force_lbs: float) -> float:
 
 
 def calc_percent_error(experimental, theoretical):
-    return (experimental - theoretical) / theoretical * 100
+    return np.abs((experimental - theoretical) / theoretical) * 100
 
 
 def calc_mat_reading_stats(mat_samples_pa: np.array, expected_weight: float):

@@ -33,7 +33,7 @@ if __name__ == "__main__":
         reading.actual_pressure = float(str(path).split('_')[2].split('pa')[0])
         calibration.add_reading(reading)
 
-    min_r2, avg_r2 = calibration.calculate_calibration_curves(drop_values_greater_than=200)
+    min_r2, avg_r2 = calibration.calculate_calibration_curves(drop_values_greater_than=500)
     print(f"Minimum R2 of all curves: {min_r2}. Average R2 for all curves: {avg_r2}")
 
     # save the calibration curves to a default
@@ -54,7 +54,7 @@ if __name__ == "__main__":
     plt.xlabel("Mat sensor reading (unitless)")
     plt.ylabel("Mapped pressure value (Pa)")
     plt.xlim([0, 210])
-    plt.ylim([-5, 100])
+    plt.ylim([-5, 50])
     plt.axvline(207, color='red')
 
     plt.figure(2)
@@ -94,7 +94,7 @@ if __name__ == "__main__":
 
     plt.plot([calibration.fit_function(i, *avg_params) for i in range(255)])
     plt.xlim([0, 210])
-    plt.ylim([-5, 100])
+    plt.ylim([-5, 50])
     plt.show()
 
 

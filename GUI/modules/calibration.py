@@ -13,7 +13,7 @@ import serial
 
 from modules.mat_handler import *
 
-MAX_RATED_PRESSURE_PA = 5  # Maximum pressure we expect any individual sensor to see
+MAX_RATED_PRESSURE_PA = 2.5  # Maximum pressure we expect any individual sensor to see
 
 DEFAULT_CAL_CURVES_PATH = "./resources/default_calibration_curves.npy"
 AVERAGED_CAL_CURVES_PATH = "./resources/averaged_calibration_curves.npy"
@@ -53,7 +53,7 @@ class Calibration:
 
             # load the default cal curves
             try:
-                self.load_cal_curves(AVERAGED_CAL_CURVES_PATH)
+                self.load_cal_curves(DEFAULT_CAL_CURVES_PATH)
             except FileNotFoundError as e:
                 print("Could not load default calibration curves")
 
