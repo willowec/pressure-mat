@@ -21,9 +21,3 @@ The embedded code has three build targets: board_v1, board_v2, and board_v2_slow
         make
 
 4. Copy the uf2 file of the build target you want to program the pico with to the pico's flash to program it.
-
-### Early development stage: simulated ADC
-
-In early development, prior to acquiring components and finalizing the circuit schematic, development was aided by simulating the two ADC's on another RPI Pico. The connections needed for this schematic setup are shown below, where the leftmost pico is running the fake ADC code from ```/tests/dummy_MAX11643BEEG/``` and the rightmost pico is running the code from this directory:
-
-![Development circuit built on a breadboard](./development_schem.png)
