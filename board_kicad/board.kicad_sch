@@ -26,7 +26,7 @@
       (effects (font (size 1.27 1.27)) (justify left top))
     )
     (instances
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7" (page "3"))
       )
     )
@@ -43,7 +43,7 @@
       (effects (font (size 1.27 1.27)) (justify left top))
     )
     (instances
-      (project "PCB_final"
+      (project "board"
         (path "/e4192969-4b4c-4bbf-a0a8-ef09d84e64d7" (page "2"))
       )
     )
