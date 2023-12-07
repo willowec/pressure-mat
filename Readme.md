@@ -8,7 +8,7 @@ The pressure sensing mat uses the intersections between rows and columns of copp
 
 ## The PCB
 
-Schematics for the PCB are in ```/PCB_final``` A render of the pcb is shown below.
+Schematics for the PCB are in ```/board_kicad``` A render of the pcb is shown below.
 
 ![PCB 3D Render](./PCB_final/PCB_render.png)
 
