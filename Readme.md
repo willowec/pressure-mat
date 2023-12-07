@@ -4,9 +4,13 @@ This git repository contains all the code developed for the Electrical and Compu
 
 ## The Mat
 
+The pressure sensing mat uses the intersections between rows and columns of copper tape separated by velostat to form resistive pressure sensors. The mat has 28 rows and 56 columns, for a total of 1568 sensors at a resolution of 1cm^2.
+
 ## The PCB
 
-Schematics for the PCB are in 
+Schematics for the PCB are in ```/PCB_final``` A render of the pcb is shown below.
+
+![PCB 3D Render](./PCB_final/PCB_render.png)
 
 ## The Code
 
