@@ -6,6 +6,8 @@
 
   (title_block
     (title "ECE406 Pressure Mat Interface PCB")
+    (date "2023-12-05")
+    (rev "1.0")
     (company "https://github.com/yoctometric/pressure-mat")
   )
 

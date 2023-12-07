@@ -4,6 +4,13 @@
 
   (paper "A4")
 
+  (title_block
+    (title "ECE406 Pressure Mat Interface PCB")
+    (date "2023-12-05")
+    (rev "1.1")
+    (company "https://github.com/yoctometric/pressure-mat")
+  )
+
   (lib_symbols
     (symbol "BLM21BD272SN1L:BLM21BD272SN1L" (pin_numbers hide) (pin_names (offset 1.016) hide) (in_bom yes) (on_board yes)
       (property "Reference" "FL" (at -12.7 5.08 0)
