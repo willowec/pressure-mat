@@ -1,21 +1,12 @@
 # GUI which displays data from the mat interpreted by the board and transmitted over serial
 import sys, os, re
-from datetime import datetime
 import numpy as np
-
-from PIL import Image
 
 from PyQt6.QtGui import  *
 from PyQt6.QtWidgets import *
 from PyQt6.QtCore import *
 
 from pathlib import Path
-
-import matplotlib
-from matplotlib import pyplot as plt
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
-from matplotlib.figure import Figure
-matplotlib.use('QtAgg')
 
 from modules.calibration import Calibration, CalSampleWorker, MAX_RATED_PRESSURE_PA, DEFAULT_CAL_CURVES_PATH
 from modules.communicator import SessionWorker, ROW_WIDTH, COL_HEIGHT
