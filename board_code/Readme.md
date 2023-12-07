@@ -1,22 +1,29 @@
 # Board Side Code
 
-This directory holds the embedded code responsible for interfacing with the PCB ADC's and communicating with the connected laptop
+This directory holds the embedded code that runs on the RPI Pico responsible for interfacing with the PCB ADC's and communicating with the connected laptop.
 
 ## Usage
 
+The embedded code has three build targets: board_v1, board_v2, and board_v2_slow
+
+ - board_v1.uf2: Designed to run on the v1 version of the PCB. single core, ~1Hz sample rate.
+ - board_v2.uf2: Designed to run on the v2 version of the PCB. dual core, ~49Hz sample rate.
+ - board_v2_slow.uf2: Designed to run on the v2 version of the PCB. dual core, rate limited to ~8Hz sample rate.
+
 ### Build the code:
-1. Enter a linux environment (WSL)
-2. 
+1. Install the rpi pico sdk somewhere on your computer: [pico-sdk](https://github.com/raspberrypi/pico-sdk)
+2. Enter a linux environment (WSL)
+3. 
         mkdir build
         cd build
         export PICO_SD_PATH=../relative/path/to/the/cloned/directory/named/pico-sdk
         cmake ..
         make
 
-3. Copy the uf2 file to the pico's flash to program it
+4. Copy the uf2 file of the build target you want to program the pico with to the pico's flash to program it.
 
-### Development stage: simulated ADC
+### Early development stage: simulated ADC
 
-In early development, prior to acquiring components and finalizing the circuit schematic, development is aided by simulating the two ADC's on another RPI Pico. The connections needed for this schematic setup are shown below, where the leftmost pico is running the fake ADC code from ```/tests/dummy_MAX11643BEEG/``` and the rightmost pico is running the code from this directory:
+In early development, prior to acquiring components and finalizing the circuit schematic, development was aided by simulating the two ADC's on another RPI Pico. The connections needed for this schematic setup are shown below, where the leftmost pico is running the fake ADC code from ```/tests/dummy_MAX11643BEEG/``` and the rightmost pico is running the code from this directory:
 
 ![Development circuit built on a breadboard](./development_schem.png)
