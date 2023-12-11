@@ -149,6 +149,10 @@ void read_mat(queue_t *mat_queue, struct adc_inst *adc1, struct adc_inst *adc2)
     // do not start reading the mat if a read is already happening
     if (reading_mat) return;
 
+
+    // Throttle the mat reading rate based on CMake build variable
+    sleep_ms(THROTTLE_SLEEP_MS);
+
     // start with a one in the shregs
     shift_shreg(1); // shift in a one
     shift_shreg(0); // move the one to the output line
@@ -165,9 +169,6 @@ void read_mat(queue_t *mat_queue, struct adc_inst *adc1, struct adc_inst *adc2)
 
     // indicate that a read is currently happening
     reading_mat = true;
-
-    // Throttle the mat reading rate based on CMake build variable
-    sleep_ms(THROTTLE_SLEEP_MS);
 
     // send the first ADC read requests to get things started
     // write a conversion request in scan mode 00 for channels 0 -> (CHANNELS_PER_ADC - 1), for CHANNELS_PER_ADC total channels
