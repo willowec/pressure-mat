@@ -1,6 +1,8 @@
 # Prototype to test the feasability of sending raw data over serial
 
-Instead of encoding data into exadecimal for transmission from pico to pc, it should be possible top send raw data over serial. This directory is a prototype of that.
+Instead of encoding data into hexadecimal for transmission from pico to pc, it should be possible to send raw data over serial. This directory is a prototype which tests that theory.
+
+The result of this test is that yes, data can be transmitted over serial much more efficiently than by encoding to hexadecimal and decoding it on the reciever.
 
 [https://datasheets.raspberrypi.com/pico/getting-started-with-pico.pdf](https://datasheets.raspberrypi.com/pico/getting-started-with-pico.pdf)
 
