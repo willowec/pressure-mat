@@ -121,6 +121,6 @@ def calc_mat_reading_stats(mat_samples_pa: np.array, expected_weight: float):
         avg_err = round(np.average(np.abs(errors)), 2)
         median_err = round(np.median(np.abs(errors)), 2)
 
-        errors_msg = f"Expected Pressure on each sensor: {expected_pa:05f}\n    Errors:\n    Min % err: {min_err}\n    Max % err: {max_err}\n    Avg % err: {avg_err}\n    Median % err: {median_err}"
+        errors_msg = f"Expected Pressure on each sensor: {expected_pa:.3f}\n    Errors:\n    Min % err: {min_err}\n    Max % err: {max_err}\n    Avg % err: {avg_err}\n    Median % err: {median_err}"
 
-    return f"    Max pressure: {max_pa}Pa\n    Min pressure: {min_pa}Pa\n    Avg pressure: {average_pa}Pa\n    {errors_msg}"
+    return f"    Max pressure: {max_pa:.3f}Pa\n    Min pressure: {min_pa:.3f}Pa\n    Avg pressure: {average_pa:.3f}Pa\n    {errors_msg}"

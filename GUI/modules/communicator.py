@@ -137,7 +137,12 @@ class SessionWorker(QObject):
                 self.delta_times.append(delta_ns)
                 prev_sample_time_ns = now_ns
 
-                self.session_stats.emit(f"Sample rate: {(1/delta_ns * 1000000000):.2f}Hz\nQueued RX size: {ser.in_waiting}")
+                # prevent division by zero
+                delta_ns = max(1, delta_ns)
+
+                msg = f"Sample rate: {(1/delta_ns * 1000000000):.2f}Hz\nQueued RX size: {ser.in_waiting}\n"
+                msg += f"Total session time: {((time.time_ns() - self.start_time_ns) / 1000000000):.2f}s\n"
+                self.session_stats.emit(msg)
 
 
     def stop(self):
@@ -148,8 +153,7 @@ class SessionWorker(QObject):
         average_delta_ns = np.average(self.delta_times)
         average_sample_rate = 1 / average_delta_ns * 1000000000
 
-        msg = f"Total session time: {((time.time_ns() - self.start_time_ns) / 1000000000):.2f}s\n"
-        msg += f"Average sample rate: {average_sample_rate:02f}Hz\n"
+        msg = f"Average sample rate: {average_sample_rate:02f}Hz\n"
         msg += f"Total # transmission errors: {self.transmission_errors}\n"
 
         self.finished_session_stats.emit(msg)
