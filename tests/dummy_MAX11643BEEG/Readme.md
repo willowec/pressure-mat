@@ -1,6 +1,6 @@
 # Dummy MAX1164BEEG
 
-An approximation of the MAX1164BEEG ADC that runs on the rpi pico. This is used to test the embedded code of the pressure mat project during development
+An approximation of the MAX1164BEEG ADC that runs on the rpi pico. This was used to test the embedded code of the pressure mat project during its early development.
 
 
 ## Usage
@@ -45,7 +45,7 @@ This program can run in two modes:
 
 ## Design
 
-As a programmer working on the embedded systems code for the Pressure Sensing Matrix Mat project, I want a fake MAX11643BEEG ADC to use while deveoping embedded code so that I can begin development of the project while waiting for the real ADC to ship.
+As a programmer working on the embedded systems code for the Pressure Sensing Matrix Mat project, I want a fake MAX11643BEEG ADC to use while deveoping embedded code so that I can begin development of the project while waiting for the real ADC chips to arrive.
 
 Minimum viable product:
 
