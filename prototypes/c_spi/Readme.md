@@ -4,7 +4,7 @@ this is an example of running an spi client (slave) on one core and an spi contr
 
 [https://datasheets.raspberrypi.com/pico/getting-started-with-pico.pdf](https://datasheets.raspberrypi.com/pico/getting-started-with-pico.pdf)
 
-requires that the pico_sdk repository is cloned on your computer
+requires that the pico_sdk repository is cloned onto your computer
 
 spi tutorial: (page 152)
 [https://datasheets.raspberrypi.com/pico/raspberry-pi-pico-c-sdk.pdf](https://datasheets.raspberrypi.com/pico/raspberry-pi-pico-c-sdk.pdf)
@@ -13,7 +13,7 @@ spi tutorial: (page 152)
 
 Connect the two spi cahnnels absed on the following image
 
-![image of a pico with the two spi cahnels connected](hardware.jpg)
+![image of a pico with the two spi channels connected](hardware.jpg)
 
 ## building:
 
@@ -28,7 +28,7 @@ Then just copy the UF2 file onto the pico's flash
 
 ## build error: wrong compiler
 
-If you compile the project and get a ton of errors about assembly instructions not being recognized, it is lieky because the wrong compiler is being used. To fix this, cd into build and remove CMakeCache.txt, then rebuild:
+If you compile the project and get a ton of errors about assembly instructions not being recognized, it is likely because the wrong compiler is being used. To fix this, cd into build and remove CMakeCache.txt, then rebuild:
 
     cd build
     rm CMakeCache.txt
