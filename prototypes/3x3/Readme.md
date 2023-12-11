@@ -43,7 +43,7 @@ Getting started (on Windows):
 
 ## Resetting the RPI Pico
 
-If you flash the pico with some code that takes permanent control of the serial port, you will need to clear the flash of the pico to reset it. A great example of code like this is the 3x3 prototype's [board.py file](./prototypes/3x3/board.py). Lets try to avoid writing code like this for the final project.
+If you flash the pico with some code that takes permanent control of its serial port, you will need to clear the flash of the pico to reset it. A great example of code like this is the 3x3 prototype's [board.py file](./prototypes/3x3/board.py). Lets try to avoid writing code like this for the final project.
 
 1. Download the flash_nuke UF2 file: [https://datasheets.raspberrypi.com/soft/flash_nuke.uf2](https://datasheets.raspberrypi.com/soft/flash_nuke.uf2)
 2. Connect the pico to your laptop while holding the BOOTSEL button down
