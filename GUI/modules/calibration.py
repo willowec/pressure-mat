@@ -221,9 +221,10 @@ class CalSampleWorker(QObject):
         """
         Work thread of the CalSampleWorker
         """
-        #print("ran new cal worker")
-        # request calibration readings from the mat
         with serial.Serial(port=self.port, baudrate=self.baud, timeout=10) as ser:
+            # request calibration readings from the mat
+            ser.write((START_READING_COMMAND + '\n').encode('utf-8'))
+
             # send the message to start reading the mat
             bytes = ser.read(VERIFICATION_WIDTH + MAT_SIZE)
             if bytes == b'':

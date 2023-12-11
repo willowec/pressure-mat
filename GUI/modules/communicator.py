@@ -92,6 +92,7 @@ class SessionWorker(QObject):
         print("opening serial")
         with serial.Serial(self.port, baudrate=self.baud, timeout=10) as ser:
             ser.set_buffer_size(rx_size = 1700, tx_size = 1700)
+            
             # send the message to start reading the mat
             ser.write((START_READING_COMMAND + '\n').encode('utf-8'))
             self.polling = True
