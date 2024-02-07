@@ -1,13 +1,13 @@
 # Board Side Code
 
-This directory holds the embedded code that runs on the RPI Pico responsible for interfacing with the PCB ADC's and communicating with the connected laptop.
+This directory holds the embedded code that runs on the RPi Pico responsible for interfacing with the PMI PCB's ADC's and communicating with the connected laptop.
 
 ## Usage
 
 The embedded code has three build targets: board_v1, board_v2, and board_v2_slow
 
  - board_v1.uf2: Designed to run on the v1 version of the PCB. single core, ~1Hz sample rate.
- - board_v2.uf2: Designed to run on the v2 version of the PCB. dual core, ~49Hz sample rate.
+ - board_v2.uf2: Designed to run on the v2 version of the PCB. dual core, ~49Hz sample rate (rate limited by the computer's ability to handle serial communications).
  - board_v2_slow.uf2: Designed to run on the v2 version of the PCB. dual core, rate limited to ~8Hz sample rate.
 
 ### Build the code:
@@ -24,7 +24,7 @@ The embedded code has three build targets: board_v1, board_v2, and board_v2_slow
 
 ### Communicating With The Board
 
-After connecting the programmed Raspberry Pi Pico to your computer via usb, it can be talked to over serial. The board can understand the following commands:
+After connecting the programmed RPi Pico to your computer via usb, it can be talked to over serial. The board can understand the following commands:
 
 1. PRINT_INFO:
 
