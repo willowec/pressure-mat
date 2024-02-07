@@ -15,6 +15,7 @@ void initialize_adcs(struct adc_inst *adc1, struct adc_inst *adc2, bool dual_cha
     gpio_set_function(SPI0_TX_PIN, GPIO_FUNC_SPI);
     gpio_set_function(SPI0_RX_PIN, GPIO_FUNC_SPI);
 
+    // handle board V2 code compatability
     if (dual_channel) {
         spi_init(spi1, SPI_CLOCKSPEED);
         gpio_set_function(SPI1_SCK_PIN, GPIO_FUNC_SPI);
@@ -49,10 +50,9 @@ void initialize_adcs(struct adc_inst *adc1, struct adc_inst *adc2, bool dual_cha
     initialize_adc(adc2);
 }
 
-
 void initialize_adc(struct adc_inst *adc)
 {
-    // setup the ADC's epc pin
+    // setup the ADC's eoc pin
     gpio_init(adc->eoc_pin);
     gpio_set_dir(adc->eoc_pin, GPIO_IN);
 
@@ -61,7 +61,6 @@ void initialize_adc(struct adc_inst *adc)
     uint8_t setup_message = 0b01100100;
     adc_write_blocking(adc, &setup_message, 1);
 }
-
 
 void cleanup_adc_response(uint8_t *resp, uint8_t *out_values)
 {
@@ -80,7 +79,6 @@ void cleanup_adc_response(uint8_t *resp, uint8_t *out_values)
     }
 }
 
-
 void get_adc_values(struct adc_inst* adc, uint8_t *out_vals)
 {
     // write a conversion request in scan mode 00 for channels 0 -> (CHANNELS_PER_ADC - 1), for CHANNELS_PER_ADC total channels
@@ -88,12 +86,9 @@ void get_adc_values(struct adc_inst* adc, uint8_t *out_vals)
     adc_write_blocking(adc, &conv_req, 1);
 
     // wait for EOCbar (end of conversion) to go low, indicating that the operation has finished and data will now be written back
-    // TODO: Change to use interrupts so that both ADC's can do conversions at the same time?
     uint32_t i = 0;
     while (gpio_get(adc->eoc_pin))
         i ++;
-
-    //printf("        Waited %d cycles for EOC\n", i);
     
     // define a temp array for storing and processing the values returned from the ADC
     uint8_t *resp = (uint8_t *)malloc(ADC_RESPONSE_LENGTH);

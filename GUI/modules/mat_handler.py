@@ -4,12 +4,14 @@ File for helper functions related to the Mat that multiple modules may need to i
 import numpy as np
 import os
 
+# pressure mat physical characteristics
 ROW_WIDTH = 28
 COL_HEIGHT = 56
 MAT_SIZE = 1568
 SENSOR_AREA_SQM = 0.000025  # Area of each individual sensor in square meters (0.5cm^2)
 MAT_AREA_SQM = 0.1568       # Area of the entire mat in square meters   
 
+# serial commands
 START_READING_COMMAND = "start_reading"
 GET_CAL_VALS_COMMAND = "get_cal_vals"
 
@@ -18,11 +20,12 @@ VERIFICATION_WIDTH = 4
 VERIFICATION_SEQUENCE = [255, 254, 254, 255]
 
 
-
 def print_2darray(array: np.ndarray, highlight_max: bool=False):
     """
     Function which prints a 2d uint8 numpy array in a readable format
+    set highlight_max True to highlight the maximum value in the array
     """
+
     max_index = None
     if highlight_max:
         os.system("") # enable color printing on windows terminals
@@ -51,8 +54,10 @@ def print_2darray(array: np.ndarray, highlight_max: bool=False):
 
 def prettyprint_mat(mat_as_list: list):
     """
-    Python version of the board_code prettyprint_mat function
+    Python version of the board_code prettyprint_mat function. 
+    Prints a list of length MAT_SIZE as a 2d matrix
     """
+
     line = ""
     for i in range(MAT_SIZE):
         if (i % ROW_WIDTH) == 0:
@@ -66,6 +71,7 @@ def mat_list_to_array(mat_as_list: list):
     """
     Converts a 1d python list (presumably the mat) to a 2D numpy array
     """
+
     array = np.empty((ROW_WIDTH, COL_HEIGHT), dtype=np.uint8)
     x = 0
     y = 0
@@ -80,22 +86,29 @@ def mat_list_to_array(mat_as_list: list):
     return array
 
 
-def lbs_to_neutons(force_lbs: float) -> float:
+def lbs_to_newtons(force_lbs: float) -> float:
     """
     Function which converts pounds force to newtons force
     """
+
     return force_lbs * 4.44822
 
 
 def distributed_lbs_to_sensor_pressure(force_lbs: float) -> float:
     """
-    Function which takes a weight in pounds that is evenly distributed across the mat and calculates the pressure a single sensor should see
+    Function which takes a weight in pounds, assumes it is evenly distributed across the mat,
+    and calculates the pressure each single sensor should see
     """
-    total_pressure_pa = lbs_to_neutons(force_lbs) / (MAT_AREA_SQM) # the expected pressure experienced b the whole mat
-    return total_pressure_pa * SENSOR_AREA_SQM / MAT_AREA_SQM  # actual_pressure is in pascals
+
+    total_pressure_pa = lbs_to_newtons(force_lbs) / (MAT_AREA_SQM)  # the expected pressure experienced b the whole mat
+    return total_pressure_pa * SENSOR_AREA_SQM / MAT_AREA_SQM       # actual_pressure is in pascals
 
 
 def calc_percent_error(experimental, theoretical):
+    """
+    Returns the percentage error between the experimental and theoretical values
+    """
+
     return np.abs((experimental - theoretical) / theoretical) * 100
 
 
@@ -103,6 +116,7 @@ def calc_mat_reading_stats(mat_samples_pa: np.array, expected_weight: float):
     """
     Calculates some useful statistics about the mat reading and returns them as a string
     """
+
     flat_mat = mat_samples_pa.flatten()
     max_pa = np.max(flat_mat)
     min_pa = np.min(flat_mat)

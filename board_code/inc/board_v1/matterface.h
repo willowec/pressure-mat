@@ -22,14 +22,13 @@ registers and ADC's to read the mat in partial or in full
 #define SHREG_GPIO_SLEEP_US     1000   // sleep for 1ms between gpio actions   
 
 /*
-Sets up the gpio pins sued for communicating with the shift registers
+Sets up the gpio pins used for communicating with the shift registers
 */
 void initialize_shreg_pins();
 
 /*
 Writes inval to the shift registers, and then clocks 
-the shift registers so that they shift their values by 1
-
+the shift registers so that they shift their values forward by 1
 */
 void shift_shreg(int inval);
 

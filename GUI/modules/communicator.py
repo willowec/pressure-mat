@@ -1,5 +1,5 @@
 """
-Module responsible for communicating directly with the mat interface board
+Module responsible for communicating directly with the PMI
 """
 
 from PyQt6.QtCore import QObject, pyqtSignal
@@ -19,7 +19,6 @@ from modules.calibration import Calibration
 from modules.mat_handler import *
 
 
-
 class SessionWorker(QObject):
     """
     Class which represents a recording session and handles communications to the mat
@@ -29,7 +28,7 @@ class SessionWorker(QObject):
     # a signal which is emitted to indicate that the session is complete and the thread should be cleaned up
     finished = pyqtSignal()
 
-    # a signal which indicates an image has been saved at the path in the signal
+    # a signal which indicates pressure data has been saved at the path in the signal
     calculated_pressures = pyqtSignal(np.ndarray)
 
     # a signal used to transmit live formatted statistics about the session
@@ -58,6 +57,7 @@ class SessionWorker(QObject):
         gets current date and time in the format of yy_mm_dd_THH_MM_SS
         finds the current working directory then adds a folder named after the current time to /sessions
         """
+
         now = datetime.now()
         folderName = now.strftime("%y_%m_%d_T%H_%M_%S")
 
@@ -79,7 +79,7 @@ class SessionWorker(QObject):
         """
         Main loop of the session worker
         """
-        # attempt to connect to the board over serial, exit if unable
+        
         print('run.')
 
         # exit if the port does not exist
@@ -90,6 +90,7 @@ class SessionWorker(QObject):
             return
         
         print("opening serial")
+        # connect to the PMI
         with serial.Serial(self.port, baudrate=self.baud, timeout=10) as ser:
             ser.set_buffer_size(rx_size = 1700, tx_size = 1700)
             
@@ -98,6 +99,8 @@ class SessionWorker(QObject):
             self.polling = True
 
             prev_sample_time_ns = time.time_ns()
+
+            # continually poll serial for new mat data
             while self.polling:
                 # mat data is transmitted as raw bytes
                 bytes = ser.read(VERIFICATION_WIDTH + MAT_SIZE)
@@ -116,12 +119,15 @@ class SessionWorker(QObject):
                         # to resolve it, simply wipe the fifo and read until the next verification sequence
                         ser.reset_input_buffer()
                         hist = np.zeros(VERIFICATION_WIDTH, dtype=np.uint8)
+
+                        # wait for verification sequence to be found, proving data stream is still intact
                         while(not np.array_equal(hist, np.asarray(VERIFICATION_SEQUENCE, dtype=np.uint8))):
                             hist = np.roll(hist, -1)
                             hist[-1] = int.from_bytes(ser.read(1), "big")
 
                         break   # do not false positive another error
 
+                # process the collected data
                 data_array = mat_list_to_array(flat_mat)
 
                 pressure_array = self.calibrator.apply_calibration_curve(data_array)
@@ -129,7 +135,6 @@ class SessionWorker(QObject):
 
                 # save the pressure values as an npy
                 self.save_npy(pressure_array)
-
                 self.calculated_pressures.emit(pressure_array)
 
                 # update the timing statistics
@@ -147,10 +152,14 @@ class SessionWorker(QObject):
 
 
     def stop(self):
+        """
+        Stops the session worker
+        """
+
         print('stopping')
         self.polling = False
 
-        # calculate the finished session stats
+        # calculate the finished session stats and emit to the parent thread
         average_delta_ns = np.average(self.delta_times)
         average_sample_rate = 1 / average_delta_ns * 1000000000
 
@@ -168,7 +177,8 @@ class SessionWorker(QObject):
         Saves a numpy array of pressure values to disk
         returns: filepath of the saved npy file
         """
-        # create the image's filename
+        
+        # create the npy's filename
         sample_num = len(list(Path(self.path).glob('*')))
         sample_path = Path(self.path).joinpath(f"{sample_num:05d}.npy")
 

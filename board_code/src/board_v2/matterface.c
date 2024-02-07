@@ -1,3 +1,6 @@
+/*
+Mat interface code for V2 of the PMI software
+*/
 
 #include <stdio.h>
 #include <stdbool.h>
@@ -10,9 +13,9 @@
 
 #define LED_PIN         25
 
-// For the interrupt-based mat read to function, some global variables are required
+// For the interrupt-based mat read to work, some global variables are required
 queue_t *mat_queue_ptr;
-uint8_t row_data[ROW_WIDTH] = {9};
+uint8_t row_data[ROW_WIDTH] = {9};  // intialize the row data with a clearly invalid data
 struct queueItem row_item;
 
 int column;
@@ -20,7 +23,7 @@ struct adc_inst *adc1_instance;
 struct adc_inst *adc2_instance;
 bool waiting_for_adc1;
 bool waiting_for_adc2;
-volatile bool reading_mat;  // must be volatile for global changes
+volatile bool reading_mat;  // must be volatile for global changes to be recognized
 
 
 void initialize_shreg_pins()
@@ -43,7 +46,7 @@ void initialize_shreg_pins()
 
 void shift_shreg(int inval)
 {
-    // write the serial input value to serial
+    // write the serial input value to the shift registers
     gpio_put(SH_SERIN_PIN, inval);
 
     // clock the shift registers once
@@ -54,14 +57,14 @@ void shift_shreg(int inval)
 
 void clear_shreg()
 {
-    // flicker the clear pin
+    // flicker the clear pin to reset the shift registers
     gpio_put(SH_CLR_PIN, 0);
     busy_wait_us_32(SHREG_GPIO_SLEEP_US);
     gpio_put(SH_CLR_PIN, 1);
 }
 
 /*
-    Callback function that is triggered by either of the EOC pins going low.
+Callback function that is triggered by either of the ADC's EOC pins going low.
 */
 void EOC_callback(uint gpio, uint32_t events) 
 {
@@ -72,12 +75,12 @@ void EOC_callback(uint gpio, uint32_t events)
     /* 
      * An EOC pin just went low! Let's handle this
      * 1. for the EOC pin:
-     *  1.1. read results from corresponding ADC
-     *  1.2. insert results into the proper point in mat_ptr
-     *  1.3. set waiting_for_adcx to false
+     *  1.1. read results from the corresponding ADC
+     *  1.2. transmit the results over the queue to core 1
+     *  1.3. set waiting_for_adcX to false
      * 2. if waiting_for_adc1 and waiting_for_adc2 are both false:
      *  2.1. shift the shregs
-     *  2.2. inc column
+     *  2.2. inc the column counter
      *  2.3. request a new conversion from both ADCs
      */
 
@@ -112,21 +115,22 @@ void EOC_callback(uint gpio, uint32_t events)
 
         queue_add_blocking(mat_queue_ptr, &row_item);
 
+        // set up the shift registers for the next adc sample requests
         shift_shreg(0);
         column++;
 
-        // if column == COL_HEIGHT, then we are finished and should not send more readings
+        // if column == COL_HEIGHT, then we are finished and should requet any more readings
         if (column == COL_HEIGHT) {
             reading_mat = false;
         }
         else {
-            // delay before the next ADC request set
-            busy_wait_us_32(ADC_READ_SLEEP_US); // cannot call sleep_us within interrupt handlers
+            // delay before the next set of ADC requests
+            busy_wait_us_32(ADC_READ_SLEEP_US); // cannot call sleep_us within interrupt handlers, busy wait instead
 
             // request all channels from both ADCs
             waiting_for_adc1 = true;
             waiting_for_adc2 = true;
-            uint8_t conv_req = 0b10000000 | ((CHANNELS_PER_ADC - 1) << 3);
+            uint8_t conv_req = 0b10000000 | ((CHANNELS_PER_ADC - 1) << 3);  // conversion request command
             adc_write_blocking(adc1_instance, &conv_req, 1);
             adc_write_blocking(adc2_instance, &conv_req, 1);
         }
@@ -139,7 +143,7 @@ void initialize_EOC_interrupts()
 {
     reading_mat = false;
 
-    // set up both EOC pins to trigger a callback on falling edge (falling edge occurs when the ADC completes its read)   
+    // set up both EOC pins to trigger a callback on the falling edge of the EOC lines (falling edge occurs when the ADC completes its read)   
     gpio_set_irq_enabled_with_callback(ADC1_EOC_PIN, GPIO_IRQ_EDGE_FALL, true, &EOC_callback);
     gpio_set_irq_enabled(ADC2_EOC_PIN, GPIO_IRQ_EDGE_FALL, true);
 }
@@ -149,8 +153,7 @@ void read_mat(queue_t *mat_queue, struct adc_inst *adc1, struct adc_inst *adc2)
     // do not start reading the mat if a read is already happening
     if (reading_mat) return;
 
-
-    // Throttle the mat reading rate based on CMake build variable
+    // Throttle the mat reading rate based on the CMake build variable
     sleep_ms(THROTTLE_SLEEP_MS);
 
     // start with a one in the shregs
@@ -181,8 +184,6 @@ void read_mat(queue_t *mat_queue, struct adc_inst *adc1, struct adc_inst *adc2)
     while(reading_mat) 
         i++;
     
-    //printf("Waited %d cycles for mat to finish reading\n", i);
-
     return;
 }
 

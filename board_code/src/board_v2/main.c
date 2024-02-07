@@ -1,7 +1,5 @@
 /*
-
-main.c file for the RP2040 code for the pressure matrix project
-
+main.c file for V2 of the RPi Pico of the PMI
 */
 
 #include <stdio.h>
@@ -23,10 +21,9 @@ queue_t queue;
 
 int core1_main() {
     /*
-     * Core 1 handles transmitting the mat to the connected computer in parallel with mat reads
-     * 
-     * As data is recieved on the queue, send it over serial sequentially. Once a full mat read has been sent, send a newline
-     */  
+    Core 1 handles transmitting the mat data to the connected computer in parallel with mat reads
+    As data is recieved on the queue, send it over serial sequentially. Once a full mat read has been sent, send the verificaation sequence
+    */  
 
     int i;
     struct queueItem temp;
@@ -40,7 +37,7 @@ int core1_main() {
         transmit_verification();
     }   
 
-    return 1;
+    return 1;   // should never exit
 }
 
 
@@ -65,10 +62,10 @@ int main() {
     // initialize the shift registers
     initialize_shreg_pins();
 
-    // intiialize the matterface eoc interrupts
+    // initialize the matterface End Of Conversion interrupts
     initialize_EOC_interrupts();
 
-    // initialize the queue
+    // initialize the queue for passing data between the two cores
     queue_init(&queue, sizeof(item), COL_HEIGHT * 2);
 
     // start up the second core

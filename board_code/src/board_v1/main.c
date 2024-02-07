@@ -1,7 +1,5 @@
 /*
-
-main.c file for the RP2040 code for the pressure matrix project
-
+main.c file for V1 of the RPi Pico code for the PMI
 */
 
 #include <stdio.h>
@@ -17,7 +15,6 @@ main.c file for the RP2040 code for the pressure matrix project
 
 #define LED_PIN         25
 
-
 int main() {
     initialize_transmitter();
 
@@ -31,6 +28,7 @@ int main() {
         gpio_put(LED_PIN, 1);
     }
 
+    // allocate space for the mat readings
     uint8_t *mat = (uint8_t *)calloc(MAT_SIZE, sizeof(uint8_t));
 
     // initialize the adcs
@@ -47,6 +45,7 @@ int main() {
     while(1) {
         input_pointer = 0;
         while(1) {
+            // Get characters until a newline or carriage return is encountered
             ch=getchar();
             if ((ch=='\n') || (ch=='\r')) {
                 input_string[input_pointer]=0;
@@ -76,16 +75,15 @@ int main() {
         }
     }
     
+    // main loop
     while (1) {
         sleep_ms(900);
-
         
-        // indicate read is occuring by flashing led
+        // indicate a read is occuring by flashing the on-board led
         gpio_put(LED_PIN, 1);
         read_mat(mat, adc1, adc2);
         sleep_ms(100);
         gpio_put(LED_PIN, 0);
-        //prettyprint_mat(mat);
         transmit_mat(mat);
     }
 

@@ -1,5 +1,5 @@
 /*
-    C file responsible for sending data over serial usb to the computer
+C file responsible for sending data over serial usb to the computer
 */
 
 #include <stdbool.h>
@@ -29,24 +29,21 @@ int parse_input(char *string)
     }
 }
 
-// definition of initialize
 void initialize_transmitter()
 {
     // enable UART printfs
     stdio_init_all();
 }
 
-// definition of transmit_verification
 void transmit_verification()
 {
-    // transmit {255, 254, 254, 255} becaue maximum real-world mat value is ~207
+    // transmit {255, 254, 254, 255} because maximum real-world mat value is ~207
     putchar_raw(255);
     putchar_raw(254);
     putchar_raw(254);
     putchar_raw(255);
 }
 
-// definition of transmit_row
 void transmit_row(uint8_t *row)
 {
     // transmits one row over serial in hexadecimal format
@@ -56,10 +53,9 @@ void transmit_row(uint8_t *row)
     }
     fflush(stdout);
 
-    // does not close with newline: to finish transmission, send a newline
+    // does not close with newline: to finish transmission, send the verification sequence
 }
 
-// definition of transmit_mat
 void transmit_mat(uint8_t *mat)
 {
     sleep_ms(THROTTLE_SLEEP_MS);    // THROTTLE_SLEEP_MS set by CMake

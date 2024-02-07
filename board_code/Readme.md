@@ -16,7 +16,7 @@ The embedded code has three build targets: board_v1, board_v2, and board_v2_slow
 3. 
         mkdir build
         cd build
-        export PICO_SD_PATH=../relative/path/to/the/cloned/directory/named/pico-sdk
+        export PICO_SDK_PATH=../relative/path/to/the/cloned/directory/named/pico-sdk
         cmake ..
         make
 

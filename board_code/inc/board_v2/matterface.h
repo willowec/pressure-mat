@@ -1,6 +1,6 @@
 /*
 Header file responsible for 'communicating with the mat' i.e. controlling the shift
-registers and ADC's to read the mat in partial or in full
+registers and ADC's to read the mat in partial or in full for the PMI software version 2
 */
 
 #ifndef MATTERFACE
@@ -34,7 +34,7 @@ typedef struct queueItem {
 } item;
 
 /*
-Sets up the gpio pins sued for communicating with the shift registers
+Sets up the gpio pins used for communicating with the shift registers
 */
 void initialize_shreg_pins();
 
@@ -55,8 +55,8 @@ Sets up the interrupts for EOC pins
 void initialize_EOC_interrupts();
 
 /*
-reads the entire mat and writes it to the char array 'mat'
-'mat' should be of length MAT_SIZE
+Reads the entire mat and continually pushes the results onto the inter-core queue
+one row at a time
 */
 void read_mat(queue_t *mat_queue, struct adc_inst *adc1, struct adc_inst *adc2);
 
