@@ -1,4 +1,4 @@
-# GUI which displays data from the mat interpreted by the board and transmitted over serial
+# GUI which displays data from the mat interpreted by the PMI (Pressure Matrix Interface) and transmitted over serial
 import sys, os, re
 import numpy as np
 
@@ -15,13 +15,14 @@ from modules.mat_handler import calc_mat_reading_stats
 
 class MainWindow(QMainWindow):
     """
-    Class which handles the main 
+    Class representing the QT main window
     """
     def __init__(self):
         super(MainWindow, self).__init__()
         self.setWindowTitle("28x56 Mat Interface")
 
-        self.current_img_path = "default.png"
+        # Path of the npy file that is currently being rendered
+        self.current_img_path = None
 
         self.layout = QGridLayout()
         
@@ -48,7 +49,6 @@ class MainWindow(QMainWindow):
         self.layout.addWidget(self.stop_session_b, 6, 0)
         self.layout.addWidget(self.session_status, 5, 2)
         self.layout.addWidget(self.session_stats, 6, 2)
-        self.calibration = Calibration(ROW_WIDTH, COL_HEIGHT)    # the calibration class instance to apply to the session when it is started
         
         # load past session
         self.load_past_session_b = QPushButton("Load Past Session")
@@ -61,11 +61,6 @@ class MainWindow(QMainWindow):
         self.zeroing_status = QLabel("Status: Not Zeroed")
         self.layout.addWidget(self.zero_mat_b, 8, 0)
         self.layout.addWidget(self.zeroing_status, 8, 1)
-
-        # small area calibration loading
-        self.load_small_area_calibration_b = QPushButton("Load small area cal")
-        self.load_small_area_calibration_b.clicked.connect(self.load_small_area_cal)
-        self.layout.addWidget(self.load_small_area_calibration_b, 5, 1)
 
         # navigate images with slider
         self.slider = QSlider(Qt.Orientation.Horizontal, self)
@@ -90,38 +85,17 @@ class MainWindow(QMainWindow):
         self.mat_expected_weight.setValidator(QDoubleValidator(self))
         self.layout.addWidget(self.mat_expected_weight, 0, 0)
 
+        # Primary widget
         widget = QWidget()
         widget.setLayout(self.layout)
         self.setCentralWidget(widget)
         self.show()
 
+        # the calibration class instance to apply to the session when it is started
+        self.calibration = Calibration(ROW_WIDTH, COL_HEIGHT)   
+
         # declare the existance of a session thread
         self.session_thread = None
-
-
-    def load_small_area_cal(self):
-        """
-        Loads the folder of small area calibration curves and applies them to the calibrator.
-        """
-        cal_curves = Path("./resources/individual_cal_curves")
-
-        # init calibration curves to be a flat line
-        for i in range(self.calibration.cal_curves_array.shape[0]):
-            for j in range(self.calibration.cal_curves_array.shape[1]):
-                self.calibration.cal_curves_array[i, j] = np.array([0, 0, 0])
-
-        # overwrite calibrated sensors with their curves
-        for params_npy in list(cal_curves.glob('*.npy')):
-            # get the index for the params from the filename
-            idx = re.findall(r"[0-9]", str(params_npy))
-            x = int(idx[0])
-            y = int(idx[1])
-
-            # load the parameters and shove them into the cal curves of the calibration
-            params = np.load(params_npy)
-
-            self.calibration.cal_curves_array[x, y] = np.array(params)
-            print(f"Loaded calibration params for ({x}, {y})")
 
 
     def show_reading_statistics(self, reading: np.ndarray):
