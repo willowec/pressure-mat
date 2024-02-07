@@ -113,11 +113,10 @@ class MainWindow(QMainWindow):
         self.mat_stats_label.setText(stats)
 
 
-    def zero_mat(self, index:int=0):
+    def zero_mat(self, index: int=0):
         """
-        A recursive function that reads the mat 10 times, and adds those readings to the zeroing zeroing data in the calibration class
-        """
-            
+        A recursive function that reads the mat 10 times, and adds those readings to the zeroing data in the calibration class
+        """    
         if(index == 0):
             print("Zeroing mat")
             self.zero_mat_b.setEnabled(False)
@@ -177,14 +176,13 @@ class MainWindow(QMainWindow):
             self.zero_mat_b.setEnabled(True)
             self.zeroing_status.setText("Zeroing Complete")
             return
-        
 
 
     def run_cal_worker_thread(self, thread: QThread, worker: CalSampleWorker, index:int):
         """
-        Runs QThread and Worker to gather mat readings. Calls Zero_mat() of the next index when done
+        Runs the calibration QThread and Worker to gather mat readings. Calls zero_mat() of the next index when done
         """
-        # start up the thread to collect a reading from the mat
+        # move the worker to the thread
         worker.moveToThread(thread)
 
         # connect important signals to the new thread
@@ -209,6 +207,10 @@ class MainWindow(QMainWindow):
 
 
     def start_session(self):
+        """
+        Starts the data capture session
+        """
+
         print("I will start a mat recording session capped at 1 hour")
 
         # set up the thread which the session worker will run on
@@ -219,9 +221,8 @@ class MainWindow(QMainWindow):
             print("Using default calibration curves")
             self.calibration.load_cal_curves(DEFAULT_CAL_CURVES_PATH)
 
-        self.session = SessionWorker(self.port_input.text(), self.baud_input.text(), calibrator=self.calibration)
-
         # move the session worker onto the thread
+        self.session = SessionWorker(self.port_input.text(), self.baud_input.text(), calibrator=self.calibration)
         self.session.moveToThread(self.session_thread)
 
         # connect relevant signals
@@ -234,6 +235,7 @@ class MainWindow(QMainWindow):
         self.session_thread.start()
         self.session_status.setText("Session running")
 
+        # allow the session to be stopped now that it exists
         self.stop_session_b.setEnabled(True)
 
         # connect useful signals
@@ -255,6 +257,9 @@ class MainWindow(QMainWindow):
 
 
     def stop_session(self):
+        """
+        Stops the currently running session
+        """
         print("I will stop the mat recording session")
         if self.session:
             self.session.stop()
@@ -278,17 +283,15 @@ class MainWindow(QMainWindow):
 
     def render_pressure_array(self, pressure_array: np.ndarray):
         """
-        Converts an array of pressure values to an image based on the saved 
+        Converts an array of pressure values to an image based on the saved mat data
         """
         # write the stats of the current reading
         self.show_reading_statistics(pressure_array)
 
         # convert the raw pressure values to color values
         scaled_array = (pressure_array / MAX_RATED_PRESSURE_PA)
-
         im_array = np.full((ROW_WIDTH, COL_HEIGHT, 3), 255) * scaled_array[..., np.newaxis]
         im_array = im_array.astype(np.uint8)
-
 
         # convert the numpy array directly to an image in memory. See these resources:
         #   https://stackoverflow.com/questions/34232632/convert-python-opencv-image-numpy-array-to-pyqt-qpixmap-image
@@ -299,18 +302,16 @@ class MainWindow(QMainWindow):
 
     def load_past_session(self):
         """
-        opens file selector, saves a selected image, scales it, then displays it, and updates the slider
+        Opens the file selector and allows the user to select an npy file from a previous session
         """
         fname = self.getfile()
-        #print("fname = ", fname)
 
         self.current_img_path = fname
 
         new_npy = np.load(fname, allow_pickle=False)
-
         self.render_pressure_array(new_npy)
 
-        #updating the slider with the current session folder
+        # update the slider with the size current session folder
         self.update_slider()
 
 
@@ -321,11 +322,11 @@ class MainWindow(QMainWindow):
         then renders the .npy file to the screen
         """
 
-        #convert slider value to string with padded zeros and .npy extension
+        # convert slider value to string with padded zeros and .npy extension
         next_npy_file = f"{self.slider.value():05}"
         next_npy_file = next_npy_file + ".npy"
 
-        #converts current_img_path to path type to get the parent directory and then find the next npy file in that directory, then converts back to string
+        # converts current_img_path to path type to get the parent directory and then find the next npy file in that directory, then converts back to string
         self.current_img_path = str((Path(self.current_img_path).parents[0]).joinpath(Path(next_npy_file)))
 
         new_npy = np.load(self.current_img_path, allow_pickle=False)
@@ -335,7 +336,7 @@ class MainWindow(QMainWindow):
 
     def update_slider(self):
         """
-        sets the maximum value of the slider bassed on how many images are in the session and sets slider position to zero
+        sets the maximum value of the slider based on how many images are in the session and sets slider position to zero
         """
 
         self.slider.setMaximum(self.count_files_in_folder(Path(self.current_img_path).parents[0])-1)
@@ -361,6 +362,7 @@ class MainWindow(QMainWindow):
         """
         Called when the window is closed. Exit the application
         """
+    
         self.stop_session()
 
 
@@ -369,7 +371,8 @@ class MainWindow(QMainWindow):
         opens file selector, allows user to navigate their directories, 
         and returns a string of the full file name
         """
-        #default file path below
+
+        # default file path below
         file_path = ('./')
 
         fname_full = QFileDialog.getOpenFileName(self, 'Open File', file_path)
@@ -378,13 +381,12 @@ class MainWindow(QMainWindow):
 
 
 if __name__ == "__main__":
+    
+    # create the QT application and run it
     app = QApplication(sys.argv)
 
     window = MainWindow()
-
-    # 4. Show your application's GUI
     window.show()
 
-    # 5. Run your application's event loop
     sys.exit(app.exec())
 
